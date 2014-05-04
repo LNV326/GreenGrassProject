@@ -12,22 +12,24 @@
 		{#<meta name="robots" content="all">#}
 		<meta http-equiv="Content-Language" content="en,ru"/>
 		<meta name="copyright" content="Need For Speed World Site © 2003 - {{"now"|date('Y','MSK')}} support by Лёлик"/>  
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery-1.9.1.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery-ui.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/jquery-1.9.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/jquery-ui.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/jquery.fancybox.js') }}"></script>
         
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.nfsko.thumb.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.nfsko.album.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.nfsko.catalog.js') }}"></script>
-        
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/modernizr.custom.63321.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/nfsko.js') }}"></script>
-		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.stapel.js') }}"></script>
-		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.filedrop.js') }}"></script>
-		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.fancybox.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/modernizr.custom.63321.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/nfsko.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/jquery.stapel.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/jquery.filedrop.js') }}"></script>
 		
+		<script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/SiteGalleryBundle.js') }}"></script>
+		
+		<!-- 
 		<link rel="stylesheet" href="{{ asset('bundles/sitecore/css/modern_main.css') }}" type="text/css" media="all" />
         <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/modern_gallery.css') }}" type="text/css" media="all" />
         <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/jquery.fancybox.css') }}" type="text/css" media="all" />
+        -->
+        <link rel="stylesheet" href="{{ asset('bundles/SiteCore/css/SiteCoreBundle.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/SiteGallery/css/SiteGalleryBundle.css') }}" type="text/css" media="all" />
 	</head>
 <body>
 <table id='body'>

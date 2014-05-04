@@ -1,0 +1,292 @@
+/* =============
+   Основы основ =)
+================*/
+html {
+	height: 100%
+}
+body {
+	margin:0;
+	padding: 0;
+	height: 100%;
+	position: relative;
+	background: url("../images/bg.gif") 0 0 repeat black;
+}
+
+/* =============
+   Разметка корневой таблицы
+================*/
+table#body {
+	width: 1280px;
+	height: 100%;
+	margin: 0 auto;
+	padding: 0;
+	border-collapse: collapse;
+	border: 0;
+	color: #c7c7c7;
+	font-family: Verdana;
+	font-size: 11px;
+}
+table#body tr.body_row {
+	width: 100%;
+}
+table#body td.body_col {
+	width: 100%;
+	margin: 0 auto;
+	padding: 0;
+	text-align: left;
+}
+table#body tr#body_top {
+	height: 165px;
+	background: #242424;
+}
+table#body tr#body_cent {
+	height: auto;
+}
+table#body tr#body_foot {
+	height: 112px;
+	background: url("../images/mtl.gif") 0 0 repeat #242424;
+	
+}
+table#body tr#body_foot > td {
+	padding-top: 19px;
+}
+header, footer {
+	width: 100%;
+	hegith: 100%;
+}
+
+/* ===========
+   Ссылки
+============== */
+a {
+	color: #F8F8FF;
+}
+a:link, a:visited, a:active {
+	text-decoration: none;
+	color: #E6E6E6;
+}
+a:hover {
+	text-decoration: none;
+	color: #BBBBBB;
+}
+
+/* ===========
+   Позиционирование и общее оформление блоков
+============== */
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+.center {
+}
+.hide {
+	display: none;
+}
+.title {
+	color: #c7c7c7;
+	font-size: 11px;
+	font-weight: bold;
+}
+.content {
+	position: relative;
+}
+
+/* ===========
+/* Поля ввода, кнопки и т.д.
+============== */
+input {
+	font-size: 11px;
+	font-family: Verdana;
+	vertical-align: middle;
+	color: #cccccc;
+	background-color: #666666;
+	border: 1px #424242 solid;
+}
+button {
+	background: #464646;
+	border: 1px solid #262626;
+	color: #cccccc;
+	outline: none;
+	font-size: 12px;
+	-webkit-box-shadow: 0 0 3px #464646;
+	   -moz-box-shadow: 0 0 3px #464646;
+			box-shadow: 0 0 3px #464646;
+    cursor: pointer;
+    width: 65px;
+    height: 24px;
+    margin: 3px 2px;
+    padding: 0 0 2px;
+    border-radius: 3px; /* CSS3 */     
+    background: -webkit-gradient(linear, left top, left bottom, from(#626262), to(#363636)); /* Для Safari и Chrome */
+    background: -moz-linear-gradient(center top , #626262, #363636); /* Для Firefox */
+    background: -o-linear-gradient(top,  #626262, #363636); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #626262, #363636); /* IE10+ */ 
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorstr=#626262, endColorstr=#363636); /* IE */ 
+}
+button:hover {
+	-webkit-box-shadow: 0 0 3px orange;
+	   -moz-box-shadow: 0 0 3px orange;
+			box-shadow: 0 0 3px orange;
+}
+* html button {
+    border: 0; /* Корректировка для IE*/
+}
+
+/* ============
+   Подвал сайта
+=============== */
+
+/* Подвал сайта - панель ссылок */
+ul#foot-links {
+	width: 100%;
+	height: 90px;
+	margin: 0;
+	padding: 0;
+	border-collapse: collapse;
+	list-style: none outside none;
+	background: url("../images/ml_noend.gif") repeat #323232;
+}
+/* Подвал сайта - панель ссылок - столбец */
+ul#foot-links > li {
+	background: url("../images/ml.gif") repeat-y #323232;
+	width: 165px;
+	height: 100%;
+	float: left;
+}
+ul#foot-links > li:last-child {
+	background: none !important;
+}
+/* Блок ссылок */
+ul#foot-links .links {
+	padding: 7px 7px;
+}
+/* Заголовок панели ссылок */
+ul#foot-links .links > .title {
+	margin-bottom: 5px;
+	font-size: 10px;
+}
+/* Содержимое панели ссылок */
+ul#foot-links .links > ul.content {
+	margin: 0;
+	padding: 0;
+	font-size: 10px;
+	color: #E6E6E6;
+    text-decoration: none;
+    list-style: none outside none;
+}
+/* Подвал сайта - панель информации */
+#foot-info {
+	height: 20px;
+	background: url("../images/top.gif") repeat-x #323232;
+	font-size: 9px;
+	line-height: 20px;
+	padding: 0 8px;
+}
+#counters {
+	padding: 10px;
+}
+
+/* ==========================
+   Центральная часть страницы
+============================= */
+
+/* Правая менюшка */
+table#body td#menu-container {
+	width: 165px;
+	padding: 0;
+	background: url("../images/mr.gif") repeat-y #323232;
+	text-align: left;
+	vertical-align: top;
+}
+/* Контейнер, содержащий модуль */
+table#body td#module-container {
+	width: 100%;
+	padding: 0;
+	text-align: center;
+	vertical-align: top;
+}
+
+/* ==========================
+    Модуль
+============================= */
+#module {
+	margin: 10px 1%;
+	text-align: left;
+}
+/* Название модуля */
+#module > .title {
+	width: 100%;
+	height: 18px;
+	line-height: 18px;
+	text-align: left;
+	background: url("../images/news.gif") repeat-x;
+}
+#module > .title .left {
+	height: 18px;	
+	background: url("../images/tll.gif") no-repeat;
+	padding-left: 45px;
+}
+#module > .title .right {
+	height: 18px;
+	background: url("../images/tlr.gif") 100% 0 no-repeat;
+	padding-right: 45px;
+}
+/* Содержимое модуля */
+#module > .content {
+	margin: 10px 1%;
+}
+/* Строка содержимого модуля */
+#module .module-row {
+	position: relative;
+	height: auto;
+	background: url("../images/fon.gif") repeat;
+	border: 1px solid black;
+}
+#module .module-row:first-child, #module .module-row:last-child {
+	height: 22px;
+	line-height: 22px;
+	padding: 0 15px;
+	font-size: 12px;
+}
+#module .module-row:first-child {
+	margin-bottom: 3px;
+}
+#module .module-row:last-child {
+	margin-top: 3px;
+}
+#module .module-table {
+	width: 100%;
+	height: auto;
+}
+#module .module-table > tr {
+	width: 100%;
+	height: auto;
+}
+
+/* ==========================
+    Меню
+============================= */
+.menu-block {
+	width: 165px;
+	height: auto;
+}
+.menu-block > .title {
+	background: url("../images/mtr.gif") repeat-x #646464;
+	height: 19px;
+	line-height: 19px;
+	padding: 0 4px;
+	text-align: right;
+}
+.menu-block > .content {
+	list-style: none inside url("../images/lil.gif");
+	padding: 0;
+	margin: 0;
+}
+.menu-block > .content > li {
+	padding: 1px 3px;
+}
+.menu-block > .content > li > a {
+	margin-left: -5px;
+}
