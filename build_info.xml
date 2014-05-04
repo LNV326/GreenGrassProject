@@ -1,24 +1,61 @@
 <?xml version="1.0"?>
-<project name="BuildGeneralInfo">
+<project name="SiteGalleryBundle" default="SiteGalleryBundle_build">
 	
-	<property name="bundle.prefix" value="Site"/>
-	<property name="bundle.name" value="GalleryBundle"/>
-	
-	<target name="test">
-		<basename property="project.name" file="${basedir}"/>
+	<!-- Расположение проекта в Denwer`е (стоит перенести в скрипт для денвера) -->
+	<property name="remote_path" value="Z:/home/nfsko-test.ru"/>
+
+	<property file="./build.properties"/>
 		
-		<echo>${project.name}</echo>
-		
-		<property name="qwe" value="123qqq456"/>
-		<echo>${qwe}</echo>
-		
-		 <propertyregex property="pack.name"
-		              input="package.ABC.name"
-		              regexp="(package)\.[^\.]*\.(name)"
-		              replace="\1.DEF.\2"
-		              casesensitive="false" />
-		
-		
+	<target name="src-copy" description="Копирование исходников">
+		<echo>Очистка папки ${copy_src.to}</echo>
+		<delete dir="${copy_src.to}"></delete>
+		<mkdir dir="${copy_src.to}"/>
+		<echo>Копирование ${copy_src.from} в ${copy_src.to}</echo>
+		<copy todir="${copy_src.to}">
+		    <fileset dir="${copy_src.from}"/>
+		</copy>
 	</target>
+	
+	<target name="web-copy" description="Копирование JS, CSS и изображений">
+		<echo>Очистка папки ${copy_web.to}</echo>
+		<delete dir="${copy_web.to}"></delete>
+		<mkdir dir="${copy_web.to}"/>
+		<echo>Копирование ${copy_web.from} в ${copy_web.to}</echo>
+		<copy todir="${copy_web.to}">
+			<fileset dir="${copy_web.from}"/>
+		</copy>
+	</target>
+	
+	<target name="_web-concat" description="Объединение JS и CSS в библиотеки" depends="js-concat, css-concat"></target>
+	
+	<target name="_web-minify" description="Сжатие JS и CSS" depends="_web-concat, js-minify, css-minify"></target>
+	
+	<target name="js-concat">
+		<echo>Удаление ${concat_js.to}</echo>
+		<delete file="${concat_js.to}" />
+		<echo>Объединение JS-файлов в библиотеку ${concat_js.to}</echo>
+		<concat destfile="${concat_js.to}" >
+			<fileset dir="${concat_js.from}" includes="*.js" />
+		</concat>
+	</target>
+	
+	<target name="css-concat">
+		<echo>Удаление ${concat_css.to}</echo>
+		<delete file="${concat_css.to}" />
+		<echo>Объединение CSS-файлов в библиотеку ${concat_css.to}</echo>
+		<concat destfile="${concat_css.to}" >
+			<fileset dir="${concat_css.from}" includes="*.css" />
+		</concat>
+	</target>
+	
+	<target name="js-minify" depends="js-concat"></target>
+	<target name="css-minify" depends="css-concat"></target>
+	
+	<target name="SiteGalleryBundle_build">
+		<antcall target="src-copy" />
+		<antcall target="_web-minify" />
+		<antcall target="web-copy" />
+	</target>
+	<target name="SiteGalleryBundle_buildWithoutMinify" depends="src-copy, _web-concat, web-copy"></target>
 
 </project>

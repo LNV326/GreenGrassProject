@@ -1,0 +1,414 @@
+@CHARSET "UTF-8";
+/* ==========================
+    Общее оформление модуля галереи
+============================= */
+
+/* Контейнер с превью изображений */
+.gallery-container {
+	position: relative;
+	width: auto;
+	margin: 8px auto;
+	list-style-type: none;
+	padding: 0;
+	text-align: center;
+	font-size: 0; /* Убирает ненужные отступы между элементами списка */
+}
+/* Контейнер для сообщения исключительной ситуации */
+#gallery_exception {
+	width: 100%;
+	height: 122px;
+	margin: auto;
+	text-align: center;
+	line-height: 122px;
+	font-size: 14px;
+}
+/* Левая и правая стрелки навигации вокруг основного контента */
+.gallery-navigate.left, .gallery-navigate.right {
+	width: 50px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	background: none no-repeat center center transparent;
+	display: none;
+}
+.gallery-navigate.left {
+	left: 0;
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/arrow_left_icon&24.png);
+}
+.gallery-navigate.right {
+	right: 0;
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/arrow_right_icon&24.png);
+}
+/* Строка навигации */
+.module-navigate {
+}
+.module-navigate a {
+	background: url(/bundles/sitecore/images/lil.gif) no-repeat 0 center;
+	padding: 0 5px 0 15px;
+}
+
+/* ==========================
+    Содержимое модуля галереи (общее описание)
+============================= */
+
+/* Превью - контейнер */
+.gallery_thumb {
+	border: 1px solid #424242;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+	margin: 0px;
+	text-align: center;
+	margin: 2px;
+	cursor: pointer;
+	border-collapse: collapse;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+		    box-sizing: border-box;	
+	-webkit-transition: 0.25s;
+	   -moz-transition: 0.25s;
+	     -o-transition: 0.25s;
+		    transition: 0.25s;
+}
+.gallery_thumb:hover {
+	border-color: #c7c7c7;
+	-webkit-box-shadow: 0 0 12px 2px black;
+	   -moz-box-shadow: 0 0 12px 2px black;
+			box-shadow: 0 0 12px 2px black;
+	z-index: 2;
+}
+/* Превью - область центрирования и обрезки */
+.gallery_thumb > a {
+	display: table-cell;
+	vertical-align: middle;
+	background: none no-repeat scroll center center #242424;
+	background-size: 100%;
+	border: 0px;
+}
+/* Превью - изображение */
+.gallery_thumb > a > img {
+	width: 100%;
+	border: 0px;
+}
+/* Превью - название */
+.gallery_thumb_name, .tp-title {
+	background: url("/bundles/sitecore/images/fon.gif") repeat;
+	left: 0;
+	right: 0;
+	height: 20px;
+	position: absolute;
+	font-size: 12px;
+	line-height: 20px;
+	color: white;
+	opacity: 0.8;
+	overflow: hidden;
+	font-weight: bold;
+	padding-left: 20px;
+	text-align: left;
+}
+/* Стрелка перед названием превью */
+.gallery_thumb_name:before {
+	content: '';
+	position: absolute;
+	height: 100%;
+	width: 13px;
+	left: 5px;
+	top: 0;
+	background: url("/bundles/sitecore/images/lil.gif") no-repeat scroll 0 center transparent;
+}
+
+/* ==========================
+    Содержимое модуля галереи (большое превью)
+============================= */
+
+/* Большое превью - контейнер */
+.gallery_thumb.big {
+	width: 320px;
+	height: 175px;
+}
+/* Большое превью - область центрирования и обрезки */
+.gallery_thumb.big > a {
+	width: 320px;
+	height: 250px;
+}
+/* Большое превью - изображение */
+.gallery_thumb.big > a > img {
+	margin-top: -70px;
+}
+/* Большое превью - название */
+.gallery_thumb.big .gallery_thumb_name, .gallery_thumb.big .tp-title {
+	top: 10px;
+}
+/* Количество элементов в группе */
+.tp-title span:nth-child(2) {
+	padding: 0 5px;
+	right: 0px;
+	height: 100%;
+	top: 0px;
+	position: absolute;
+	display: block;
+}
+
+/* ==========================
+    Содержимое модуля галереи (маленькое превью)
+============================= */
+
+/* Маленькое превью - контейнер */
+.gallery_thumb.small {
+	margin: 1px;
+	width: 120px;
+	height: 120px;
+}
+/* Маленькое превью - область центрирования и обрезки */
+.gallery_thumb.small > a {
+	width: 180px;
+	height: 120px;
+	margin-left: -30px;
+	display: block;
+}
+/* Маленькое превью - изображение */
+.gallery_thumb.small > a > img {
+	height: 120px;
+	width: auto;
+}
+/* Маленькое превью - название */
+.gallery_thumb.small .gallery_thumb_name {
+	top: 8px;
+}
+/* Маленькое превью - область центрирования и обрезки */
+.gallery_thumb.small.book > a {
+	width: 120px;
+	height: 180px;
+	margin-left: 0;
+}
+/* Маленькое превью - изображение */
+.gallery_thumb.small.book > a > img {
+	width: 120px;
+	height: auto;
+}
+
+/* ==========================
+    Статусы миниатюр и остальные иконки
+============================= */
+
+/* �?нформационные иконки статуса изображения в галерее (скрыто/в корзине) */
+.gallery_thumb > a[new_status]:before, .gallery_thumb > a:not([status='show']):before {
+	content: '';
+	position: absolute;
+	top: 25%;
+	right: 25%;
+	background: no-repeat center center rgba(0,0,0,0.5);
+	width: 50%;
+	height: 50%;
+	border-radius: 8px;
+}
+.gallery_thumb > a[status='show']:before {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/eye_icon&48.png) !important;
+}
+.gallery_thumb > a[status='hide']:before {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/invisible_light_icon&48.png) !important;
+}
+.gallery_thumb > a[status='trash']:before {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/trash_icon&48.png) !important;
+}
+.gallery_thumb > a[status='changing']:before {
+	background-image: url(/bundles/sitecore/images/modern/loading.gif) !important;
+}
+.gallery_thumb > a[new_status='show']:before {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/eye_icon&48.png) !important;
+}
+.gallery_thumb > a[new_status='hide']:before {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/invisible_light_icon&48.png) !important;
+}
+.gallery_thumb > a[new_status='trash']:before {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/trash_icon&48.png) !important;
+}
+/* �?нформационные иконки статуса изображения в галерее (скрыто/в корзине) */
+.gallery_thumb[allow-add] .gallery_thumb_name:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 3px;
+	background: no-repeat center center transparent;
+	width: 20px;
+	height: 20px;
+}
+.gallery_thumb[allow-add='false'] .gallery_thumb_name:after {
+	background-image: url(/bundles/sitecore/images/modern/cc/white/png/padlock_closed_icon&16.png) !important;
+}
+
+.gallery_thumb > a.ui-loading {
+	background: url(/bundles/sitecore/images/modern/loading.gif) no-repeat scroll center center #242424 !important;
+}
+
+/* ==========================
+    Загрузка изображений
+============================= */
+
+.gallery-container > .content {
+	position: relative;
+	margin-top: 10px;
+}
+/* Область загрузки изображений - контейнер */
+#droparea {
+	position: relative;
+	padding: 10px;
+	border-style: dashed;
+	border-width: 3px;
+	border-radius: 5px; 
+	-moz-box-sizing: border-box;
+		 box-sizing: border-box;
+	text-align: left;
+	min-height: 142px;
+}
+/* Область загрузки изображений */
+#dropbox {
+	width: 100%;
+	position: absolute;
+	top: 45%;
+	left: 0;
+	z-index: 1000;
+	font-size: 14px;
+	color: #c7c7c7;
+	text-align: center;
+}
+/* Шаблон для добавляемых изображений - контейнер */
+.gallery_thumb#thumb-template {
+	display: none;
+}
+/* Ярлычок NEW у загруженного изображения */
+.gallery_thumb.new:before {
+	content: 'NEW';
+	font-size: 12px;
+	color: white;
+	padding: 1px 5px;
+	width: auto;
+	height: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: orange;
+	border-radius: 0 0 5px 0;
+}
+/* Ярлычок ERROR у изображения */
+.gallery_thumb.error:before {
+	content: 'ERROR';
+	font-size: 12px;
+	color: white;
+	padding: 1px 5px;
+	width: auto;
+	height: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: red;
+	border-radius: 0 0 5px 0;
+}
+
+/* ==========================
+    Progress Bar
+============================= */
+
+ /* Полоса загрузки - контейнер */
+.ui-progressbar {
+    position: absolute;
+    background-color:#252f38;
+    height:12px;
+    width:100%;
+    left:0;
+    bottom: 0;
+    -webkit-box-shadow: 0 0 2px #000;
+	   -moz-box-shadow: 0 0 2px #000;
+			box-shadow: 0 0 2px #000;
+}
+/* Полоса загрузки - полоса */
+.ui-progressbar-value {
+	font-size: 10px;
+    background-color:#2586d0;
+    position: absolute;
+    height:100%;
+    left:0;
+    width:0;
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
+	   -moz-box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
+			box-shadow: 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    -webkit-transition: 0.25s;
+       -moz-transition: 0.25s;
+         -o-transition: 0.25s;
+    	    transition: 0.25s;
+}
+
+/* ==========================
+   Показ изображения
+============================= */
+
+.gallery-container#image {
+	background: #242424;
+}
+
+.fancybox-title {
+	text-align: center;
+}
+
+#module .gallery-image {
+	max-width: 1054px;
+}
+
+.image-about,
+.image-links {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.35);
+	left: 0;
+    right: 0;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 8050;
+    color: #eeeeee;
+	font-family: Verdana;
+	font-size: 11px;
+	text-align: left;
+}
+
+.image-about {
+    top: 0;
+}
+
+.image-links {
+    bottom: 0;
+    height: 18px;
+    overflow: hidden;
+    -webkit-transition: 0.25s;
+       -moz-transition: 0.25s;
+         -o-transition: 0.25s;
+    	    transition: 0.25s;
+}
+
+.image-links:hover {
+	height: 150px;
+}
+
+.image-links > .title {
+	padding-bottom: 5px;
+	font-size: 12px;
+	text-align: left;
+}
+
+.image-links > ul.content {
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
+}
+
+.image-links > ul.content .title {
+	float: left;
+	padding-right: 5px;
+	line-height: 18px;
+}
+
+.image-links > ul.content li {
+	margin: 2px;
+}
+
+.image-links > ul.content .content {
+	width: 100%;
+}
+
