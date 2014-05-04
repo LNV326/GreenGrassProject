@@ -1,0 +1,10 @@
+Site\GalleryBundle\Entity\Image:
+    properties:
+        file:
+            - File:
+                maxSize: 20M
+                mimeTypes: [image/jpeg]
+                mimeTypesMessage: Please upload a valid JPEG
+            - Image:
+                maxWidth: 8000
+                maxHeight: 5000

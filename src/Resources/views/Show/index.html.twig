@@ -1,0 +1,33 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Галерея изображений {{ parent(title) }}{% endblock %}
+
+{% block content_left %}<div class='gallery-navigate left'></div>{% endblock %}
+{% block content_right %}<div class='gallery-navigate right'></div>{% endblock %}
+    
+{% block content %}
+ <ul class='gallery-container' id='catalog'>
+ 	{% for cat in body.categoryList %}
+ 		{% if cat.position in (0..6) %}
+ 			{% set class='3rd Generation' %}
+ 		{% elseif cat.position in (7..12) %}
+ 			{% set class='2nd Generation' %}
+ 		{% elseif cat.position in (13..19) %}
+ 			{% set class='1st Generation' %}
+ 		{% elseif cat.position in (20..21) %}
+ 			{% set class='Other' %}
+ 		{% endif %}
+		<li class='gallery_thumb big' data-pile='{{ class }}'>
+			<a href='{{ path('site_gallery_category', {'cRefId': cat.getRefId}) }}' status='show'>
+				{% if cat.coverImage %}<img src='{{ body.imageHostName ~ cat.coverImage.getWebThumbPath }}'>{% endif %}
+				<div class='gallery_thumb_name'>{{ cat.name }}</div>
+			</a>
+		</li>
+	{% endfor %}
+</ul>
+<script>
+$(document).ready(function(){ 
+	$('.gallery-container#catalog').nfsko('gallery');
+});
+</script>
+{% endblock %}

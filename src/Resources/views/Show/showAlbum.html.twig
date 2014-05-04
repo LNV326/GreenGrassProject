@@ -1,0 +1,41 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Альбом {{ body.album.dictionary.title }} | Категория {{ body.album.category.name }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+{% block keywords %}{{ body.album.category.name }}, {{ parent(keywords) }}
+{% endblock %}
+
+{% block content %}
+{% if status=='Success' %}
+<ul class='gallery-container' id='album'>
+	{% set imageHostName = body.imageHostName %}
+	{% set imageList = body.album.getImages %}
+	{% set userId = app.user.getId %}
+	{% for image in imageList %}
+		{% if is_granted('ROLE_GAL_EDIT_IMG') or image.visibility==1 or image.memberId==userId %}
+			{% block image_block %}
+			<li class='gallery_thumb small'>
+{# 				<a href='{{ imageHostName ~ image.getWebPath }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">#}
+{# 					<img lazysrc='{{ imageHostName ~ image.getWebThumbPath }}'/>#}
+{# 				</a>#}
+				<a href='{{ path('site_gallery_image', {'iId':image.id}) }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">
+					<img lazysrc='{{ imageHostName ~ image.getWebThumbPath }}'/>
+				</a>
+			</li>
+			{% endblock %}
+		{% endif %}
+	{% endfor %}
+	<div id='gallery_exception' {% if imageList.count>0 %}class='hide'{% endif %}>No images in album</div>
+</ul>
+<script>
+$(document).ready(function(){ 
+	$('.gallery-container#album').nfsko('gallery');
+});
+</script>
+{% else %}
+	{{ error[0] }}
+	{% if app.user.isMod %}		
+		{{ error.trace }}
+	{% endif %}
+{% endif %}
+{% endblock %} 

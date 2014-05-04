@@ -1,0 +1,99 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Валидация галереи изображений {{ parent(title) }}{% endblock %}
+
+{% block content %}
+	<table>
+		<caption>Валидация категорий</caption>
+		<thead><tr>
+			<td>Название категории</td>
+			<td>Наличие папки</td>
+			<td>Наличие обложки</td>
+		</tr></thead>
+		{% for category in body.errorCategoryList %}
+			<tr>
+				<td>{{ category.category.getName }}</td>
+				<td>{% if category.check.noPath == 'OK' %}<font color='green'>OK</font>
+					{% elseif category.check.noPath == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif category.check.noPath == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+				<td>{% if category.check.noCover == 'OK' %}<font color='green'>OK</font>
+					{% elseif category.check.noCover == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif category.check.noCover == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<table>
+		<caption>Валидация альбомов</caption>
+		<thead><tr>
+			<td>Название альбома</td>
+			<td>Название категории</td>
+			<td>Наличие папки</td>
+			<td>Наличие папки миниатюр</td>
+			<td>Наличие папки миниатюр</td>
+			<td>Наличие обложки</td>
+		</tr></thead>
+		{% for album in body.errorAlbumList %}
+			<tr>
+				<td>{{ album.album.getName }}</td>
+				<td>{{ album.album.getCategory.getName }}</td>
+				<td>{% if album.check.noPath == 'OK' %}<font color='green'>OK</font>
+					{% elseif album.check.noPath == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif album.check.noPath == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+				<td>{% if album.check.noThumbPath == 'OK' %}<font color='green'>OK</font>
+					{% elseif album.check.noThumbPath == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif album.check.noThumbPath == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+				<td>{% if album.check.noThumbPathOld == 'OK' %}<font color='green'>OK</font>
+					{% elseif album.check.noThumbPathOld == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif album.check.noThumbPathOld == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+				<td>{% if album.check.noCover == 'OK' %}<font color='green'>OK</font>
+					{% elseif album.check.noCover == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif album.check.noCover == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<table>
+		<caption>Валидация изображений</caption>
+		<thead><tr>
+			<td>ID изображения</td>
+			<td>Название альбома</td>
+			<td>Название категории</td>
+			<td>Наличие изображения</td>
+			<td>Наличие миниатюры</td>
+			<td>Наличие миниатюры (старой)</td>
+		</tr></thead>
+		{% for image in body.errorImageList %}
+			<tr>
+				<td>{{ image.image.getId }}</td>
+				<td>{{ image.image.getAlbum.getName }}</td>
+				<td>{{ image.image.getAlbum.getCategory.getName }}</td>
+				<td>{% if image.check.noImage == 'OK' %}<font color='green'>OK</font>
+					{% elseif image.check.noImage == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif image.check.noImage == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+				<td>{% if image.check.noThumb == 'OK' %}<font color='green'>OK</font>
+					{% elseif image.check.noThumb == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif image.check.noThumb == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+				<td>{% if image.check.noThumbOld == 'OK' %}<font color='green'>OK</font>
+					{% elseif image.check.noThumbOld == 'BUG' %}<font color='red'>BUG</font>
+					{% elseif image.check.noThumbOld == 'FIX' %}<font color='orange'>FIX</font>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

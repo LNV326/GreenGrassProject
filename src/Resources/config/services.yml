@@ -1,0 +1,37 @@
+parameters:
+#    site_gallery.example.class: Site\GalleryBundle\Example
+  img_host: http://images.nfsko.mooo.com/gallery/
+  img_dir: ../../images/www/gallery/
+
+services:
+#    site_gallery.example:
+#        class: %site_gallery.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    gallery_redirect_logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [redirect]
+        calls:
+            - [pushHandler, [@gallery_redirect_handler]]
+    gallery_redirect_handler:
+        class: Monolog\Handler\StreamHandler
+        # 200 = INFO, see Monolog::Logger for the values of log levels
+        arguments: [%kernel.root_dir%/logs/gallery_redirect.log, 200]        
+    gallery_add_logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [add]
+        calls:
+            - [pushHandler, [@gallery_manage_handler]]
+    gallery_edit_logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [edit]
+        calls:
+            - [pushHandler, [@gallery_manage_handler]]
+    gallery_remove_logger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [remove]
+        calls:
+            - [pushHandler, [@gallery_manage_handler]]
+    gallery_manage_handler:
+        class: Monolog\Handler\StreamHandler
+        # 200 = INFO, see Monolog::Logger for the values of log levels
+        arguments: [%kernel.root_dir%/logs/gallery_manage.log, 200]

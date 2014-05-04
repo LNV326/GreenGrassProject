@@ -1,0 +1,22 @@
+site_gallery_removeCategory:
+    pattern: /category/{catId}/remove
+    defaults: { _controller: SiteGalleryBundle:Manage:removeCategory }
+    requirements:
+        catId:  \d+    
+site_gallery_removeAlbum:
+    pattern: /album/{albumId}/remove
+    defaults: { _controller: SiteGalleryBundle:Manage:removeAlbum }
+    requirements:
+        albumId:  \d+
+site_gallery_removeImages:
+    pattern: /album/{albumId}/removeImages
+    defaults: { _controller: SiteGalleryBundle:Manage:removeImages }
+
+   
+
+site_gallery_setStatusImages:
+    pattern: /album/{albumId}/status
+    defaults: { _controller: SiteGalleryBundle:Manage:setStatusImages }
+site_gallery_moveImages:
+    pattern: /album/{albumId}/move
+    defaults: { _controller: SiteGalleryBundle:Manage:moveImages }

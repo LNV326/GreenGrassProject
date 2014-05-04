@@ -1,0 +1,31 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Категория {{ body.category.name }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+{% block keywords %}{{ body.category.name }}, {{ parent(keywords) }}
+{% endblock %}
+
+{% block content %}
+{% if status=='Success' %}
+<ul class='gallery-container' id='category'>
+	{% for album in body.category.albums %}
+		<li class='gallery_thumb big' allow-add='{% if album.allowAdd %}true{% else %}false{% endif %}'>
+			<a href='{{ path('site_gallery_album', {'cRefId': body.category.getRefId,'aRefId': album.dictionary.getRefId}) }}' status='show'>
+				{% if album.coverImage %}
+					<img src='{{ body.imageHostName ~ album.coverImage.getWebThumbPath }}'>
+				{% endif %}
+				<div class='gallery_thumb_name'>{{ album.dictionary.title }}</div>
+			</a>
+		</li>
+	{% endfor %}
+</ul>
+<script>
+	$('.gallery-container#category').nfsko('gallery');
+</script>
+{% else %}
+	{{ error[0] }}
+	{% if app.user.isMod %}		
+		{{ error.trace }}
+	{% endif %}
+{% endif %}
+{% endblock %}

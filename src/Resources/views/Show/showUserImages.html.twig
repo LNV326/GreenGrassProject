@@ -1,0 +1,39 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Файлы пользователя {{ body.user.getUsername }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+{% block keywords %}{{ parent(keywords) }}
+{% endblock %}
+
+{% block content %}
+{% if status=='Success' %}
+<ul class='gallery-container' id='album'>
+	{% set imageHostName = body.imageHostName %}
+	{% set imageList = body.images %}
+	{% set userId = app.user.getId %}
+	{% for image in imageList %}
+		{% if is_granted('ROLE_GAL_EDIT_IMG') or image.visibility==1 or image.memberId==userId %}
+			{% block image_block %}
+			<li class='gallery_thumb small'>
+				{#<a href='{{ imageHostName ~ image.getWebPath }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}"></a>#}
+				<a href='{{ path('site_gallery_image', {'iId':image.id}) }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">
+					<img lazysrc='{{ imageHostName ~ image.getWebThumbPath }}'/>
+				</a>
+			</li>
+			{% endblock %}
+		{% endif %}
+	{% endfor %}
+	<div id='gallery_exception' {% if imageList|length>0 %}class='hide'{% endif %}>No user's images</div>
+</ul>
+<script>
+$(document).ready(function(){ 
+	$('.gallery-container#album').nfsko('gallery');
+});
+</script>
+{% else %}
+	{{ error[0] }}
+	{% if app.user.isMod %}		
+		{{ error.trace }}
+	{% endif %}
+{% endif %}
+{% endblock %} 

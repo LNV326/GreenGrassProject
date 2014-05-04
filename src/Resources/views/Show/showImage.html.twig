@@ -1,0 +1,52 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Альбом {{ body.image.album.dictionary.title }} | Категория {{ body.image.album.category.name }} | Галерея изображений {{ parent(title) }}{% endblock %}
+
+{% block keywords %}{{ body.image.album.category.name }}, {{ parent(keywords) }}{% endblock %}
+
+{% block content %}
+{% if status=='Success' %}
+<div class='gallery-container' id='image'>
+	<img class='gallery-image' src='{{ body.imageHostName ~ body.image.getWebPath }}'/>
+	<div class='image-about'>
+		<div class='left'>
+			<div>Описание: {{ body.image.getInfo|default('n/a') }}</div>
+			<div>Автор: <a href='{{ path('site_gallery_userImages', {'uId':body.image.getMemberId}) }}'>{{ body.image.getMemberName | default('n/a') | raw }}</a></div>
+			<div>Добавлено: {{ body.image.getSize|default('n/a') }}</div>
+		</div>
+		<div class='right'>
+			<div>Категория: <a href='{{ path('site_gallery_category', {'cRefId':body.image.album.category.getRefId}) }}'>{{ body.image.album.category.name }}</a></div>
+			<div>Альбом: <a href='{{ path('site_gallery_album', {'cRefId':body.image.album.category.getRefId, 'aRefId':body.image.album.dictionary.getRefId}) }}'>{{ body.image.album.dictionary.title }}</a></div>
+			<div id='image-size'>Разрешение: {{ body.image.getWidth ~ 'x' ~ body.image.getHeight }} px</div>	
+		</div>		
+	</div>
+	<div class='image-links'>
+		<div class='title'>Коды:</div>
+		<ul class='content'>
+			<li>
+				<div class='title'>Ссылка: </div>
+				<input type='text' class='content' value='{{ body.imageHostName ~ body.image.getWebPath }}'/>
+			</li>
+			<li>
+				<div class='title'>Картинка в тексте: </div>
+				<input type='text' class='content' value='[img]{{ body.imageHostName ~ body.image.getWebPath }}[/img]'/>
+			</li>
+			<li>
+				<div class='title'>Превью - увеличение по клику: </div>
+				<input type='text' class='content' value='[url={{ body.imageHostName ~ body.image.getWebPath }}][img]{{ body.imageHostName ~ body.image.getWebThumbPath }}[/img][/url]'/>
+			</li>
+		</ul>
+	</div>
+</div>
+<script>
+$(document).ready(function(){ 
+	$('.gallery-container#image').nfsko('gallery');
+});
+</script>
+{% else %}
+	{{ error[0] }}
+	{% if app.user.isMod %}		
+		{{ error.trace }}
+	{% endif %}
+{% endif %}
+{% endblock %}

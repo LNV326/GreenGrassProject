@@ -1,0 +1,34 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+
+{% block content %}
+{% if status=='Success' %}
+	{% embed "SiteCoreBundle::fancyBoxInner.html.twig" %}
+		{% block title %}
+			<h1>Добавление нового альбома</h1>
+			<h3>Название категории: {{ body.category.name }}</h3>
+		{% endblock %}
+		{% block content %}
+			<form action='{{ path('site_gallery_addAlbum', {'cRefId':body.category.getRefId}) }}' method='POST' id='form'>
+				<span>Тип альбома: </span>
+				<select name='{{ body.choices.referenceName }}' required>
+				{% for item in body.choices.items %}
+  					<option value="{{ item.refId }}">{{ item.title }}</option>
+  				{% endfor %}
+				</select>
+				<button type='submit' formtarget='_blank'>Создать</button>
+			</form>
+			<script>
+$(document).ready(function(){ 
+	$('#form').nfsko('gallery');
+});
+			</script>
+		{% endblock %}
+	{% endembed %}
+{% else %}
+	{{ error[0] }}
+	{% if app.user.isMod %}		
+		{{ error.trace }}
+	{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% macro bytesToSize(bytes) %}
+{% spaceless %}
+    {% set kilobyte = 1024 %}
+    {% set megabyte = kilobyte * 1024 %}
+    {% set gigabyte = megabyte * 1024 %}
+
+    {% if bytes|abs < kilobyte %}
+        {{ bytes ~ ' байт' }}
+    {% elseif bytes|abs < megabyte %}
+        {{ (bytes / kilobyte)|number_format(2, '.') ~ ' Кб' }}
+    {% elseif bytes|abs < gigabyte %}
+        {{ (bytes / megabyte)|number_format(2, '.') ~ ' Мб' }}
+    {% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{# % block content %}
+<h1>Upload File</h1>
+
+<form action="{{ path('site_gallery_addImages', {'cRefId': app.request.attributes.get('cRefId'),'aRefId': app.request.attributes.get('aRefId')}) }}" method="post" {{ form_enctype(form) }}>
+
+    {{ form_label(form.files) }}
+    {{ form_errors(form.files) }}
+    {#{ form_widget(form.file, { 'attr': {'name': 'files[]'} }) }}
+    {{ form_widget(form.files, { 'full_name': form.files.get('full_name') ~ '[]' }) }}
+
+    {{ form_rest(form) }}
+    <input type="submit" />
+</form>
+{% endblock %#}
+
+{% block content %}
+{% if status=='Success' %}
+	{% embed "SiteCoreBundle::fancyBoxInner.html.twig" %}
+		{% block title %}
+			<h1>Добавление изображений</h1>
+			<h3>Название категории: {{ body.album.category.name }}</h3>
+			<h3>Название альбома: {{ body.album.name }}</h3>
+			<h4>Формат изображений: <b>Jpeg</b></h4>
+			<h4>Максимальный размер файла: <b>1 Мб</b></h4>
+			{% if body.album.getAllowAdd == true %}<h4>Вам доступно: <b>{{ macros.bytesToSize(body.space.free) }}</b> / <b>{{ macros.bytesToSize(body.space.total) }}</b></h4>{% endif %}
+			<span>Выберите файлы:</span> <input type='file' multiple id='input-files' destination='{{ path('site_gallery_addImages', {'cRefId': app.request.attributes.get('cRefId'),'aRefId': app.request.attributes.get('aRefId')}) }}'></input>	
+		{% endblock %}
+		{% block content %}
+			<ul class='gallery-container' id='droparea'></ul>
+			<div id='dropbox'>Переместите изображения сюда</div>
+			<div id='droparea_utils' class='hide'>
+				{#{ image_template | raw }#}
+				<li class='gallery_thumb small'>
+					<a href='' status="show" imgid=""><img/></a>
+				</li>
+			</div>			
+			<script>
+$(document).ready(function(){ 
+	$('.gallery-container#droparea').nfsko('gallery');
+});
+			</script>
+		{% endblock %}
+	{% endembed %}
+{% else %}
+	{{ error[0] }}
+	{% if app.user.isMod %}		
+		{{ error.trace }}
+	{% endif %}
+{% endif %}
+{% endblock %}
