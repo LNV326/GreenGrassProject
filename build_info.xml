@@ -1,10 +1,5 @@
 <?xml version="1.0"?>
-<project name="SiteCoreBundle" default="SiteCoreBundle_build">
-	
-	<!-- Расположение проекта в Denwer`е (стоит перенести в скрипт для денвера) -->
-	<property name="remote_path" value="Z:/home/nfsko-test.ru"/>
-
-	<property file="./build.properties"/>
+<project name="SiteCoreBundle" default="build">
 		
 	<target name="src-copy" description="Копирование исходников">
 		<echo>Очистка папки ${copy_src.to}</echo>
@@ -51,11 +46,11 @@
 	<target name="js-minify" depends="js-concat"></target>
 	<target name="css-minify" depends="css-concat"></target>
 	
-	<target name="SiteCoreBundle_build">
+	<target name="build">
 		<antcall target="src-copy" />
 		<antcall target="_web-minify" />
 		<antcall target="web-copy" />
 	</target>
-	<target name="SiteCoreBundle_buildWithoutMinify" depends="src-copy, _web-concat, web-copy"></target>
+	<target name="buildWithoutMinify" depends="src-copy, _web-concat, web-copy"></target>
 
 </project>
