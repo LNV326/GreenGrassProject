@@ -1,0 +1,29 @@
+'Logout': Выйти
+'Username:': Логин
+'Password:': Пароль
+main:
+   hello: Привет,
+time:
+   now: Сегодня
+   year: года
+   month:
+      Jan: Января
+      Feb: Февраля
+      Mar: Марта
+      Apr: Апреля
+      May: Мая
+      Jun: Июня
+      Jul: Июля
+      Aug: Августа
+      Sep: Сентября
+      Oct: Октября
+      Nov: Ноября
+      Dec: Декабря
+   weekday:
+      Mon: Понедельник
+      Tue: Вторник
+      Wed: Среда
+      Thu: Четверг
+      Fri: Пятрица
+      Sat: Суббота
+      Sun: Воскресенье

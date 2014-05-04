@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset={{ _charset }}"/>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>{% block title %}{% endblock %}</title>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery-1.9.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.ajaxy.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/nfsko.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.masonry.min.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/modernizr.custom.63321.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.stapel.js') }}"></script>
+		
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/classic.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/modern_gallery.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/jquery.fancybox.css') }}" type="text/css" media="all" />
+	</head>
+    <body>
+        <div id="skeleton_main">
+	        <div id="skeleton_centered">
+		        <header id="s_head" class="s_block">
+		        	<div>
+			        {{ render(controller('SiteCoreBundle:Default:header')) }}
+			        </div>
+		        </header>
+		        <div id="s_adver_top" class="s_adver">Рекламное место</div>
+		        <div id="s_body" class="s_block">	
+			        <nav id="body_menu">
+				        {{ render(controller('SiteCoreBundle:Default:menu')) }}
+			        </nav>
+			        <div id="body_main">
+				        {% block content %}{% endblock %}
+			        </div>
+		        </div>
+		        <div id="s_adver_bottom" class="s_adver">Рекламное место</div>
+		        <footer id='s_foot' class="s_block"></footer>
+	        </div>
+		</div>
+	</body>
+</html>

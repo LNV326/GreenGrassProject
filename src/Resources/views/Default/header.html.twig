@@ -1,0 +1,65 @@
+	{#
+	<div id='s_top'>
+		<div id='s_date'>
+			{$lang.datetime.now} {$data.time}
+		</div>
+		<div id='s_top_adver'>
+			{if $conf.adver_top_on==1}
+			{$lang.advertising}: <a href='{$conf.adver_top_link}' target='_blank'>{$conf.adver_top_name}</a>
+			{/if}
+			�������
+		</div>
+	</div>
+	<div id='s_logo'>
+		<div id='logo_bot'>
+			<div class='logo_lr'></div>
+			<div class='logo_ll'>
+				{% if app.user %}<input type='image' src='/bundles/sitecore/images/logo/left_{{app.user.language}}.jpg' title='{$lang.lang_select}'>
+				{% else %}<img src='/bundles/sitecore/images/logo/left_ea.jpg'/>
+				{% endif %}
+			</div>
+		</div>
+		<div id='logo_top'>
+			<div class='logo_ll'></div>
+			<div class='logo_lr'></div>
+		</div>
+		<div id='logo_links'>
+			<a href="/">�������</a>
+			<a href="/forum">�����</a>
+			<a href="/chat">���</a>
+			<a rel="nofollow" href="http://files.nfsko.ru">�����</a>
+			<a rel="nofollow" href="http://images.nfsko.ru">�������</a>
+			<a href="/index.php?page=faq">FAQ</a>
+		</div>
+	</div>
+	<div id="s_control">
+			<div id="s_hello">{% if app.user %}<b>{% trans with {'%name%': '<a>' ~ app.user.username ~ '</a>'}%}Hello %name%{% endtrans %}</b> (<a href='{{ path('site_common_logout') }}'>{% trans %}Logout{% endtrans %}</a>){% else %}
+			<form method="POST" action="{{ path('site_common_login_check') }}"><label for="username">{% trans %}Username:{% endtrans %}</label> <input type="text" id="username" name="_username" /> <label for="password">{% trans %}Password:{% endtrans %}</label> <input type="password" id="password" name="_password" /> <input type="hidden" id="remember_me" name="_remember_me" checked /> <input type="submit" name="login" />
+				</form>
+			{% endif %}
+			</div>
+	</div>
+	#}
+	
+	
+	<div>
+{#
+		{% if app.user %}<a href='{{ path('site_common_logout') }}' class='icon' id='head_logout' title='{% trans %}Logout{% endtrans %}'></a><div id='head_hello'><b>{% trans with {'%name%': '<a>' ~ app.user.username ~ '</a>'}%}Hello %name%{% endtrans %}</b></div>{% else %}
+		<form method="POST" action="{{ path('site_common_login_check') }}"><input type="submit" name="login" id='head_login' class='icon' value='' title='{% trans %}Login{% endtrans %}'/><input type="text" id="username" name="_username" placeholder="{% trans %}Username:{% endtrans %}"/><input type="password" id="password" name="_password" placeholder="{% trans %}Password:{% endtrans %}"/> <input type="hidden" id="remember_me" name="_remember_me" checked /></form>
+		{% endif %}
+#}
+	</div>
+	<div>
+		<div id="head_comment" class="icon"><div class='count'>1</div></div>
+		<div id="head_pm" class="icon"><div class='count'>3</div></div>
+		<div id="head_alert" class="icon"><div class='count'>10</div></div>
+		<div id="head_lang" class="icon" lang='{% if app.user %}{{ app.user.language }}{% else %}ru{% endif %}'>
+			<ul class="s_popupmenu">
+				<li lang='ru'><a>Русский</a></li>
+				<li lang='en'><a>English</a></li>
+			</ul>
+		</div>
+	</div>
+	<div>
+		<div id="head_arrow"></div>
+	</div>

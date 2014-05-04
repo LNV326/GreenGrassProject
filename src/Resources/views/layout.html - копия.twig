@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset={{ _charset }}"/>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>{% block title %}{% endblock %}</title>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery-1.9.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/modernizr.custom.63321.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/sitecore/js/nfsko.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.stapel.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/sitecore/js/jquery.filedrop.js') }}"></script>
+		
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/modern_gallery.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/jquery.fancybox.css') }}" type="text/css" media="all" />
+	</head>
+<body>
+<style>
+/* =============
+   Что-то такое общее... хрень, короче =)
+================*/
+html {height: 100%}
+body {margin:0; padding: 0; min-height: 100%; position: relative;background: url("http://www.nfsko.ru/style/1/img/bg.gif") 0 0 repeat black}
+.body_row {
+	width: 100%;
+	text-align: center;
+	color: #c7c7c7;
+	font-family: Verdana;
+	font-size: 11px;
+}
+header.body_row {width: 100%}
+footer.body_row {
+    /*position: absolute;
+    bottom: 0;*/
+}
+.body_col {width: 1280px; margin: 0 auto; text-align: left;}
+
+/* Ссылки */
+a {
+	color: #F8F8FF;
+}
+a:link, a:visited, a:active {
+	text-decoration: none;
+	color: #E6E6E6;
+}
+a:hover {
+	text-decoration: none;
+	color: #BBBBBB;
+}
+
+/* Позиционирование */
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+
+/* Поля ввода */
+input {
+	font-size: 11px;
+	font-family: Verdana;
+	vertical-align: middle;
+	color: #cccccc;
+	background-color: #666666;
+	border: 1px #424242 solid;
+}
+
+/* ===========
+   Шапка сайта
+============== */
+#body_top {
+	background: url("http://www.nfsko.ru/style/1/img/top.gif") 0 0 repeat #242424;
+}
+
+/* Шапка сайта - строка с датой */
+#top-time {
+	height: 18px;
+	line-height: 18px;
+	padding: 0 10px;
+	font-size: 7pt;
+	background: url("http://www.nfsko.ru/style/1/img/tlc.gif") 0 0 repeat #424242;
+}
+/* Шапка сайта - лого */
+#top-logo {
+	position:relative;
+	display:block;
+	width:100%;
+	height:125px;
+	background: url(http://www.nfsko.ru/style/1/logo2011/fon.jpg) repeat-x;
+}
+#logo-left {
+	width:500px;
+	height:125px;
+	position:absolute;
+	top:0; left:0;
+	background: url(http://www.nfsko.ru/style/1/logo2011/left.jpg) no-repeat;
+}
+#logo-lang {
+	width:32px;
+	height:25px;
+	position:absolute;
+	left:5px; bottom:5px;
+	background: url(http://www.nfsko.ru/style/1/logo2011/left_ea.gif) no-repeat center center;
+}
+#logo-right {
+	width:297px;
+	height:125px;
+	position:absolute;
+	top:0;right:0;
+	background: url(http://www.nfsko.ru/style/1/logo2011/right.jpg) no-repeat;
+}
+#logo-cent {
+	width:300px;
+	height:125px;
+	position: absolute;
+    top: 0; right: 297px;
+    background: url(http://www.nfsko.ru/style/1/logo2011/right2.png) no-repeat;
+}
+/* Шапка сайта - быстрые ссылки */
+#logo-links {
+    position: absolute;
+    left: 300px;
+    top: 68px;
+}
+#logo-links a, #logo-links a:visited {
+	color: #333333;
+	text-decoration: underline;
+	outline: none;
+	margin-right: 7px;
+	font-family: Arial;
+	font-size: 14px;
+}
+#logo-links a:hover {
+	color: #777777;
+	text-decoration: none;
+}
+/* Там, где небеса сходятся с бренной землёй */
+#top-userinfo {
+	height: 22px;
+	background: url("http://www.nfsko.ru/style/1/img/top.gif") 0 0 repeat #323232;
+	line-height: 22px;
+	padding: 0 10px;
+}
+
+
+/* ============
+   Подвал сайта
+=============== */
+#body_foot {
+	background: url("http://www.nfsko.ru/style/1/img/mtl.gif") 0 0 repeat #242424;
+	padding-top: 19px;
+}
+/* Подвал сайта - панель ссылок */
+#foot-links {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-collapse: collapse;
+}
+/* Подвал сайта - панель ссылок - столбец */
+#foot-links td {
+	background: url("http://www.nfsko.ru/style/1/img/ml.gif") repeat-y #323232;
+	width: 165px;
+	height: 90px;
+}
+#foot-links td:last-child {
+	width: auto;
+	background: url("http://www.nfsko.ru/style/1/img/ml_noend.gif") repeat #323232;
+}
+/* Подвал сайта - панель информации */
+#foot-info {
+	height: 20px;
+	background: url("http://www.nfsko.ru/style/1/img/top.gif") repeat-x #323232;
+}
+
+/* ==========================
+   Центральная часть страницы
+============================= */
+#body_cent {
+	/*height: 100px;*/
+}
+#body_cent > table {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border-collapse: collapse;
+}
+#body_cent > table td {
+	margin: 0;
+	padding: 0;
+}
+/* Правая менюшка */
+#body_cent > table td:last-child {
+	width: 165px;
+	background: url("http://www.nfsko.ru/style/1/img/mr.gif") repeat-y #323232;
+}
+/* Контейнер, содержащий модуль */
+#module_container {
+	margin: 0 auto;
+	text-align: center;
+}
+
+/*-------------------------
+    Модули
+--------------------------*/
+#module {
+	margin: 10px 1%;
+	text-align: left;
+}
+/* Название модуля */
+#module-title {
+	width: 100%;
+	height: 18px;
+	line-height: 18px;
+	background: url("http://www.nfsko.ru/style/1/img/news.gif") repeat-x;
+	font-weight: bold;
+}
+#module-title .left {
+	height: 18px;	
+	background: url("http://nfsko.ru/style/1/img/tll.gif") no-repeat;
+	padding-left: 45px;
+}
+#module-title .right {
+	height: 18px;
+	background: url("http://nfsko.ru/style/1/img/tlr.gif") 100% 0 no-repeat;
+	padding-right: 45px;
+}
+/* Содержимое модуля */
+#module-content {
+	margin: 10px 1%;
+}
+/* Строка содержимого модуля */
+.module-row {
+	height: auto;
+	background: url("http://nfsko.ru/style/1/img/fon.gif") repeat;
+	border: 1px solid black;
+}
+.module-row:first-child, .module-row:last-child {
+	height: 22px;
+	line-height: 22px;
+	padding: 0 15px;
+	font-size: 12px;
+}
+.module-row:first-child {
+	margin-bottom: 3px;
+}
+.module-row:last-child {
+	margin-top: 3px;
+}
+
+/*-------------------------
+    Меню
+--------------------------*/
+#menu_container {
+	vertical-align: top;
+}
+.menu-block {
+	width: 100%;
+	height: auto;
+}
+.menu-block .title {
+	background: url("http://www.nfsko.ru/style/1/img/mtr.gif") repeat-x #646464;
+	height: 19px;
+	line-height: 19px;
+	padding: 0 4px;
+	text-align: right;
+	font-weight: bold;
+}
+.menu-block .content {
+	list-style: none inside url("http://www.nfsko.ru/style/1/img/lil.gif");
+	padding: 0;
+	margin: 0;
+}
+.menu-block .content > li {
+	padding: 1px 3px;
+}
+.menu-block .content > li > a {
+	margin-left: -5px;
+}
+
+
+</style>
+
+<header class='body_row'>
+	<div class='body_col' id='body_top'>
+		<div id='top-time'>Сегодня {{"now"|date('D, d M Y - H:i','MSK')}} (Москва)</div>
+		<div id='top-logo'>
+			<div id='logo-left'></div><div id='logo-lang'></div>
+			<div id='logo-cent'></div><div id='logo-right'></div>		
+			<div id="logo-links">
+				<a href="http://www.nfsko.ru/">Главная</a>
+				<a href="http://www.nfsko.ru/forum">Форум</a>
+				<a href="http://www.nfsko.ru/chat">Чат</a>
+				<a rel="nofollow" href="http://files.nfsko.ru">Файлы</a>
+				<a rel="nofollow" href="http://images.nfsko.ru">Галерея</a>
+				<a href="http://www.nfsko.ru/index.php?page=faq">FAQ</a>
+			</div>
+		</div>
+		<div id='top-userinfo'>
+			<div class='left'><b>{% trans with {'%name%': '<a>' ~ app.user.username ~ '</a>'}%}Hello %name%{% endtrans %}</b></div>
+		</div>
+	</div>
+</header>
+
+<div class='body_row'>
+	<div class='body_col' id='body_cent'>
+		<table><tr>
+			<td id='module_container'>
+				<div id='module'>
+					<div id='module-title'>
+						<div class='left'>Скриншоты из Need For Speed, обои, обложки CD/DVD. Самый большой фото архив по игре NFS на www.nfsko.ru</div>
+						<div class='right'></div>
+					</div>
+					<div id='module-content'>
+						<div class='module-row'>{% block location %}{% endblock %}</div>
+						<div class='module-row'>
+							{% block content %}{% endblock %}
+						</div>
+						<div class='module-row'>Need For Speed World Site</div>
+					</div>
+				</div>
+			</td>
+			<td id='menu_container'>
+				<div class='menu-block'>
+					<div class='title'>Меню</div>
+					<ul class='content'>
+						<li><a href='{{ path('site_gallery_homepage') }}'>{% trans %}Главная галереи{% endtrans %}</a></li>
+						<li><a href='http://www.nfsko.ru'>Перейти на сайт NFSko</a></li>
+					</ul>
+				</div>
+				<div class='menu-block'>
+					<div class='title'>Категории галереи</div>
+					<ul class='content'>
+						{% for cat in categories %}
+							<li><a href='{{ path('site_gallery_category', {'cRefId': cat.getRefId}) }}'>{{ cat.name }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</td>
+		</tr></table>
+	</div>
+</div>
+
+<footer class='body_row'>
+	<div class='body_col' id='body_foot'>
+		<table id='foot-links'><tr>
+			<td>
+				
+			</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr></table>
+		<div id='foot-info'></div>
+	</div>
+</footer>
+
+</body>
+</html>

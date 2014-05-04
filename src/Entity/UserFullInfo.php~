@@ -1,0 +1,1506 @@
+<?php
+namespace Site\CoreBundle\Entity;
+
+//use Symfony\Component\Security\Core\Role\Role;
+
+use Doctrine\ORM\Mapping as ORM;
+use Site\CoreBundle\Entity\UserConfigInfo;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="forum_members")
+ */
+class UserFullInfo extends UserConfigInfo
+{
+	/**
+	 * @ORM\Column(name="email", type="string", length=60)
+	 */
+	protected $email;
+	/**
+	 * @ORM\Column(name="joined", type="integer", length=10)
+	 */
+	protected $joined;
+	/**
+	 * @ORM\Column(name="ip_address", type="string", length=16)
+	 */
+	protected $ip;
+	/**
+	 * @ORM\Column(name="userbar", type="string", length=128)
+	 */
+	protected $userbar;
+	/**
+	 * @ORM\Column(name="avatar", type="string", length=128)
+	 */
+	protected $avatar;
+	/**
+	 * @ORM\Column(name="avatar_size", type="string", length=9)
+	 */
+	protected $avatarSize;
+	/**
+	 * @ORM\Column(name="posts", type="integer", length=7)
+	 */
+	protected $postsCount;
+	/**
+	 * @ORM\Column(name="posts_bad", type="integer", length=7)
+	 */
+	protected $badPostsCount;
+	/**
+	 * @ORM\Column(name="aim_name", type="string", length=40)
+	 */
+	protected $aimName;
+	/**
+	 * @ORM\Column(name="icq_number", type="string", length=40)
+	*/
+	protected $icqNumber;
+	/**
+	 * @ORM\Column(name="location", type="string", length=128)
+	*/
+	protected $location;
+	/**
+	 * Блокнот
+	 * @ORM\Column(name="signature", type="text")
+	*/
+	protected $signature;
+	/**
+	 * @ORM\Column(name="website", type="string", length=70)
+	*/
+	protected $website;
+	/**
+	 * @ORM\Column(name="yahoo", type="string", length=32)
+	*/
+	protected $yahoo;
+	/**
+	 * Статус-сообщение
+	 * @ORM\Column(name="title", type="string", length=64)
+	*/
+	protected $title;
+	/**
+	 * @ORM\Column(name="allow_admin_mails", type="boolean")
+	*/
+	protected $allow_admin_mails;
+	/**
+	 * @ORM\Column(name="allow_add_ingal", type="boolean")
+	*/
+	protected $allow_add_ingal;
+	/**
+	 * @ORM\Column(name="allow_add_bar", type="boolean")
+	*/
+	protected $allow_add_bar;
+	/**
+	 * @ORM\Column(name="interests", type="text")
+	*/
+	protected $interests;
+	/**
+	 * @ORM\Column(name="hide_email", type="boolean")
+	*/
+	protected $hide_email;
+	/**
+	 * @ORM\Column(name="email_pm", type="boolean")
+	*/
+	protected $email_pm;
+	/**
+	 * @ORM\Column(name="email_full", type="boolean")
+	*/
+	protected $email_full;
+	/**
+	 * @ORM\Column(name="warn_level", type="integer", length=10)
+	 */
+	protected $warn_level;
+	/**
+	 * @ORM\Column(name="warn_lastwarn", type="integer", length=10)
+	 */
+	protected $warn_lastwarn;
+	/**
+	 * @ORM\Column(name="msnname", type="string", length=64)
+	 */
+	protected $msnName;
+	/**
+	 * @ORM\Column(name="last_post", type="integer", length=10)
+	 */
+	protected $last_post;
+	/**
+	 * @ORM\Column(name="restrict_post", type="string", length=100)
+	 */
+	protected $restrict_post;
+	/**
+	 * @ORM\Column(name="new_msg", type="integer", length=2)
+	 */
+	protected $new_msg;
+	/**
+	 * @ORM\Column(name="msg_from_id", type="integer", length=8)
+	 */
+	protected $msg_from_id;
+	/**
+	 * @ORM\Column(name="msg_msg_id", type="integer", length=10)
+	 */
+	protected $msg_msg_id;
+	/**
+	 * @ORM\Column(name="msg_total", type="integer", length=5)
+	 */
+	protected $msg_total;
+	/**
+	 * @ORM\Column(name="vdirs", type="text")
+	 */
+	protected $vdirs;
+	/**
+	 * @ORM\Column(name="dst_in_use", type="integer", length=1)
+	 */
+	protected $dst_in_use;
+	/**
+	 * @ORM\Column(name="view_prefs", type="string", length=64)
+	 */
+	protected $view_prefs;
+	/**
+	 * @ORM\Column(name="coppa_user", type="integer", length=1)
+	 */
+	protected $coppa_user;
+	/**
+	 * @ORM\Column(name="mod_posts", type="string", length=100)
+	 */
+	protected $mod_posts;
+	/**
+	 * @ORM\Column(name="auto_track", type="integer", length=1)
+	 */
+	protected $auto_track;
+	/**
+	 * @ORM\Column(name="org_perm_id", type="string", length=255)
+	 */
+	protected $org_perm_id;
+	/**
+	 * @ORM\Column(name="org_supermod", type="integer", length=1)
+	 */
+	protected $org_supermod;
+	/**
+	 * @ORM\Column(name="integ_msg", type="string", length=250)
+	 */
+	protected $integ_msg;
+	/**
+	 * @ORM\Column(name="temp_ban", type="string", length=100)
+	 */
+	protected $temp_ban;
+	/**
+	 * @ORM\Column(name="extra_intrest", type="integer", length=3)
+	 */
+	protected $extra_intrest;
+	/**
+	 * @ORM\Column(name="favorites", type="text")
+	 */
+	protected $favorites;
+	/**
+	 * @ORM\Column(name="rep", type="integer", length=10)
+	 */
+	protected $rep;
+	/**
+	 * @ORM\Column(name="rep_down", type="integer", length=10)
+	 */
+	protected $rep_down;
+	/**
+	 * @ORM\Column(name="allow_rep", type="integer", length=1)
+	 */
+	protected $allow_rep;
+	/**
+	 * @ORM\Column(name="allow_anon", type="integer", length=1)
+	 */
+	protected $allow_anon;
+	/**
+	 * @ORM\Column(name="rep_do", type="integer", length=10)
+	 */
+	protected $rep_do;
+	/**
+	 * @ORM\Column(name="rep_do_open", type="integer", length=10)
+	 */
+	protected $rep_do_open;
+	/**
+	 * @ORM\Column(name="awards", type="integer", length=10)
+	 */
+	protected $awards;
+	/**
+	 * @ORM\Column(name="name_changed", type="integer", length=10)
+	 */
+	protected $name_changed;
+	/**
+	 * @ORM\Column(name="menu_viever", type="text")
+	 */
+	protected $menu_viever;
+	/**
+	 * @ORM\Column(name="chat_mod", type="integer", length=1)
+	 */
+	protected $chat_mod;
+	/**
+	 * @ORM\Column(name="chat_ban", type="integer", length=10)
+	 */
+	protected $chat_ban;
+	/**
+	 * @ORM\Column(name="chat_ban_why", type="text")
+	 */
+	protected $chat_ban_why;
+	
+	public function __construct() {
+		parent::__construct();
+	}
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return UserFullInfo
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set joined
+     *
+     * @param integer $joined
+     * @return UserFullInfo
+     */
+    public function setJoined($joined)
+    {
+        $this->joined = $joined;
+    
+        return $this;
+    }
+
+    /**
+     * Get joined
+     *
+     * @return integer 
+     */
+    public function getJoined()
+    {
+        return $this->joined;
+    }
+
+    /**
+     * Set ip
+     *
+     * @param string $ip
+     * @return UserFullInfo
+     */
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+    
+        return $this;
+    }
+
+    /**
+     * Get ip
+     *
+     * @return string 
+     */
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * Set userbar
+     *
+     * @param string $userbar
+     * @return UserFullInfo
+     */
+    public function setUserbar($userbar)
+    {
+        $this->userbar = $userbar;
+    
+        return $this;
+    }
+
+    /**
+     * Get userbar
+     *
+     * @return string 
+     */
+    public function getUserbar()
+    {
+        return $this->userbar;
+    }
+
+    /**
+     * Set avatar
+     *
+     * @param string $avatar
+     * @return UserFullInfo
+     */
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+    
+        return $this;
+    }
+
+    /**
+     * Get avatar
+     *
+     * @return string 
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * Set avatarSize
+     *
+     * @param string $avatarSize
+     * @return UserFullInfo
+     */
+    public function setAvatarSize($avatarSize)
+    {
+        $this->avatarSize = $avatarSize;
+    
+        return $this;
+    }
+
+    /**
+     * Get avatarSize
+     *
+     * @return string 
+     */
+    public function getAvatarSize()
+    {
+        return $this->avatarSize;
+    }
+
+    /**
+     * Set postsCount
+     *
+     * @param integer $postsCount
+     * @return UserFullInfo
+     */
+    public function setPostsCount($postsCount)
+    {
+        $this->postsCount = $postsCount;
+    
+        return $this;
+    }
+
+    /**
+     * Get postsCount
+     *
+     * @return integer 
+     */
+    public function getPostsCount()
+    {
+        return $this->postsCount;
+    }
+
+    /**
+     * Set badPostsCount
+     *
+     * @param integer $badPostsCount
+     * @return UserFullInfo
+     */
+    public function setBadPostsCount($badPostsCount)
+    {
+        $this->badPostsCount = $badPostsCount;
+    
+        return $this;
+    }
+
+    /**
+     * Get badPostsCount
+     *
+     * @return integer 
+     */
+    public function getBadPostsCount()
+    {
+        return $this->badPostsCount;
+    }
+
+    /**
+     * Set aimName
+     *
+     * @param string $aimName
+     * @return UserFullInfo
+     */
+    public function setAimName($aimName)
+    {
+        $this->aimName = $aimName;
+    
+        return $this;
+    }
+
+    /**
+     * Get aimName
+     *
+     * @return string 
+     */
+    public function getAimName()
+    {
+        return $this->aimName;
+    }
+
+    /**
+     * Set icqNumber
+     *
+     * @param string $icqNumber
+     * @return UserFullInfo
+     */
+    public function setIcqNumber($icqNumber)
+    {
+        $this->icqNumber = $icqNumber;
+    
+        return $this;
+    }
+
+    /**
+     * Get icqNumber
+     *
+     * @return string 
+     */
+    public function getIcqNumber()
+    {
+        return $this->icqNumber;
+    }
+
+    /**
+     * Set location
+     *
+     * @param string $location
+     * @return UserFullInfo
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return string 
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * Set signature
+     *
+     * @param string $signature
+     * @return UserFullInfo
+     */
+    public function setSignature($signature)
+    {
+        $this->signature = $signature;
+    
+        return $this;
+    }
+
+    /**
+     * Get signature
+     *
+     * @return string 
+     */
+    public function getSignature()
+    {
+        return $this->signature;
+    }
+
+    /**
+     * Set website
+     *
+     * @param string $website
+     * @return UserFullInfo
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+    
+        return $this;
+    }
+
+    /**
+     * Get website
+     *
+     * @return string 
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
+
+    /**
+     * Set yahoo
+     *
+     * @param string $yahoo
+     * @return UserFullInfo
+     */
+    public function setYahoo($yahoo)
+    {
+        $this->yahoo = $yahoo;
+    
+        return $this;
+    }
+
+    /**
+     * Get yahoo
+     *
+     * @return string 
+     */
+    public function getYahoo()
+    {
+        return $this->yahoo;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return UserFullInfo
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set allow_admin_mails
+     *
+     * @param boolean $allowAdminMails
+     * @return UserFullInfo
+     */
+    public function setAllowAdminMails($allowAdminMails)
+    {
+        $this->allow_admin_mails = $allowAdminMails;
+    
+        return $this;
+    }
+
+    /**
+     * Get allow_admin_mails
+     *
+     * @return boolean 
+     */
+    public function getAllowAdminMails()
+    {
+        return $this->allow_admin_mails;
+    }
+
+    /**
+     * Set allow_add_ingal
+     *
+     * @param boolean $allowAddIngal
+     * @return UserFullInfo
+     */
+    public function setAllowAddIngal($allowAddIngal)
+    {
+        $this->allow_add_ingal = $allowAddIngal;
+    
+        return $this;
+    }
+
+    /**
+     * Get allow_add_ingal
+     *
+     * @return boolean 
+     */
+    public function getAllowAddIngal()
+    {
+        return $this->allow_add_ingal;
+    }
+
+    /**
+     * Set allow_add_bar
+     *
+     * @param boolean $allowAddBar
+     * @return UserFullInfo
+     */
+    public function setAllowAddBar($allowAddBar)
+    {
+        $this->allow_add_bar = $allowAddBar;
+    
+        return $this;
+    }
+
+    /**
+     * Get allow_add_bar
+     *
+     * @return boolean 
+     */
+    public function getAllowAddBar()
+    {
+        return $this->allow_add_bar;
+    }
+
+    /**
+     * Set interests
+     *
+     * @param string $interests
+     * @return UserFullInfo
+     */
+    public function setInterests($interests)
+    {
+        $this->interests = $interests;
+    
+        return $this;
+    }
+
+    /**
+     * Get interests
+     *
+     * @return string 
+     */
+    public function getInterests()
+    {
+        return $this->interests;
+    }
+
+    /**
+     * Set hide_email
+     *
+     * @param boolean $hideEmail
+     * @return UserFullInfo
+     */
+    public function setHideEmail($hideEmail)
+    {
+        $this->hide_email = $hideEmail;
+    
+        return $this;
+    }
+
+    /**
+     * Get hide_email
+     *
+     * @return boolean 
+     */
+    public function getHideEmail()
+    {
+        return $this->hide_email;
+    }
+
+    /**
+     * Set email_pm
+     *
+     * @param boolean $emailPm
+     * @return UserFullInfo
+     */
+    public function setEmailPm($emailPm)
+    {
+        $this->email_pm = $emailPm;
+    
+        return $this;
+    }
+
+    /**
+     * Get email_pm
+     *
+     * @return boolean 
+     */
+    public function getEmailPm()
+    {
+        return $this->email_pm;
+    }
+
+    /**
+     * Set email_full
+     *
+     * @param boolean $emailFull
+     * @return UserFullInfo
+     */
+    public function setEmailFull($emailFull)
+    {
+        $this->email_full = $emailFull;
+    
+        return $this;
+    }
+
+    /**
+     * Get email_full
+     *
+     * @return boolean 
+     */
+    public function getEmailFull()
+    {
+        return $this->email_full;
+    }
+
+    /**
+     * Set warn_level
+     *
+     * @param integer $warnLevel
+     * @return UserFullInfo
+     */
+    public function setWarnLevel($warnLevel)
+    {
+        $this->warn_level = $warnLevel;
+    
+        return $this;
+    }
+
+    /**
+     * Get warn_level
+     *
+     * @return integer 
+     */
+    public function getWarnLevel()
+    {
+        return $this->warn_level;
+    }
+
+    /**
+     * Set warn_lastwarn
+     *
+     * @param integer $warnLastwarn
+     * @return UserFullInfo
+     */
+    public function setWarnLastwarn($warnLastwarn)
+    {
+        $this->warn_lastwarn = $warnLastwarn;
+    
+        return $this;
+    }
+
+    /**
+     * Get warn_lastwarn
+     *
+     * @return integer 
+     */
+    public function getWarnLastwarn()
+    {
+        return $this->warn_lastwarn;
+    }
+
+    /**
+     * Set msnName
+     *
+     * @param string $msnName
+     * @return UserFullInfo
+     */
+    public function setMsnName($msnName)
+    {
+        $this->msnName = $msnName;
+    
+        return $this;
+    }
+
+    /**
+     * Get msnName
+     *
+     * @return string 
+     */
+    public function getMsnName()
+    {
+        return $this->msnName;
+    }
+
+    /**
+     * Set last_post
+     *
+     * @param integer $lastPost
+     * @return UserFullInfo
+     */
+    public function setLastPost($lastPost)
+    {
+        $this->last_post = $lastPost;
+    
+        return $this;
+    }
+
+    /**
+     * Get last_post
+     *
+     * @return integer 
+     */
+    public function getLastPost()
+    {
+        return $this->last_post;
+    }
+
+    /**
+     * Set restrict_post
+     *
+     * @param string $restrictPost
+     * @return UserFullInfo
+     */
+    public function setRestrictPost($restrictPost)
+    {
+        $this->restrict_post = $restrictPost;
+    
+        return $this;
+    }
+
+    /**
+     * Get restrict_post
+     *
+     * @return string 
+     */
+    public function getRestrictPost()
+    {
+        return $this->restrict_post;
+    }
+
+    /**
+     * Set new_msg
+     *
+     * @param integer $newMsg
+     * @return UserFullInfo
+     */
+    public function setNewMsg($newMsg)
+    {
+        $this->new_msg = $newMsg;
+    
+        return $this;
+    }
+
+    /**
+     * Get new_msg
+     *
+     * @return integer 
+     */
+    public function getNewMsg()
+    {
+        return $this->new_msg;
+    }
+
+    /**
+     * Set msg_from_id
+     *
+     * @param integer $msgFromId
+     * @return UserFullInfo
+     */
+    public function setMsgFromId($msgFromId)
+    {
+        $this->msg_from_id = $msgFromId;
+    
+        return $this;
+    }
+
+    /**
+     * Get msg_from_id
+     *
+     * @return integer 
+     */
+    public function getMsgFromId()
+    {
+        return $this->msg_from_id;
+    }
+
+    /**
+     * Set msg_msg_id
+     *
+     * @param integer $msgMsgId
+     * @return UserFullInfo
+     */
+    public function setMsgMsgId($msgMsgId)
+    {
+        $this->msg_msg_id = $msgMsgId;
+    
+        return $this;
+    }
+
+    /**
+     * Get msg_msg_id
+     *
+     * @return integer 
+     */
+    public function getMsgMsgId()
+    {
+        return $this->msg_msg_id;
+    }
+
+    /**
+     * Set msg_total
+     *
+     * @param integer $msgTotal
+     * @return UserFullInfo
+     */
+    public function setMsgTotal($msgTotal)
+    {
+        $this->msg_total = $msgTotal;
+    
+        return $this;
+    }
+
+    /**
+     * Get msg_total
+     *
+     * @return integer 
+     */
+    public function getMsgTotal()
+    {
+        return $this->msg_total;
+    }
+
+    /**
+     * Set vdirs
+     *
+     * @param string $vdirs
+     * @return UserFullInfo
+     */
+    public function setVdirs($vdirs)
+    {
+        $this->vdirs = $vdirs;
+    
+        return $this;
+    }
+
+    /**
+     * Get vdirs
+     *
+     * @return string 
+     */
+    public function getVdirs()
+    {
+        return $this->vdirs;
+    }
+
+    /**
+     * Set dst_in_use
+     *
+     * @param integer $dstInUse
+     * @return UserFullInfo
+     */
+    public function setDstInUse($dstInUse)
+    {
+        $this->dst_in_use = $dstInUse;
+    
+        return $this;
+    }
+
+    /**
+     * Get dst_in_use
+     *
+     * @return integer 
+     */
+    public function getDstInUse()
+    {
+        return $this->dst_in_use;
+    }
+
+    /**
+     * Set view_prefs
+     *
+     * @param string $viewPrefs
+     * @return UserFullInfo
+     */
+    public function setViewPrefs($viewPrefs)
+    {
+        $this->view_prefs = $viewPrefs;
+    
+        return $this;
+    }
+
+    /**
+     * Get view_prefs
+     *
+     * @return string 
+     */
+    public function getViewPrefs()
+    {
+        return $this->view_prefs;
+    }
+
+    /**
+     * Set coppa_user
+     *
+     * @param integer $coppaUser
+     * @return UserFullInfo
+     */
+    public function setCoppaUser($coppaUser)
+    {
+        $this->coppa_user = $coppaUser;
+    
+        return $this;
+    }
+
+    /**
+     * Get coppa_user
+     *
+     * @return integer 
+     */
+    public function getCoppaUser()
+    {
+        return $this->coppa_user;
+    }
+
+    /**
+     * Set mod_posts
+     *
+     * @param string $modPosts
+     * @return UserFullInfo
+     */
+    public function setModPosts($modPosts)
+    {
+        $this->mod_posts = $modPosts;
+    
+        return $this;
+    }
+
+    /**
+     * Get mod_posts
+     *
+     * @return string 
+     */
+    public function getModPosts()
+    {
+        return $this->mod_posts;
+    }
+
+    /**
+     * Set auto_track
+     *
+     * @param integer $autoTrack
+     * @return UserFullInfo
+     */
+    public function setAutoTrack($autoTrack)
+    {
+        $this->auto_track = $autoTrack;
+    
+        return $this;
+    }
+
+    /**
+     * Get auto_track
+     *
+     * @return integer 
+     */
+    public function getAutoTrack()
+    {
+        return $this->auto_track;
+    }
+
+    /**
+     * Set org_perm_id
+     *
+     * @param string $orgPermId
+     * @return UserFullInfo
+     */
+    public function setOrgPermId($orgPermId)
+    {
+        $this->org_perm_id = $orgPermId;
+    
+        return $this;
+    }
+
+    /**
+     * Get org_perm_id
+     *
+     * @return string 
+     */
+    public function getOrgPermId()
+    {
+        return $this->org_perm_id;
+    }
+
+    /**
+     * Set org_supermod
+     *
+     * @param integer $orgSupermod
+     * @return UserFullInfo
+     */
+    public function setOrgSupermod($orgSupermod)
+    {
+        $this->org_supermod = $orgSupermod;
+    
+        return $this;
+    }
+
+    /**
+     * Get org_supermod
+     *
+     * @return integer 
+     */
+    public function getOrgSupermod()
+    {
+        return $this->org_supermod;
+    }
+
+    /**
+     * Set integ_msg
+     *
+     * @param string $integMsg
+     * @return UserFullInfo
+     */
+    public function setIntegMsg($integMsg)
+    {
+        $this->integ_msg = $integMsg;
+    
+        return $this;
+    }
+
+    /**
+     * Get integ_msg
+     *
+     * @return string 
+     */
+    public function getIntegMsg()
+    {
+        return $this->integ_msg;
+    }
+
+    /**
+     * Set temp_ban
+     *
+     * @param string $tempBan
+     * @return UserFullInfo
+     */
+    public function setTempBan($tempBan)
+    {
+        $this->temp_ban = $tempBan;
+    
+        return $this;
+    }
+
+    /**
+     * Get temp_ban
+     *
+     * @return string 
+     */
+    public function getTempBan()
+    {
+        return $this->temp_ban;
+    }
+
+    /**
+     * Set extra_intrest
+     *
+     * @param integer $extraIntrest
+     * @return UserFullInfo
+     */
+    public function setExtraIntrest($extraIntrest)
+    {
+        $this->extra_intrest = $extraIntrest;
+    
+        return $this;
+    }
+
+    /**
+     * Get extra_intrest
+     *
+     * @return integer 
+     */
+    public function getExtraIntrest()
+    {
+        return $this->extra_intrest;
+    }
+
+    /**
+     * Set favorites
+     *
+     * @param string $favorites
+     * @return UserFullInfo
+     */
+    public function setFavorites($favorites)
+    {
+        $this->favorites = $favorites;
+    
+        return $this;
+    }
+
+    /**
+     * Get favorites
+     *
+     * @return string 
+     */
+    public function getFavorites()
+    {
+        return $this->favorites;
+    }
+
+    /**
+     * Set rep
+     *
+     * @param integer $rep
+     * @return UserFullInfo
+     */
+    public function setRep($rep)
+    {
+        $this->rep = $rep;
+    
+        return $this;
+    }
+
+    /**
+     * Get rep
+     *
+     * @return integer 
+     */
+    public function getRep()
+    {
+        return $this->rep;
+    }
+
+    /**
+     * Set rep_down
+     *
+     * @param integer $repDown
+     * @return UserFullInfo
+     */
+    public function setRepDown($repDown)
+    {
+        $this->rep_down = $repDown;
+    
+        return $this;
+    }
+
+    /**
+     * Get rep_down
+     *
+     * @return integer 
+     */
+    public function getRepDown()
+    {
+        return $this->rep_down;
+    }
+
+    /**
+     * Set allow_rep
+     *
+     * @param integer $allowRep
+     * @return UserFullInfo
+     */
+    public function setAllowRep($allowRep)
+    {
+        $this->allow_rep = $allowRep;
+    
+        return $this;
+    }
+
+    /**
+     * Get allow_rep
+     *
+     * @return integer 
+     */
+    public function getAllowRep()
+    {
+        return $this->allow_rep;
+    }
+
+    /**
+     * Set allow_anon
+     *
+     * @param integer $allowAnon
+     * @return UserFullInfo
+     */
+    public function setAllowAnon($allowAnon)
+    {
+        $this->allow_anon = $allowAnon;
+    
+        return $this;
+    }
+
+    /**
+     * Get allow_anon
+     *
+     * @return integer 
+     */
+    public function getAllowAnon()
+    {
+        return $this->allow_anon;
+    }
+
+    /**
+     * Set rep_do
+     *
+     * @param integer $repDo
+     * @return UserFullInfo
+     */
+    public function setRepDo($repDo)
+    {
+        $this->rep_do = $repDo;
+    
+        return $this;
+    }
+
+    /**
+     * Get rep_do
+     *
+     * @return integer 
+     */
+    public function getRepDo()
+    {
+        return $this->rep_do;
+    }
+
+    /**
+     * Set rep_do_open
+     *
+     * @param integer $repDoOpen
+     * @return UserFullInfo
+     */
+    public function setRepDoOpen($repDoOpen)
+    {
+        $this->rep_do_open = $repDoOpen;
+    
+        return $this;
+    }
+
+    /**
+     * Get rep_do_open
+     *
+     * @return integer 
+     */
+    public function getRepDoOpen()
+    {
+        return $this->rep_do_open;
+    }
+
+    /**
+     * Set awards
+     *
+     * @param integer $awards
+     * @return UserFullInfo
+     */
+    public function setAwards($awards)
+    {
+        $this->awards = $awards;
+    
+        return $this;
+    }
+
+    /**
+     * Get awards
+     *
+     * @return integer 
+     */
+    public function getAwards()
+    {
+        return $this->awards;
+    }
+
+    /**
+     * Set name_changed
+     *
+     * @param integer $nameChanged
+     * @return UserFullInfo
+     */
+    public function setNameChanged($nameChanged)
+    {
+        $this->name_changed = $nameChanged;
+    
+        return $this;
+    }
+
+    /**
+     * Get name_changed
+     *
+     * @return integer 
+     */
+    public function getNameChanged()
+    {
+        return $this->name_changed;
+    }
+
+    /**
+     * Set menu_viever
+     *
+     * @param string $menuViever
+     * @return UserFullInfo
+     */
+    public function setMenuViever($menuViever)
+    {
+        $this->menu_viever = $menuViever;
+    
+        return $this;
+    }
+
+    /**
+     * Get menu_viever
+     *
+     * @return string 
+     */
+    public function getMenuViever()
+    {
+        return $this->menu_viever;
+    }
+
+    /**
+     * Set chat_mod
+     *
+     * @param integer $chatMod
+     * @return UserFullInfo
+     */
+    public function setChatMod($chatMod)
+    {
+        $this->chat_mod = $chatMod;
+    
+        return $this;
+    }
+
+    /**
+     * Get chat_mod
+     *
+     * @return integer 
+     */
+    public function getChatMod()
+    {
+        return $this->chat_mod;
+    }
+
+    /**
+     * Set chat_ban
+     *
+     * @param integer $chatBan
+     * @return UserFullInfo
+     */
+    public function setChatBan($chatBan)
+    {
+        $this->chat_ban = $chatBan;
+    
+        return $this;
+    }
+
+    /**
+     * Get chat_ban
+     *
+     * @return integer 
+     */
+    public function getChatBan()
+    {
+        return $this->chat_ban;
+    }
+
+    /**
+     * Set chat_ban_why
+     *
+     * @param string $chatBanWhy
+     * @return UserFullInfo
+     */
+    public function setChatBanWhy($chatBanWhy)
+    {
+        $this->chat_ban_why = $chatBanWhy;
+    
+        return $this;
+    }
+
+    /**
+     * Get chat_ban_why
+     *
+     * @return string 
+     */
+    public function getChatBanWhy()
+    {
+        return $this->chat_ban_why;
+    }
+}

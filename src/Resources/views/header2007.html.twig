@@ -1,0 +1,136 @@
+<style>
+/* ===========
+   Шапка сайта
+============== */
+
+/* Шапка сайта - строка с датой */
+#top-time {
+	height: 18px;
+	line-height: 18px;
+	padding: 0 10px;
+	font-size: 7pt;
+	background: url("http://www.nfsko.ru/style/1/img/tlc.gif") 0 0 repeat #424242;
+}
+/* Шапка сайта - лого */
+#top-logo {
+	width:100%;
+	height:125px;
+}
+#logo-top {
+	width: 100%;
+	height: 87px;
+	background: url(/bundles/sitecore/images/logo_2007/fon.jpg) repeat-x;
+	position: relative;
+	z-index: 2;
+}
+#logo-bot {
+	width: 100%;
+	height: 38px;
+	background: url(/bundles/sitecore/images/logo_2007/bot_center.jpg) repeat-x;
+	position: relative;
+}
+
+#logo-left {
+	width:360px;
+	height:100px;
+	position:absolute;
+	top:0; left:0;
+	background: url(/bundles/sitecore/images/logo_2007/left.jpg) no-repeat;
+}
+#logo-left-bot {
+	width:500px;
+	height:25px;
+	position:absolute;
+	top:100px; left:32px;
+	background: url(/bundles/sitecore/images/logo_2007/left_bot.jpg) no-repeat;
+}
+#logo-lang {
+	width:32px;
+	height:25px;
+	position:absolute;
+	left:5px; bottom:5px;
+	background: url(http://www.nfsko.ru/style/1/logo2011/left_en.gif) no-repeat center center;
+}
+#logo-right {
+	width:351px;
+	height:87px;
+	position:absolute;
+	top:0;right:0;
+	background: url(/bundles/sitecore/images/logo_2007/right.jpg) no-repeat;
+}
+#logo-right-bot {
+	width:608px;
+	height:38px;
+	position:absolute;
+	top:87px;right:0;
+	background: url(/bundles/sitecore/images/logo_2007/bot_right.jpg) no-repeat;
+}
+#logo-cent {
+	width:300px;
+	height:125px;
+	position: absolute;
+    top: 0; left: 360px;
+    background: url(/bundles/sitecore/images/logo_2007/top_left.jpg) no-repeat;
+}
+
+/* Шапка сайта - быстрые ссылки */
+#logo-links {
+    position: absolute;
+    left: 300px;
+    top: 68px;
+}
+#logo-links a, #logo-links a:visited {
+	color: #333333;
+	text-decoration: underline;
+	outline: none;
+	margin-right: 7px;
+	font-family: Arial;
+	font-size: 14px;
+}
+#logo-links a:hover {
+	color: #777777;
+	text-decoration: none;
+}
+/* Поле с приветствием и логином */
+#top-userinfo {
+	height: 22px;
+	background: url("http://www.nfsko.ru/style/1/img/top.gif") 0 0 repeat #323232;
+	line-height: 22px;
+	padding: 0 10px;
+}
+</style>
+
+<header>
+		{% set weekday = 'time.weekday.' ~ "now"|date('D','MSK') %}
+		{% set month = 'time.month.' ~ "now"|date('M','MSK') %}
+		{% set day = "now"|date('d','MSK') %}
+		{% set year = "now"|date('Y','MSK') %}
+		{% set time = "now"|date('H:i','MSK') %}
+		
+				<div id='top-time'>{{ '%s %s, %d %s %d%s - %s'|format('time.now'|trans(), weekday|trans(), day, month|trans(), year, 'time.year'|trans(), time) }} (Москва)</div>
+				<div id='top-logo'>
+					<div id='logo-top'>
+						<div id='logo-left'></div>
+						<div id='logo-left-bot'></div>
+						<div id='logo-cent'></div>
+						<div id='logo-right'></div>
+						<div id='logo-right-bot'></div>
+					</div>
+					<div id='logo-bot'>
+						<div id='logo-lang'></div>
+					</div>
+					
+						
+					<div id="logo-links">
+						<a href="http://www.nfsko.ru/">Главная</a>
+						<a href="http://www.nfsko.ru/forum">Форум</a>
+						<a href="http://www.nfsko.ru/chat">Чат</a>
+						<a rel="nofollow" href="http://files.nfsko.ru">Файлы</a>
+						<a rel="nofollow" href="http://images.nfsko.ru">Галерея</a>
+						<a href="http://www.nfsko.ru/index.php?page=faq">FAQ</a>
+					</div>
+				</div>
+				<div id='top-userinfo'>
+					<div class='left'><b>{{ ('main.hello')|trans() }} <a>{{ app.user.username }}</a></b></div>
+				</div>
+</header>
