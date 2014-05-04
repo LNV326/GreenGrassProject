@@ -33,17 +33,17 @@
 }
 .gallery-navigate.left {
 	left: 0;
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/arrow_left_icon&24.png);
+	background-image: url(../images/modern/cc/white/png/arrow_left_icon&24.png);
 }
 .gallery-navigate.right {
 	right: 0;
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/arrow_right_icon&24.png);
+	background-image: url(../images/modern/cc/white/png/arrow_right_icon&24.png);
 }
 /* Строка навигации */
 .module-navigate {
 }
 .module-navigate a {
-	background: url(/bundles/sitecore/images/lil.gif) no-repeat 0 center;
+	background: url(../../SiteCore/images/lil.gif) no-repeat 0 center;
 	padding: 0 5px 0 15px;
 }
 
@@ -92,7 +92,7 @@
 }
 /* Превью - название */
 .gallery_thumb_name, .tp-title {
-	background: url("/bundles/sitecore/images/fon.gif") repeat;
+	background: url("../../SiteCore/images/fon.gif") repeat;
 	left: 0;
 	right: 0;
 	height: 20px;
@@ -114,7 +114,7 @@
 	width: 13px;
 	left: 5px;
 	top: 0;
-	background: url("/bundles/sitecore/images/lil.gif") no-repeat scroll 0 center transparent;
+	background: url("../../SiteCore/images/lil.gif") no-repeat scroll 0 center transparent;
 }
 
 /* ==========================
@@ -203,25 +203,25 @@
 	border-radius: 8px;
 }
 .gallery_thumb > a[status='show']:before {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/eye_icon&48.png) !important;
+	background-image: url(../images/modern/cc/white/png/eye_icon&48.png) !important;
 }
 .gallery_thumb > a[status='hide']:before {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/invisible_light_icon&48.png) !important;
+	background-image: url(../images/modern/cc/white/png/invisible_light_icon&48.png) !important;
 }
 .gallery_thumb > a[status='trash']:before {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/trash_icon&48.png) !important;
+	background-image: url(../images/modern/cc/white/png/trash_icon&48.png) !important;
 }
 .gallery_thumb > a[status='changing']:before {
-	background-image: url(/bundles/sitecore/images/modern/loading.gif) !important;
+	background-image: url(../images/modern/loading.gif) !important;
 }
 .gallery_thumb > a[new_status='show']:before {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/eye_icon&48.png) !important;
+	background-image: url(../images/modern/cc/white/png/eye_icon&48.png) !important;
 }
 .gallery_thumb > a[new_status='hide']:before {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/invisible_light_icon&48.png) !important;
+	background-image: url(../images/modern/cc/white/png/invisible_light_icon&48.png) !important;
 }
 .gallery_thumb > a[new_status='trash']:before {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/trash_icon&48.png) !important;
+	background-image: url(../images/modern/cc/white/png/trash_icon&48.png) !important;
 }
 /* Информационные иконки статуса изображения в галерее (скрыто/в корзине) */
 .gallery_thumb[allow-add] .gallery_thumb_name:after {
@@ -234,11 +234,11 @@
 	height: 20px;
 }
 .gallery_thumb[allow-add='false'] .gallery_thumb_name:after {
-	background-image: url(/bundles/sitecore/images/modern/cc/white/png/padlock_closed_icon&16.png) !important;
+	background-image: url(../images/modern/cc/white/png/padlock_closed_icon&16.png) !important;
 }
 
 .gallery_thumb > a.ui-loading {
-	background: url(/bundles/sitecore/images/modern/loading.gif) no-repeat scroll center center #242424 !important;
+	background: url(../images/modern/loading.gif) no-repeat scroll center center #242424 !important;
 }
 
 /* ==========================

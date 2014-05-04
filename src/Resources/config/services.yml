@@ -1,6 +1,6 @@
 parameters:
 #    site_gallery.example.class: Site\GalleryBundle\Example
-  img_host: http://images.nfsko.mooo.com/gallery/
+  img_host: http://images.nfsko-test.ru/gallery/
   img_dir: ../../images/www/gallery/
 
 services:
