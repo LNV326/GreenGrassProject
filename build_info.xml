@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="SiteCoreBundle" default="build">
-		
+	<!-- 		
 	<target name="src-copy" description="Копирование исходников">
 		<echo>Очистка папки ${copy_src.to}</echo>
 		<delete dir="${copy_src.to}"></delete>
@@ -19,13 +19,19 @@
 		<copy todir="${copy_web.to}">
 			<fileset dir="${copy_web.from}"/>
 		</copy>
+	</target>	
+	-->	
+	
+	<!-- Other -->	
+	<target name="_getGitRevision">
+		<exec executable="git" outputproperty="git.Revision">
+			<arg line="describe --always --dirty=+ --abbrev=5"/>
+		</exec>
+		<echo>Revision: ${git.Revision}</echo>
 	</target>
 	
-	<target name="_web-concat" description="Объединение JS и CSS в библиотеки" depends="js-concat, css-concat"></target>
-	
-	<target name="_web-minify" description="Сжатие JS и CSS" depends="_web-concat, js-minify, css-minify"></target>
-	
-	<target name="js-concat">
+	<!-- Build -->
+	<target name="_concat-js">
 		<echo>Удаление ${concat_js.to}</echo>
 		<delete file="${concat_js.to}" />
 		<echo>Объединение JS-файлов в библиотеку ${concat_js.to}</echo>
@@ -34,7 +40,7 @@
 		</concat>
 	</target>
 	
-	<target name="css-concat">
+	<target name="_concat-css">
 		<echo>Удаление ${concat_css.to}</echo>
 		<delete file="${concat_css.to}" />
 		<echo>Объединение CSS-файлов в библиотеку ${concat_css.to}</echo>
@@ -43,14 +49,88 @@
 		</concat>
 	</target>
 	
-	<target name="js-minify" depends="js-concat"></target>
-	<target name="css-minify" depends="css-concat"></target>
+	<target name="_concat-web" description="Объединение JS и CSS в библиотеки">
+		<antcall target="_concat-js"/>
+		<antcall target="_concat-css"/>
+	</target>
+	
+	<target name="_minify-js"></target>
+	<target name="_minify-css"></target>
+	
+	<target name="_minify-web" description="Сжатие JS и CSS">
+		<antcall target="_concat-web"/>
+		<antcall target="_minify-js"/>
+		<antcall target="_minify-css"/>
+	</target>
 	
 	<target name="build">
-		<antcall target="src-copy" />
-		<antcall target="_web-minify" />
-		<antcall target="web-copy" />
+		<antcall target="_getGitRevision"/>
+		<antcall target="_minify-web" />
 	</target>
-	<target name="buildWithoutMinify" depends="src-copy, _web-concat, web-copy"></target>
+	
+	<target name="buildWithoutMinify">
+		<antcall target="_getGitRevision"/>
+		<antcall target="_concat-web"/>
+	</target>
 
+	<!-- Deploy -->		
+	<target name="_clear-env-src">
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}"
+			password="${env.ssh.pass}"
+			command="rm -r ${copy_src.to}"
+			failonerror="false"/>
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}"
+			password="${env.ssh.pass}"
+			command="mkdir -p ${copy_src.to}"/>
+	</target>
+	
+	<target name="_clear-env-web">
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}"
+			password="${env.ssh.pass}"
+			command="rm -r ${copy_web.to}"
+			failonerror="false"/>
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}"
+			password="${env.ssh.pass}"
+			command="mkdir -p ${copy_web.to}"/>
+	</target>
+	
+	<target name="_copy2env-src">
+		<scp trust="true" todir="${env.ssh.user}:${env.ssh.pass}@${env.ssh.host}:${copy_src.to}">
+			<fileset dir="${copy_src.from}"/>
+		</scp>
+	</target>
+	
+	<target name="_copy2env-web">
+		<scp trust="true" todir="${env.ssh.user}:${env.ssh.pass}@${env.ssh.host}:${copy_web.to}">
+			<fileset dir="${copy_web.from}"/>
+		</scp>
+	</target>
+	
+	<target name="_clear-env" description="Cleaning project in env">
+		<echo>Cleaning ${bundle.fullname} in ${env.name} env...</echo>
+		<antcall target="_clear-env-src"/>
+		<antcall target="_clear-env-web"/>
+	</target>
+	
+	<target name="_copy2env" description="Copying project to env">
+		<echo>Copying ${bundle.fullname} to ${env.name} env...</echo>
+		<antcall target="_copy2env-src"/>
+		<antcall target="_copy2env-web"/>
+	</target>
+	
+	<target name="deploy">
+		<echo>Deploying ${bundle.fullname} to ${env.name} env...</echo>
+		<antcall target="_clear-env"/>
+		<antcall target="_copy2env"/>
+	</target>
+	
+	<!-- Build & Deploy -->
+	<target name="buildNdeploy">
+		<antcall target="build"/>
+		<antcall target="deploy"/>
+	</target>
 </project>

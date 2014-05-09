@@ -52,13 +52,14 @@ class AuthListener implements ListenerInterface
 			$authToken = $this->authenticationManager->authenticate($token);
 			// результатом проверки будет авторизованных токен, либо null.
 			// отдаём токен (содержит информацию о пользователе) дальше...
-			$this->securityContext->setToken($authToken);
-			return;
 		} catch (AuthenticationException $failed) {
 			// В случае ошибки сброс токена, 
-			$this->securityContext->setToken(null);
-			return;
+			$token->userId = 0;
+			$authToken = $this->authenticationManager->authenticate($token);
 		}
+		$this->securityContext->setToken($authToken);
+		
+		
 		// Пока не хочу возвращать 403. Посмотрим, что будет
 // 		$response = new Response();
 // 		$response->setStatusCode(403);
