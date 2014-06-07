@@ -13,10 +13,10 @@ use Site\CoreBundle\Entity\UserConfigInfo as UserConfigInfo;
  * @ORM\HasLifecycleCallbacks
  */
 class Image {
-	const MAIN_UPLOAD_DIR = '../../images/www/gallery/';
+	const MAIN_UPLOAD_DIR = '../../images.nfsko.dev/www/gallery/';
 	const THUMBNAILS_DIR = '/thumbs_x2/';
 	const THUMBNAILS_DIR_OLD = '/thumbs/';
-	const HOST_ADDRESS = 'http://images.nfsko.mooo.com/gallery/';
+	const HOST_ADDRESS = 'http://images.nfsko.dev/gallery/';
 	
 	const THUMBNAIL_WIDTH = '320';
 	const THUMBNAIL_HEIGHT = '240';

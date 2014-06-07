@@ -17,9 +17,8 @@ $(function() {
 				throw new Error("Error in nfsko.catalog: входной объект не соответствует шаблону");
     		this.element.addClass('ui-catalog');
     		this.thumbs = this.element.children('li.gallery_thumb');
-    		this.left_arrow = $('.gallery-navigate.left');
-    		this.right_arrow = $('.gallery-navigate.right');
-    		this.initGroups();
+    		this.backward = $('#content_backward');
+    		this.initGroups();    		
     	},
     	// Дейструктор
     	_destroy : function() {
@@ -62,21 +61,24 @@ $(function() {
 		// Действие перед открытием группы
 		// Показываем названия элементов, проставляем навигацию
 		_onBeforeOpen : function( pileName ) {
-//			navigate.append('<a>' + pileName + '</a>');
-//			navigate.find('a:first-child').on('click', function() {
-//					stapel.closePile();
-//					return false;
-//			});
-			this.left_arrow.bind('click', function(){ stapel.closePile(); return false; }).show();
+			this.backward.bind('click', function(){ stapel.closePile(); return false; }).show();
 			this._showNames();
+			this._setHash();
 		},
 		// Действие перед закрытием группы
 		// Скрываем названия элементов, очищаем навигацию
 		_onBeforeClose : function( pileName ) {
-//			navigate.find('a:last-child').remove();
-//			navigate.find('a:first-child').unbind('click');
-			this.left_arrow.unbind('click').hide();
+			this.backward.unbind('click').hide();
 			this._hideNames();
+			this._delHash();
+		},
+		// Установка hash-части
+		_setHash : function() {
+			
+		},
+		// Удаление hash-части
+		_delHash : function() {
+			
 		}
     });
 });

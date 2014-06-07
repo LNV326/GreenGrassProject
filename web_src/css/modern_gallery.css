@@ -22,23 +22,6 @@
 	line-height: 122px;
 	font-size: 14px;
 }
-/* Левая и правая стрелки навигации вокруг основного контента */
-.gallery-navigate.left, .gallery-navigate.right {
-	width: 50px;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	background: none no-repeat center center transparent;
-	display: none;
-}
-.gallery-navigate.left {
-	left: 0;
-	background-image: url(../images/modern/cc/white/png/arrow_left_icon&24.png);
-}
-.gallery-navigate.right {
-	right: 0;
-	background-image: url(../images/modern/cc/white/png/arrow_right_icon&24.png);
-}
 /* Строка навигации */
 .module-navigate {
 }
@@ -50,6 +33,17 @@
 /* ==========================
     Содержимое модуля галереи (общее описание)
 ============================= */
+
+/* Область возврата к предыдущему состоянию (кнопка "Назад") */
+#content_backward {
+	position: fixed;
+	background: rgba(100,100,100,0.5);
+	top: 0;
+	left: 0;
+	width: 50px;
+	height: 100%;
+	display: none;
+}
 
 /* Превью - контейнер */
 .gallery_thumb {
