@@ -152,13 +152,12 @@ class AddController extends DefaultController {
 		try {
 			$this->action = __FUNCTION__;
 			$this->initVars();
-			$logger = $this->get('gallery_add_logger');
-			$this->getCategoryList(false);
-			$this->body['categoryList'] = $this->categoryList;			
-			$this->getAlbum($cRefId, $aRefId);
-			$this->body['album'] = $this->album;
-			$logger->warn(sprintf('%s (%d) пытается добавить изображение в альбом "%s" в категории "%s"', $this->getUser()->getUsername(), $this->getUser()->getId(), $this->album->getDictionary()->getRefId(), $this->album->getCategory()->getRefId()) );
-			if ( ( false === $this->get('security.context')->isGranted('ROLE_GAL_ADD_IMG') ) && ( false == $this->album->getAllowAdd() || 0 == $this->getUser()->getId() ) ) {
+			$logger = $this->get('gallery_add_logger');			
+			$gallery = $this->get('gallery_service');
+			$this->body['categoryList'] = $gallery->getCategoryList( false );
+			$this->body['album'] = $gallery->getAlbum($cRefId, $aRefId);
+			$logger->warn(sprintf('%s (%d) пытается добавить изображение в альбом "%s" в категории "%s"', $this->getUser()->getUsername(), $this->getUser()->getId(), $gallery->album->getDictionary()->getRefId(), $gallery->album->getCategory()->getRefId()) );
+			if ( ( false === $this->get('security.context')->isGranted('ROLE_GAL_ADD_IMG') ) && ( false == $gallery->album->getAllowAdd() || 0 == $this->getUser()->getId() ) ) {
 				throw new AccessDeniedException();
 			}
  			$this->getUserSpace();
@@ -188,7 +187,7 @@ class AddController extends DefaultController {
 				// Добавление в очередь на загрузку в БД
 				$em->persist($image);
 				$em->flush();
-				$logger->info(sprintf('Новое изображение успешно добавлено в альбом "%s" в категории "%s" пользователем %s (%d)', $this->album->getDictionary()->getRefId(), $this->album->getCategory()->getRefId(), $this->getUser()->getUsername(), $this->getUser()->getId()) );
+				$logger->info(sprintf('Новое изображение успешно добавлено в альбом "%s" в категории "%s" пользователем %s (%d)', $gallery->album->getDictionary()->getRefId(), $gallery->album->getCategory()->getRefId(), $this->getUser()->getUsername(), $this->getUser()->getId()) );
 				$this->body['image'] = array(
 					'id' => $image->getId(),
 					'url' => $image->getWebPath(),

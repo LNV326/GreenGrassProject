@@ -84,9 +84,9 @@ class ShowController extends DefaultController {
 					
 		try {
 			$this->action = __FUNCTION__;
-			$this->initVars();
-			$this->getCategoryList( true );
-			$this->body['categoryList'] = $this->categoryList;
+			$this->initVars();		
+			$gallery = $this->get('gallery_service');					
+			$this->body['categoryList'] = $gallery->getCategoryList( true );			
 			$this->body['imageHostName'] = $this->imageHostName;
 		} catch (\Exception $e) {
 			$this->error[] = $e->getMessage();
@@ -107,10 +107,9 @@ class ShowController extends DefaultController {
 		try {
 			$this->action = __FUNCTION__;
 			$this->initVars();
-			$this->getCategoryList( false );		
-			$this->body['categoryList'] = $this->categoryList;
-			$this->getCategory($cRefId, true, true);
-			$this->body['category'] = $this->category;
+			$gallery = $this->get('gallery_service');
+			$this->body['categoryList'] = $gallery->getCategoryList( false );
+			$this->body['category'] = $gallery->getCategory($cRefId, true, true);			
 			$this->body['imageHostName'] = $this->imageHostName;
 		//} catch (\NoResultException $e) {
 		//	throw $this->createNotFoundException(sprintf('Категория %s не существует',$cRefId));
@@ -134,10 +133,9 @@ class ShowController extends DefaultController {
 		try {
 			$this->action = __FUNCTION__;
 			$this->initVars();
-			$this->getCategoryList( false );			
-			$this->body['categoryList'] = $this->categoryList;
-			$this->getAlbum($cRefId, $aRefId, true);
-			$this->body['album'] = $this->album;
+			$gallery = $this->get('gallery_service');
+			$this->body['categoryList'] = $gallery->getCategoryList( false );
+			$this->body['album'] = $gallery->getAlbum($cRefId, $aRefId, true);			
 			$this->body['imageHostName'] = $this->imageHostName;
 		//} catch (\NoResultException $e) {
 		//	throw $this->createNotFoundException(sprintf('Категория %s не существует',$cRefId));
@@ -163,10 +161,9 @@ class ShowController extends DefaultController {
 		try {
 			$this->action = __FUNCTION__;
 			$this->initVars();
-			$this->getCategoryList( false );
-			$this->body['categoryList'] = $this->categoryList;
-			$this->getImage($iId, false, false);
-			$this->body['image'] = $this->image;
+			$gallery = $this->get('gallery_service');
+			$this->body['categoryList'] = $gallery->getCategoryList( false );
+			$this->body['image'] = $gallery->getImage($iId, false, false);		
 			$this->body['imageHostName'] = $this->imageHostName;
 		} catch (\Exception $e) {
 			$this->error[] = $e->getMessage();
@@ -187,16 +184,16 @@ class ShowController extends DefaultController {
 		try {
 			$this->action = __FUNCTION__;
 			$this->initVars();
-			$this->getCategoryList( false );
-			$this->body['categoryList'] = $this->categoryList;
+			$gallery = $this->get('gallery_service');
+			$this->body['categoryList'] = $gallery->getCategoryList( false );
+			
 			// Необходимо получить пользователя
 			// TODO Необходимо вынести получение информации о пользователе в родительский класс
 			$repo = $this->getDoctrine()->getManager()->getRepository('SiteCoreBundle:UserConfigInfo');
 			if ( is_null( $user = $repo->find( $uId ) ) )
 				throw new NoResultException();		
 			$this->body['user'] = $user;
-			$this->getUserImages( $uId, false, false );
-			$this->body['images'] = $this->images;
+			$this->body['images'] = $gallery->getUserImages( $uId, false, false );			
 			$this->body['imageHostName'] = $this->imageHostName;
 		} catch (\Exception $e) {
 			$this->error[] = $e->getMessage();

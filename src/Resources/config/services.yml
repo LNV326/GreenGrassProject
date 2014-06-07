@@ -1,7 +1,12 @@
 parameters:
 #    site_gallery.example.class: Site\GalleryBundle\Example
-  img_host: http://images.nfsko-test.ru/gallery/
-  img_dir: ../../images/www/gallery/
+    img_host: http://images.nfsko.dev/gallery/
+    img_dir: ../../images.nfsko.dev/www/gallery/
+    gallery_service.class: Site\GalleryBundle\GalleryService
+    # Коэффициенты для расчёта доступного диского пространства в галерее
+    posts_min: 10 # Минимальное число тематических сообщений
+    posts_inc: 250 # Инкремент тематических сообщений
+    kb_inc: 750 # Инкремент Кб за каждые posts_inc тематических сообщений
 
 services:
 #    site_gallery.example:
@@ -35,3 +40,7 @@ services:
         class: Monolog\Handler\StreamHandler
         # 200 = INFO, see Monolog::Logger for the values of log levels
         arguments: [%kernel.root_dir%/logs/gallery_manage.log, 200]
+    
+    gallery_service:
+        class: "%gallery_service.class%"
+        arguments: [@doctrine.orm.entity_manager, %posts_min%, %posts_inc%, %kb_inc%]
