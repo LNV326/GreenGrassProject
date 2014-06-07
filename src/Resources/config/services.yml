@@ -3,6 +3,7 @@ parameters:
     img_host: http://images.nfsko.dev/gallery/
     img_dir: ../../images.nfsko.dev/www/gallery/
     gallery_service.class: Site\GalleryBundle\GalleryService
+    redirect_service.class: Site\GalleryBundle\RedirectService
     # Коэффициенты для расчёта доступного диского пространства в галерее
     posts_min: 10 # Минимальное число тематических сообщений
     posts_inc: 250 # Инкремент тематических сообщений
@@ -44,3 +45,6 @@ services:
     gallery_service:
         class: "%gallery_service.class%"
         arguments: [@doctrine.orm.entity_manager, %posts_min%, %posts_inc%, %kb_inc%]
+    redirect_service:
+        class: "%redirect_service.class%"
+        arguments: [@service_container, @gallery_redirect_logger]

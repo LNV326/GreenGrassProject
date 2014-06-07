@@ -33,53 +33,10 @@ class ShowController extends DefaultController {
 		 * http://images.nfsko.ru/index.php?page=gallery&view=my_files
 		 * http://images.nfsko.ru/image.php?gallery=view&image=1542
 		 */
-		$query = $this->getRequest()->query;
-		$logger = $this->get('gallery_redirect_logger');
-		if ( $query->has('cat') ) {			
-			$id = $query->get('cat');		
-			try {				
-				$category = $this->getCategory($id);
-				$logger->info( sprintf('Редирект %d с %s в категорию "%s" - для %s', self::REDIRECT_CODE, $this->getRequest()->getQueryString(), $category->getRefId(), $this->getRequest()->headers->get('User-Agent') ) );
-				return $this->redirect( $this->generateUrl( 'site_gallery_category', array('cRefId' => $category->getRefId()) ), self::REDIRECT_CODE );
-			} catch (\Doctrine\Orm\NoResultException $e) {
-				$logger->info( sprintf('Ошибка редиректа с %s', $this->getRequest()->getQueryString() ) );
-				throw $this->createNotFoundException(sprintf('Категория %s не существует',$id));
-			}			
-		}		
-		if ( $query->has('view') ) {
-			$id = $query->get('view');
-			$repository = $this->getDoctrine()->getManager()->getRepository('SiteGalleryBundle:ImageAlbum');
-			try {
-				$album = $repository->getAlbumById($id);
-				$logger->info( sprintf('Редирект %d с %s в альбом "%s" в категории "%s" - для %s', self::REDIRECT_CODE, $this->getRequest()->getQueryString(), $album->getDictionary()->getRefId(), $album->getCategory()->getRefId(), $this->getRequest()->headers->get('User-Agent') ) );
-				return $this->redirect($this->generateUrl( 'site_gallery_album', array('cRefId' => $album->getCategory()->getRefId(), 'aRefId' => $album->getDictionary()->getRefId() ), self::REDIRECT_CODE ));				
-			} catch (\Doctrine\Orm\NoResultException $e) {
-				throw $this->createNotFoundException(sprintf('Альбома %s не существует',$id));		
-			}
-		}
-		if ( $query->has('user') ) {
-			$id = $query->get('user');
-			$repository = $this->getDoctrine()->getManager()->getRepository('SiteCoreBundle:UserConfigInfo');
-			try {
-				// TODO Получение пользователя необходимо вынести в отдельный метод
-				if ( $user = $repository->find( $id ) ) {
-					$logger->info( sprintf('Редирект %d с %s в изображения пользователя "%d" - для %s', self::REDIRECT_CODE, $this->getRequest()->getQueryString(), $user->getId(), $this->getRequest()->headers->get('User-Agent') ) );
-					return $this->redirect($this->generateUrl( 'site_gallery_userImages', array('uId' => $user->getId()) ), self::REDIRECT_CODE );
-				} else throw new \Exception();				
-			} catch (\Doctrine\Orm\NoResultException $e) {
-				throw $this->createNotFoundException(sprintf('Пользователя %s не существует',$id));		
-			}
-		}
-		if ( $query->has('image') ) {
-			$id = $query->get('image');
-			try {
-				$image = $this->getImage($id, false, false);
-				$logger->info( sprintf('Редирект %d с %s на изображение "%d" - для %s', 302, $this->getRequest()->getQueryString(), $image->getId(), $this->getRequest()->headers->get('User-Agent') ) );
-				return $this->redirect($this->generateUrl( 'site_gallery_image', array('iId' => $image->getId()) ), 302 );
-			} catch (\Doctrine\Orm\NoResultException $e) {
-				throw $this->createNotFoundException(sprintf('Изображениея %s не существует',$id));
-			}
-		}		
+		$redirect = $this->get('redirect_service');
+		if ( !is_null( $r = $redirect->getRedirect() ) )
+			// Can throw NotFoundHttpException
+			return $this->redirect( $this->generateUrl( $r['route'], $r['arg'] ), $r['redirect_code'] );
 		// === Редирект (конец) ===	
 					
 		try {

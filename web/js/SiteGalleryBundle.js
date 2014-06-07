@@ -209,12 +209,22 @@ $(function() {
 		_onBeforeOpen : function( pileName ) {
 			this.backward.bind('click', function(){ stapel.closePile(); return false; }).show();
 			this._showNames();
+			this._setHash();
 		},
 		// Действие перед закрытием группы
 		// Скрываем названия элементов, очищаем навигацию
 		_onBeforeClose : function( pileName ) {
 			this.backward.unbind('click').hide();
 			this._hideNames();
+			this._delHash();
+		},
+		// Установка hash-части
+		_setHash : function() {
+			
+		},
+		// Удаление hash-части
+		_delHash : function() {
+			
 		}
     });
 });/*

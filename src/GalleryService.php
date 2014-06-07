@@ -56,7 +56,7 @@ class GalleryService {
 		} else {
 			$this->category = $repo->find($id);
 			if ( is_null($this->category) )
-				throw new NoResultException(sprintf('Изображение %s не существует', $iId));
+				throw new NoResultException(sprintf('Изображение %s не существует', $id));
 		}
 		return $this->category;
 	}

@@ -316,6 +316,17 @@
     Содержимое модуля галереи (общее описание)
 ============================= */
 
+/* Область возврата к предыдущему состоянию (кнопка "Назад") */
+#content_backward {
+	position: fixed;
+	background: rgba(100,100,100,0.5);
+	top: 0;
+	left: 0;
+	width: 50px;
+	height: 100%;
+	display: none;
+}
+
 /* Превью - контейнер */
 .gallery_thumb {
 	border: 1px solid #424242;
@@ -675,15 +686,5 @@
 
 .image-links > ul.content .content {
 	width: 100%;
-}
-
-#content_backward {
-	position: fixed;
-	background: rgba(100,100,100,0.5);
-	top: 0;
-	left: 0;
-	width: 50px;
-	height: 100%;
-	display: none;
 }
 
