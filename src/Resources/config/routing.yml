@@ -1,6 +1,6 @@
 site_gallery_homepage:
     pattern:  /
-    defaults: { _controller: SiteGalleryBundle:Show:index }
+    defaults: { _controller: SiteGalleryBundle:Show:showCatalog }
 site_gallery_validateAll:
     pattern:  /_validateAll
     defaults: { _controller: SiteGalleryBundle:Validate:validateAll }

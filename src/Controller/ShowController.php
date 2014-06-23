@@ -11,19 +11,19 @@ use Site\GalleryBundle\Entity\ImageCategory;
 
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\SecurityExtraBundle\Annotation\Secure;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class ShowController extends DefaultController {
 	
-	const REDIRECT_CODE = 301;
-
 	/**
 	 * Главная страница галереи
 	 * Возвращает список категорий галереи
 	 *
 	 * @Template()
+	 * @Secure(roles="ROLE_GAL_CATS_SHOW")
 	 */
-	public function indexAction() {
+	public function showCatalogAction() {
 		// === Редирект ===
 		/*
 		 * Список примеров URL страниц старой галереи
@@ -59,6 +59,7 @@ class ShowController extends DefaultController {
 	 * @return multitype:unknown \Symfony\Component\DependencyInjection\mixed
 	 * 
 	 * @Template()
+	 * @Secure(roles="ROLE_GAL_ALBS_SHOW")
 	 */
 	public function showCategoryAction($cRefId) {
 		try {
@@ -85,6 +86,7 @@ class ShowController extends DefaultController {
 	 * @return multitype:NULL unknown \Symfony\Component\DependencyInjection\mixed
 	 * 
 	 * @Template()
+	 * @Secure(roles="ROLE_GAL_IMGS_SHOW")
 	 */
 	public function showAlbumAction($cRefId, $aRefId) {
 		try {
@@ -111,6 +113,7 @@ class ShowController extends DefaultController {
 	 * @return \Site\GalleryBundle\Controller\Response
 	 * 
 	 * @Template()
+	 * @Secure(roles="ROLE_GAL_IMGS_SHOW")
 	 */
 	public function showImageAction($iId) {
 		//if ( !$this->getRequest()->isXmlHttpRequest() )
@@ -136,6 +139,7 @@ class ShowController extends DefaultController {
 	 * @return multitype:string multitype:
 	 * 
 	 * @Template()
+	 * @Secure(roles="ROLE_GAL_USER_SHOW")
 	 */
 	public function showUserImagesAction($uId) {
 		try {

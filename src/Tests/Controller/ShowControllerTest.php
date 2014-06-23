@@ -4,14 +4,10 @@ namespace Site\GalleryBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShowControllerTest extends WebTestCase {
-	
-	var $CATS = array('Rivals',
-			'Porsche',
-			'Most Wanted (CG)',
-			'The Run');
-	
+		
 	public function testIndex() {
 		$client = static::createClient();
 		$container = $client->getContainer();
@@ -27,6 +23,19 @@ class ShowControllerTest extends WebTestCase {
 		//$this->assertTrue($crawler->filter('html:contains("Porsche1")')->count() > 0);
 	}
 	
-	
+	public function testShowCategory() {
+		$client = static::createClient();
+		$container = $client->getContainer();
+		
+		$router = $container->get('router');
+		$cats = $container->get('doctrine')->getManager()->getRepository('SiteGalleryBundle:ImageCategory')->getCats();
+		
+		//foreach($cats as $cat) {
+			$path = $router->generate('site_gallery_category', array('cRefId' => 'undercover'));
+			$crawler = $client->request('GET', $path);
+			$names = $crawler->filter('div.module-navigate.left a')->extract(array('_text'));
+			$this->assertContains('Undercover', $names);
+		//}
+	}
 }
 ?>
