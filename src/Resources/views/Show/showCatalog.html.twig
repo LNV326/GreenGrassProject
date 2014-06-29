@@ -1,6 +1,14 @@
 {% extends "SiteGalleryBundle::gallery.html.twig" %}
 
 {% block title %}Галерея изображений {{ parent(title) }}{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a>
+	</div>
+	<div class="fb-dialog right">
+	</div>
+{% endblock %}
     
 {% block content %}
 	{% block content_backward %}<div id='content_backward'></div>{% endblock %}

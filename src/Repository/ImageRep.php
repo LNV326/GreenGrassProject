@@ -2,9 +2,28 @@
 namespace Site\GalleryBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Site\GalleryBundle\Entity\ImageAlbum;
+use Site\CoreBundle\Entity\UserConfigInfo;
 
 class ImageRep extends EntityRepository
 {
+	public function getImageList(ImageAlbum $album) {
+		return $this->getEntityManager()
+		->createQuery('SELECT i
+				FROM SiteGalleryBundle:Image i
+				WHERE i.albumId = :id
+				ORDER BY i.id DESC')
+						->setParameter('id', $album->getId())
+// 						->setFirstResult($offset)
+// 						->setMaxResults($count)
+						->getResult();
+	}
+	
+	public function getImage( $iId ) {
+		return $this->find($iId);
+	}
+	
+	
 	/**
 	 * ���������� ������ ��������� ����������� �����������
 	 * @param integer $count
@@ -116,13 +135,13 @@ class ImageRep extends EntityRepository
 	}
 	
 	
-	public function getUserImages($uid) {
+	public function getUserImages( UserConfigInfo $user ) {
 		return $this->getEntityManager()
 		->createQuery('SELECT i, a
 				FROM SiteGalleryBundle:Image i
 				LEFT JOIN i.album a
 				WHERE i.memberId = :uid AND a.allowAdd = 1')
-		->setParameter('uid', $uid)
+		->setParameter('uid', $user->getId() )
 		->getResult();
 	}
 }

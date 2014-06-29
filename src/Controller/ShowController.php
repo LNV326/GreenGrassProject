@@ -16,17 +16,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class ShowController extends DefaultController {
 	
+	protected $action;
+	protected $imgHost;
+	protected $categoryList;
+	protected $body = array();
+	protected $error = array();
+	
+	protected function onLoad() {
+		$this->body['action'] = __METHOD__;
+		$this->body['imageHostName'] = $this->container->getParameter('img_host');
+		$this->gallery = $this->get('gallery_service');
+	}
+	
 	/**
 	 * Главная страница галереи
 	 * Возвращает список категорий галереи
 	 *
 	 * @Template()
-	 * @Secure(roles="ROLE_GAL_CATS_SHOW")
 	 */
 	public function showCatalogAction() {
 		// === Редирект ===
 		/*
-		 * Список примеров URL страниц старой галереи
+		 * Список примеров URL   страниц старой галереи
 		 * http://images.nfsko.ru/index.php?page=gallery&cat=17
 		 * http://images.nfsko.ru/index.php?page=gallery&view=160
 		 * http://images.nfsko.ru/index.php?page=gallery&user=22753
@@ -37,19 +48,9 @@ class ShowController extends DefaultController {
 		if ( !is_null( $r = $redirect->getRedirect() ) )
 			// Can throw NotFoundHttpException
 			return $this->redirect( $this->generateUrl( $r['route'], $r['arg'] ), $r['redirect_code'] );
-		// === Редирект (конец) ===	
-					
-		try {
-			$this->action = __FUNCTION__;
-			$this->initVars();		
-			$gallery = $this->get('gallery_service');					
-			$this->body['categoryList'] = $gallery->getCategoryList( true );			
-			$this->body['imageHostName'] = $this->imageHostName;
-		} catch (\Exception $e) {
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
-		}	
+		// === Редирект (конец) ===
+		$this->onLoad();						
+		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => true) );				
 		return $this->createResponse();
 	}
 
@@ -59,22 +60,15 @@ class ShowController extends DefaultController {
 	 * @return multitype:unknown \Symfony\Component\DependencyInjection\mixed
 	 * 
 	 * @Template()
-	 * @Secure(roles="ROLE_GAL_ALBS_SHOW")
 	 */
 	public function showCategoryAction($cRefId) {
+		$this->onLoad();
+		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => false) );
 		try {
-			$this->action = __FUNCTION__;
-			$this->initVars();
-			$gallery = $this->get('gallery_service');
-			$this->body['categoryList'] = $gallery->getCategoryList( false );
-			$this->body['category'] = $gallery->getCategory($cRefId, true, true);			
-			$this->body['imageHostName'] = $this->imageHostName;
-		//} catch (\NoResultException $e) {
-		//	throw $this->createNotFoundException(sprintf('Категория %s не существует',$cRefId));
-		} catch (\Exception $e) {
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
+			$this->body['category'] = $this->gallery->getCategory( $cRefId, array('withAlbums' => true, 'withCovers' => true) );
+			$this->body['albumList'] = $this->gallery->albumList;
+		} catch (NoResultException $e) {
+			throw $this->createNotFoundException( sprintf('Категория %s не существует',$cRefId), $e );
 		}
 		return $this->createResponse();
 	}
@@ -86,23 +80,32 @@ class ShowController extends DefaultController {
 	 * @return multitype:NULL unknown \Symfony\Component\DependencyInjection\mixed
 	 * 
 	 * @Template()
-	 * @Secure(roles="ROLE_GAL_IMGS_SHOW")
 	 */
 	public function showAlbumAction($cRefId, $aRefId) {
-		try {
-			$this->action = __FUNCTION__;
-			$this->initVars();
-			$gallery = $this->get('gallery_service');
-			$this->body['categoryList'] = $gallery->getCategoryList( false );
-			$this->body['album'] = $gallery->getAlbum($cRefId, $aRefId, true);			
-			$this->body['imageHostName'] = $this->imageHostName;
-		//} catch (\NoResultException $e) {
-		//	throw $this->createNotFoundException(sprintf('Категория %s не существует',$cRefId));
-		} catch (\Exception $e) {
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
+		$this->onLoad();
+		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => false) );
+		
+		$query = $this->getRequest()->query;
+		If ( $query->has('page') ) {
+			$page = (int)$query->get('page');
+			if ( $page <= 0 ) $page = 1;
+		} else $page = 1;
+		$this->body['countOnPage'] = $this->gallery->IMGS_ON_PAGE;
+		$this->body['firstItem'] = ($page-1)*$this->body['countOnPage'];
+		$this->body['lastItem'] = ($page)*$this->body['countOnPage']-1;
+		
+ 		try {			
+			$this->body['album'] = $this->gallery->getAlbum($cRefId, $aRefId, array('withImages' => true, 'withCovers' => false) );
+			$this->body['category'] = $this->gallery->category;
+			$this->body['imageList'] = $this->gallery->imageList;
+		} catch (NoResultException $e) {
+			throw $this->createNotFoundException( sprintf('Альбома %s в категории %s не существует', $aRefId, $cRefId), $e );
 		}
+		if ( is_array($this->body['imageList']))
+			$this->body['pages'] = ceil( count($this->body['imageList'])/$this->body['countOnPage'] );
+		else $this->body['pages'] = 1;
+		$this->body['page'] = $page;
+		
 		return $this->createResponse();
 	}
 	
@@ -113,22 +116,16 @@ class ShowController extends DefaultController {
 	 * @return \Site\GalleryBundle\Controller\Response
 	 * 
 	 * @Template()
-	 * @Secure(roles="ROLE_GAL_IMGS_SHOW")
 	 */
 	public function showImageAction($iId) {
-		//if ( !$this->getRequest()->isXmlHttpRequest() )
-		//	throw new AccessDeniedHttpException();
+		$this->onLoad();
+		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => false) );
 		try {
-			$this->action = __FUNCTION__;
-			$this->initVars();
-			$gallery = $this->get('gallery_service');
-			$this->body['categoryList'] = $gallery->getCategoryList( false );
-			$this->body['image'] = $gallery->getImage($iId, false, false);		
-			$this->body['imageHostName'] = $this->imageHostName;
-		} catch (\Exception $e) {
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
+			$this->body['image'] = $this->gallery->getImage( $iId );
+			$this->body['category'] = $this->gallery->category;
+			$this->body['album'] = $this->gallery->album;
+		} catch (NoResultException $e) {
+			throw $this->createNotFoundException( sprintf('Изображение %s не существует', $iId), $e );
 		}
 		return $this->createResponse();
 	}
@@ -142,25 +139,15 @@ class ShowController extends DefaultController {
 	 * @Secure(roles="ROLE_GAL_USER_SHOW")
 	 */
 	public function showUserImagesAction($uId) {
-		try {
-			$this->action = __FUNCTION__;
-			$this->initVars();
-			$gallery = $this->get('gallery_service');
-			$this->body['categoryList'] = $gallery->getCategoryList( false );
-			
-			// Необходимо получить пользователя
-			// TODO Необходимо вынести получение информации о пользователе в родительский класс
-			$repo = $this->getDoctrine()->getManager()->getRepository('SiteCoreBundle:UserConfigInfo');
-			if ( is_null( $user = $repo->find( $uId ) ) )
-				throw new NoResultException();		
-			$this->body['user'] = $user;
-			$this->body['images'] = $gallery->getUserImages( $uId, false, false );			
-			$this->body['imageHostName'] = $this->imageHostName;
-		} catch (\Exception $e) {
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
-		}
+		$this->onLoad();
+		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => false) );
+		// Необходимо получить пользователя
+		// TODO Необходимо вынести получение информации о пользователе в родительский класс
+		$repo = $this->getDoctrine()->getManager()->getRepository('SiteCoreBundle:UserConfigInfo');
+		if ( is_null( $user = $repo->find( $uId ) ) )
+			throw $this->createNotFoundException( sprintf('Пользователь %s не существует', $uId) );		
+		$this->body['user'] = $user;
+		$this->body['imageList'] = $this->gallery->getUserImageList( $user );			
 		return $this->createResponse();
 	}
 

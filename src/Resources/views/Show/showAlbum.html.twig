@@ -2,17 +2,27 @@
 
 {% block title %}Альбом {{ body.album.dictionary.title }} | Категория {{ body.album.category.name }} | Галерея изображений {{ parent(title) }}
 {% endblock %}
-{% block keywords %}{{ body.album.category.name }}, {{ parent(keywords) }}
+{% block keywords %}{{ body.category.name }}, {{ parent(keywords) }}
+{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':body.category.getRefId}) }}'>{{ body.category.name }}</a><a>{{ body.album.dictionary.title }}</a>
+	</div>
+	<div class="fb-dialog right">
+		{% if is_granted('ROLE_MEMBER') and (is_granted('ROLE_GAL_IMGS_ADD') or body.album.getAllowAdd) %}<a href='{{ path('site_gallery_addImages', {'cRefId':body.category.getRefId,'aRefId':body.album.dictionary.refId}) }}'>Добавить</a>{% endif %}
+	</div>
+	<div class="center">
+		Страница {{ body.page }} из {{ body.pages }}
+	</div>
 {% endblock %}
 
 {% block content %}
-{% if status=='Success' %}
 <ul class='gallery-container' id='album'>
 	{% set imageHostName = body.imageHostName %}
-	{% set imageList = body.album.getImages %}
 	{% set userId = app.user.getId %}
-	{% for image in imageList %}
-		{% if is_granted('ROLE_GAL_EDIT_IMG') or image.visibility==1 or image.memberId==userId %}
+	{% for item, image in body.imageList if item in body.firstItem..body.lastItem %}
+		{% if is_granted('ROLE_GAL_IMGS_EDIT') or image.visibility==1 or image.memberId==userId %}
 			{% block image_block %}
 			<li class='gallery_thumb small'>
 {# 				<a href='{{ imageHostName ~ image.getWebPath }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">#}
@@ -25,17 +35,11 @@
 			{% endblock %}
 		{% endif %}
 	{% endfor %}
-	<div id='gallery_exception' {% if imageList.count>0 %}class='hide'{% endif %}>No images in album</div>
+	<div id='gallery_exception' {% if body.imageList is empty %}class='hide'{% endif %}>В данном альбоме пока нет изображений</div>
 </ul>
 <script>
 $(document).ready(function(){ 
 	$('.gallery-container#album').nfsko('gallery');
 });
 </script>
-{% else %}
-	{{ error[0] }}
-	{% if app.user.isMod %}		
-		{{ error.trace }}
-	{% endif %}
-{% endif %}
 {% endblock %} 

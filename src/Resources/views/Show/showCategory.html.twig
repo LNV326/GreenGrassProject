@@ -5,10 +5,19 @@
 {% block keywords %}{{ body.category.name }}, {{ parent(keywords) }}
 {% endblock %}
 
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a>{{ body.category.name }}</a>
+	</div>
+	<div class="fb-dialog right">
+		{% if is_granted('ROLE_GAL_ALBS_ADD') %}<a href='{{ path('site_gallery_addAlbum', {'cRefId':body.category.getRefId}) }}'>Добавить</a>{% endif %}
+	</div>
+{% endblock %}
+
 {% block content %}
-{% if status=='Success' %}
+{% if body.albumList is not empty %}
 <ul class='gallery-container' id='category'>
-	{% for album in body.category.albums %}
+	{% for album in body.albumList %}
 		<li class='gallery_thumb big' allow-add='{% if album.allowAdd %}true{% else %}false{% endif %}'>
 			<a href='{{ path('site_gallery_album', {'cRefId': body.category.getRefId,'aRefId': album.dictionary.getRefId}) }}' status='show'>
 				{% if album.coverImage %}
@@ -23,9 +32,6 @@
 	$('.gallery-container#category').nfsko('gallery');
 </script>
 {% else %}
-	{{ error[0] }}
-	{% if app.user.isMod %}		
-		{{ error.trace }}
-	{% endif %}
+	В данной категории пока нет альбомов
 {% endif %}
 {% endblock %}

@@ -1,44 +1,52 @@
 {% extends app.request.xmlHttpRequest 
          ? "SiteCoreBundle::ajaxlayout.html.twig"
-         : "SiteCoreBundle::layout.html.twig" %}
+         : "::layout.html.twig" %}
          
 {% block keywords %}{{ parent(keywords) }}, hd, скриншоты, обои, автомобили, девушки, обложки, карты, wallpapers, walls, screens, screenshots, cars, girls, covers{% endblock %}
-         
-{% block location %}
-	<div class="module-navigate left">
-		{% if body.category is defined %}
-			<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a>{{ body.category.name }}</a>
-		{% elseif body.album is defined %}
-			<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':body.album.category.getRefId}) }}'>{{ body.album.category.name }}</a><a>{{ body.album.dictionary.title }}</a>
-		{% elseif body.image is defined %}
-			<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':body.image.album.category.getRefId}) }}'>{{ body.image.album.category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':body.image.album.category.getRefId, 'aRefId':body.image.album.dictionary.getRefId}) }}'>{{ body.image.album.dictionary.title }}</a><a>{{ body.image.getId }}</a>
-		{% elseif body.images is defined %}
-			<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_userImages', {'uId':body.user.getId}) }}'>Файлы пользователя {{ body.user.getUsername | raw }}</a>
-		{% else %}
-			<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a>
-		{% endif %}
-	</div>
-	<div class="fb-dialog right">
-		{% if body.category is defined %}
-			{% if is_granted('ROLE_GAL_ADD_ALB') %}<a href='{{ path('site_gallery_addAlbum', {'cRefId':body.category.getRefId}) }}'>Добавить</a>{% endif %}
-		{% elseif body.album is defined %}
-			{% if is_granted('ROLE_GAL_ADD_IMG') or (body.album.getAllowAdd and is_granted('ROLE_USER')) %}<a href='{{ path('site_gallery_addImages', {'cRefId':body.album.category.getRefId,'aRefId':body.album.dictionary.refId}) }}'>Добавить</a>{% endif %}
-		{% elseif body.image is defined %}
-			{% if is_granted('ROLE_GAL_EDIT_IMG') %}<a href='{{ path('site_gallery_hideImage', {'imageId':body.image.getId}) }}'>Скрыть</a> / <a href='{{ path('site_gallery_showImage', {'imageId':body.image.getId}) }}'>Показать</a>{% endif %}
-			{% if is_granted('ROLE_GAL_DEL_IMG') or app.user.getId==body.image.memberId %} | <a href='{{ path('site_gallery_removeImage', {'imageId':body.image.getId}) }}'>Удалить</a>{% endif %}
-			{% if is_granted('ROLE_GAL_EDIT_CAT') %} | <a href='{{ path('site_gallery_setCategoryCover', {'cRefId':body.image.album.category.getRefId, 'iId':body.image.getId}) }}'>Обложка категории</a>{% endif %}
-			{% if is_granted('ROLE_GAL_EDIT_ALB') %} | <a href='{{ path('site_gallery_setAlbumCover', {'cRefId':body.image.album.category.getRefId, 'aRefId':body.image.album.dictionary.getRefId, 'iId':body.image.getId}) }}'>Обложка альбома</a>{% endif %}
-		{% elseif body.images is defined %}
 
-		{% else %}
-			
-		{% endif %}
-	</div>
+{% block body %}
+		<td id='module-container'>
+			<div id='module'>
+				<div class='title'>
+					<div class='left'></div>
+					<div class='right'></div>
+					<div class='center'>Скриншоты из Need For Speed, обои, обложки CD/DVD. Самый большой фото архив по игре NFS на www.nfsko.ru</div>
+				</div>
+				<div class='content'>
+					<div class='module-row'>
+						{% block location %}{% endblock %}
+					</div>
+					<div class='module-row'>
+						<table class='module-table'><tr>
+							<td>{% block content_left %}{% endblock %}</td>
+							<td>{% block content %}{% endblock %}</td>
+							<td>{% block content_right %}{% endblock %}</td>
+						</tr></table>
+					</div>
+					<div class='module-row'>
+						<div class='left'>Need For Speed World Site</div>
+						<div class='right'>{% if is_granted('ROLE_GAL_USER_SHOW') %}<a href='{{ path('site_gallery_userImages', {'uId':app.user.getId}) }}'>[ Мои файлы ]</a>{% endif %}</div>
+					</div>
+				</div>
+			</div>
+		</td>
+		<td id='menu-container'>
+			<div class='menu-block'>
+				<div class='title'>Меню</div>
+				<ul class='content'>
+					<li><a href='{{ path('site_gallery_homepage') }}'>{% trans %}Главная галереи{% endtrans %}</a></li>
+					<li><a href='http://www.nfsko.ru'>Перейти на сайт NFSko</a></li>
+				</ul>
+			</div>
+			<div class='menu-block'>
+				<div class='title'>Категории галереи</div>
+				<ul class='content'>
+					{% for cat in body.categoryList %}
+						<li><a href='{{ path('site_gallery_category', {'cRefId': cat.getRefId}) }}'>{{ cat.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</td>
 {% endblock %}
 
-{% block content_bottom %}{{ parent(content_bottom) }}
-	{% if is_granted('ROLE_USER') %}
-		<div class='right'><a href='{{ path('site_gallery_userImages', {'uId':app.user.getId}) }}'>[ Мои файлы ]</a></div>
-	{% endif %}
-{% endblock %}
 

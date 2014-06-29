@@ -1,11 +1,24 @@
 {% extends "SiteGalleryBundle::gallery.html.twig" %}
 
-{% block title %}Альбом {{ body.image.album.dictionary.title }} | Категория {{ body.image.album.category.name }} | Галерея изображений {{ parent(title) }}{% endblock %}
+{% block title %}Альбом {{ body.album.dictionary.title }} | Категория {{ body.album.category.name }} | Галерея изображений {{ parent(title) }}{% endblock %}
 
-{% block keywords %}{{ body.image.album.category.name }}, {{ parent(keywords) }}{% endblock %}
+{% block keywords %}{{ body.album.category.name }}, {{ parent(keywords) }}{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':body.category.getRefId}) }}'>{{ body.category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':body.category.getRefId, 'aRefId':body.album.dictionary.getRefId}) }}'>{{ body.album.dictionary.title }}</a><a>{{ body.image.getId }}</a>
+	</div>
+	<div class="fb-dialog right">
+		{% if is_granted('ROLE_MEMBER') %}
+			{% if is_granted('ROLE_GAL_IMGS_EDIT') %}<a href='{{ path('site_gallery_hideImage', {'imageId':body.image.getId}) }}'>Скрыть</a> / <a href='{{ path('site_gallery_showImage', {'imageId':body.image.getId}) }}'>Показать</a>{% endif %}
+			{% if is_granted('ROLE_GAL_IMGS_DEL') or app.user.getId==body.image.memberId %} | <a href='{{ path('site_gallery_removeImage', {'imageId':body.image.getId}) }}'>Удалить</a>{% endif %}
+			{% if is_granted('ROLE_GAL_CATS_EDIT') %} | <a href='{{ path('site_gallery_setCategoryCover', {'cRefId':bodycategory.getRefId, 'iId':body.image.getId}) }}'>Обложка категории</a>{% endif %}
+			{% if is_granted('ROLE_GAL_ALBS_EDIT') %} | <a href='{{ path('site_gallery_setAlbumCover', {'cRefId':body.category.getRefId, 'aRefId':body.album.dictionary.getRefId, 'iId':body.image.getId}) }}'>Обложка альбома</a>{% endif %}
+		{% endif %}
+	</div>
+{% endblock %}
 
 {% block content %}
-{% if status=='Success' %}
 <div class='gallery-container' id='image'>
 	<img class='gallery-image' src='{{ body.imageHostName ~ body.image.getWebPath }}'/>
 	<div class='image-about'>
@@ -15,8 +28,8 @@
 			<div>Добавлено: {{ body.image.getSize|default('n/a') }}</div>
 		</div>
 		<div class='right'>
-			<div>Категория: <a href='{{ path('site_gallery_category', {'cRefId':body.image.album.category.getRefId}) }}'>{{ body.image.album.category.name }}</a></div>
-			<div>Альбом: <a href='{{ path('site_gallery_album', {'cRefId':body.image.album.category.getRefId, 'aRefId':body.image.album.dictionary.getRefId}) }}'>{{ body.image.album.dictionary.title }}</a></div>
+			<div>Категория: <a href='{{ path('site_gallery_category', {'cRefId':body.category.getRefId}) }}'>{{ body.category.name }}</a></div>
+			<div>Альбом: <a href='{{ path('site_gallery_album', {'cRefId':body.category.getRefId, 'aRefId':body.album.dictionary.getRefId}) }}'>{{ body.album.dictionary.title }}</a></div>
 			<div id='image-size'>Разрешение: {{ body.image.getWidth ~ 'x' ~ body.image.getHeight }} px</div>	
 		</div>		
 	</div>
@@ -43,10 +56,4 @@ $(document).ready(function(){
 	$('.gallery-container#image').nfsko('gallery');
 });
 </script>
-{% else %}
-	{{ error[0] }}
-	{% if app.user.isMod %}		
-		{{ error.trace }}
-	{% endif %}
-{% endif %}
 {% endblock %}
