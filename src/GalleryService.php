@@ -10,10 +10,17 @@ use Site\GalleryBundle\Entity\Image;
 use Site\CoreBundle\Entity\UserConfigInfo;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Site\CoreBundle\Entity\DictionaryItem;
+use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Validator\Validator;
 
 class GalleryService {
 	
 	protected $em;
+	protected $logger;
+	protected $securityContext;
+	protected $validator;
 	
 	// Коэффициенты расчёта доступного пользователю дискового пространства
 	protected $K_POSTS_MIN = 0; // Минимальное число тематических сообщений
@@ -23,18 +30,38 @@ class GalleryService {
 	// Настройки страницы альбома
 	public $IMGS_ON_PAGE = 40; // Число изображений на страница альбома
 	
+	public $debugMode = false;
+	
+	public $imgHostName = '';
+	
 	public $categoryList = null;
 	public $category = null;
 	public $albumList = null;
 	public $album = null;
 	public $imageList = null;
 	public $image = null;
+	public $validationErrors = null;
+	public $albumChoiceList = null;
 	
-	public function __construct(EntityManager $em, $posts_min, $posts_inc, $kb_inc) {
+	public $freeSpace = 0;
+	public $totalSpace = 0;
+	public $occupSpace = 0;
+	
+	public static $paramsDefault = array(
+		'withCovers' => false,
+		'withAlbums' => false,
+		'withImages' => false
+	);
+	
+	public function __construct(EntityManager $em, Logger $logger, SecurityContext $securityContext, Validator $validator, $imgHostName, $posts_min, $posts_inc, $kb_inc) {
 		$this->em = $em;	
+		$this->logger = $logger;
+		$this->securityContext = $securityContext;
+		$this->validator = $validator;
 		$this->K_POSTS_MIN = $posts_min;
 		$this->K_POSTS = $posts_inc;
 		$this->K_KB = $kb_inc;
+		$this->imgHostName = $imgHostName;
 	}
 	
 	/* ================================
@@ -47,6 +74,7 @@ class GalleryService {
 	 * @param array $params Параметры выборки
 	 */
 	public function getCategoryList( $params = array() ) {
+		$params = array_merge( self::$paramsDefault, $params );
 		$repo = $this->em->getRepository('SiteGalleryBundle:ImageCategory');
 		if ( $params['withCovers'] == true )
 			$this->categoryList = $repo->getCatsWithCovers();
@@ -81,12 +109,12 @@ class GalleryService {
 	/**
 	 * Возвращает категорию
 	 * @param string $cRefId Текстовый идентификатор категории
-	 * @param boolean $withAlbums Подгрузить список альбомов
-	 * @param boolean $withCovers Подгрузить обложки альбомов
+	 * @param array $params Параметры выборки
 	 * @throws NoResultException
 	 * @throws NonUniqueResultException
 	 */
 	public function getCategory( $cRefId, $params = array() ) {
+		$params = array_merge( self::$paramsDefault, $params );
 		is_numeric($cRefId) ? $id = $cRefId : $id = ImageCategory::getIdFromRefId($cRefId); // TODO маппинг refid в objid, так уж получилось в текущей реализации
 		$repo = $this->em->getRepository('SiteGalleryBundle:ImageCategory');
 		// Can throw NonUniqueResultException
@@ -105,11 +133,12 @@ class GalleryService {
 	 * Возвращает альбом (с изображениями)
 	 * @param string $cRefId Текстовый идентификатор категории
 	 * @param string $aRefId Текстовый идентификатор альбома (уникален в пределах категории)
-	 * @param boolean $withImages Подгрузить изображения
+	 * @param array $params Параметры выборки
 	 * @throws NoResultException
 	 * @throws NonUniqueResultException
 	 */
 	public function getAlbum( $cRefId, $aRefId, $params = array() ) {
+		$params = array_merge( self::$paramsDefault, $params );
 		is_numeric($cRefId) ? $id = $cRefId : $id = ImageCategory::getIdFromRefId($cRefId); // TODO маппинг refid в objid, так уж получилось в текущей реализации
 		$repo = $this->em->getRepository('SiteGalleryBundle:ImageAlbum');
 		// Can throw NonUniqueResultException
@@ -128,10 +157,9 @@ class GalleryService {
 	/**
 	 * Возвращает изображение
 	 * @param integer $iId Идентификатор изображения
-	 * @param boolean $withAlbum Подгрузить альбом
-	 * @param boolean $withCategory Подгрузить категорию
-	 * @throws \Exception
-	 * @throws \NoResultException
+	 * @param array $params Параметры выборки
+	 * @throws NoResultException
+	 * @throws NonUniqueResultException
 	 */
 	public function getImage($iId, $params = array() ) {
 		$repo = $this->em->getRepository('SiteGalleryBundle:Image');
@@ -147,9 +175,8 @@ class GalleryService {
 	
 	/**
 	 * Возвращает изображения пользователя
-	 * @param unknown $uId
-	 * @param string $withAlbum
-	 * @param string $withCategory
+	 * @param UserConfigInfo $user Пользователь
+	 * @param array $params Параметры выборки
 	 * @throws \Exception
 	 */
 	public function getUserImageList( UserConfigInfo $user, $params = array()) {
@@ -163,19 +190,77 @@ class GalleryService {
 	   ================================ */
 	
 	/**
+	 * Возвращает список возможных к созданию альбомов в указанной категории
+	 * @param ImageCategory $category Категория
+	 * @return DictionaryList | null
+	 */
+	public function getAlbumChoiceList( ImageCategory $category ) {
+		$repo = $this->em->getRepository('SiteGalleryBundle:ImageAlbum');
+		$this->albumChoiceList = $repo->getAlbumChoiceList( $category );
+		return $this->albumChoiceList;
+		// TODO необходимо определиться, возвращает ли этот метод exception
+	}
+	
+	/**
+	 * Создаёт альбом заданного типа в заданной категории и возвращает его
+	 * @param ImageCategory $category Категория, в которой необходимо создать альбом
+	 * @param DictionaryItem $dicItem Тип альбома
+	 * @return \Site\GalleryBundle\Entity\ImageAlbum
+	 * @throws \Exception
+	 */
+	public function createAlbum( ImageCategory $category, DictionaryItem $dicItem ) {
+		$user = $this->securityContext->getToken()->getUser();
+		$this->logger->warn(sprintf('%s (%d) пытается создать альбом "%s" в категории "%s"', $user->getUsername(), $user->getId(), $dicItem->getRefId(), $category->getRefId()) );
+		// Создаём альбом
+		$album = new ImageAlbum();
+		$album->setCategory( $category )
+			->setDictionary( $dicItem )
+			->setName( $dicItem->getTitle() )
+			->setDirName( $dicItem->getRefId() )
+			->setAllowAdd( false );
+		// Добавление в очередь на загрузку в БД
+		try {
+			$this->em->persist( $album );
+			if ( !$this->debugMode )
+				$this->em->flush();
+		} catch (\Exception $e) {
+			$errMess = sprintf('Ошибка при создании альбома пользователем %s (%d) - %s', $user->getUsername(), $user->getId(), $e->getMessage());
+			$this->logger->error( $errMess );
+			throw new \Exception( $errMess, 0, $e);
+		}
+		$this->logger->info( sprintf('Альбом "%s" в категории "%s" успешно создан пользователем %s (%d)',
+				$album->getDictionary()->getRefId(),
+				$category->getRefId(),
+				$user->getUsername(),
+				$user->getId()
+		));
+		$this->album = $album;
+		return $this->album;
+	}
+	
+	public function canUserAddImage( ImageAlbum $album ) {
+		if ( $album->getAllowAdd() && $this->securityContext->isGranted('ROLE_MEMBER') )
+			return true;
+		if ( $this->securityContext->isGranted('ROLE_MODERATOR') || $this->securityContext->isGranted('ROLE_GAL_IMGS_ADD') )
+			return true;
+		return false;
+	}
+	
+	/**
 	 * Возвращает доступное пользователю дисковое пространство
 	 * Исключаются из расчёта изображения, загруженные админами в закрытые альбомы
 	 * @return number
 	 * @throws \Exception
 	 */
-	protected function getUserSpace() {
-		$posts = $this->getUser()->getPostsCount() - $this->getUser()->getPostsBadCount();
-		if ( $posts >= self::K_POSTS_MIN ) {
-			$inc = ceil( $posts/self::K_POSTS );
-			$this->totalSpace = $inc * self::K_KB * 1024; // Расчёт максимального доступного пространства к байтах
+	public function getUserSpace() {
+		$user = $this->securityContext->getToken()->getUser();
+		$posts = $user->getPostsCount() - $user->getPostsBadCount();
+		if ( $posts >= $this->K_POSTS_MIN ) {
+			$inc = ceil( $posts/$this->K_POSTS );
+			$this->totalSpace = $inc * $this->K_KB * 1024; // Расчёт максимального доступного пространства к байтах
 			// Расчёт занятого пространства
-			$repo = $this->getDoctrine()->getManager()->getRepository('SiteGalleryBundle:Image');
-			$images = $repo->getUserImages( $this->getUser()->getId() );
+			$repo = $this->em->getRepository('SiteGalleryBundle:Image');
+			$images = $repo->getUserImages( $user );
 			foreach ($images as $image) {
 				$this->occupSpace += filesize( $image->getAbsolutePath() );
 			}
@@ -184,15 +269,104 @@ class GalleryService {
 		return $this->freeSpace;
 	}
 	
-	protected function addImage(UserConfigInfo $user, ImageAlbum $album, UploadedFile $file) {
+	/**
+	 * Добавляет новое изображение в заданную галерею
+	 * @param ImageAlbum $album Альбом
+	 * @param UploadedFile $file Загруженные файл
+	 * @throws \Exception
+	 * @return array|\Site\GalleryBundle\Entity\Image
+	 */
+	public function addImage(ImageAlbum $album, UploadedFile $file) {
+		$user = $this->securityContext->getToken()->getUser();
+		if ( $this->securityContext->isGranted('ROLE_MODERATOR') )
+			$visibility = 'show';
+		else $visibility = 'hide';
+		$this->logger->warn(sprintf('%s (%d) пытается добавить изображение в альбом "%s" в категории "%s"', $user->getUsername(), $user->getId(), $album->getName(), $album->getCategory()->getName()) );
 		$count = 0;
 		$image = new Image($count++);
 		$image->setMemberId( $user->getId() )
 			->setMemberName( $user->getUsername() )
 			->setAlbum( $album )
-			->setVisibility( 'hide' )
+			->setVisibility( $visibility )
 			->setFile( $file );
-		return $image;
+		if ( $this->freeSpace < $image->getFile()->getClientSize() )
+			throw new \Exception('Невозможно загрузить изображение. Превышена дисковая квота.');
+		// Добавление в очередь на загрузку в БД
+		$this->validationErrors = $this->validator->validate( $image );
+		try {
+			if ( count( $this->validationErrors ) == 0 ) {
+				$this->em->persist( $image );
+				// Если у альбома нет обложки, сделать текущее изображение обложкой
+				if ( is_null($album->getCoverImage()) )
+					$album->setCoverImage( $image );
+				if ( !$this->debugMode )
+					$this->em->flush();
+				$this->logger->info(sprintf('Новое изображение успешно добавлено в альбом "%s" в категории "%s" пользователем %s (%d)', $this->album->getDictionary()->getRefId(), $this->album->getCategory()->getRefId(), $user->getUsername(), $user->getId()) );
+			}
+		} catch (\Exception $e) {
+			$errMess = sprintf('Ошибка при добавлении изображения пользователем %s (%d) - %s', $user->getUsername(), $user->getId(), $e->getMessage());
+			$this->logger->error( $errMess );
+			throw new \Exception( $errMess, 0, $e);
+		}
+		$this->image = $image;	
+		return $this->image;
+	}
+	
+	/* ================================
+	 * EditController
+	================================ */
+	
+	public function setAlbumCover(ImageAlbum $album, Image $image) {
+		$user = $this->securityContext->getToken()->getUser();
+		$this->logger->warn(sprintf('%s (%d) пытается установить изображение id="%d" как обложку альбома "%s" в категории "%s"', $user->getUsername(), $user->getId(), $image->getId(), $album->getDictionary()->getRefId(), $album->getCategory()->getRefId()) );			
+		$album->setCoverImage( $image );
+		try {
+			if ( !$this->debugMode )
+				$this->em->flush();
+			$this->logger->info(sprintf('Изображение id="%d" успешно установлено обложкой альбома "%s" в категории "%s" пользователем %s (%d)', $image->getId(), $album->getDictionary()->getRefId(), $album->getCategory()->getRefId(), $user->getUsername(), $user->getId()) );
+		} catch (\Exceprion $e) {
+			$errMess = sprintf('Ошибка при установке изображения id="%d" обложкой альбома "%s" в категории "%s" пользователем %s (%d) - %s', $image->getId(), $album->getDictionary()->getRefId(), $album->getCategory()->getRefId(), $user->getUsername(), $user->getId(), $e->getMessage());
+			$this->logger->error( $errMess );
+			throw new \Exception( $errMess, 0, $e);
+		}
+	}
+	
+	public function setCategoryCover(ImageCategory $category, Image $image) {
+		$user = $this->securityContext->getToken()->getUser();
+		$this->logger->warn(sprintf('%s (%d) пытается установить изображение id="%d" как обложку категории "%s"', $user->getUsername(), $user->getId(), $image->getId(), $category->getRefId()) );			
+		$category->setCoverImage( $image );
+		try {
+			if ( !$this->debugMode )
+				$this->em->flush();
+			$this->logger->info(sprintf('Изображение id="%d" успешно установлено обложкой категории "%s" пользователем %s (%d)', $image->getId(), $category->getRefId(), $user->getUsername(), $user->getId()) );
+		} catch (\Exceprion $e) {
+			$errMess = sprintf('Ошибка при установке изображения id="%d" обложкой категории "%s" пользователем %s (%d) - %s', $image->getId(), $category->getRefId(), $user->getUsername(), $user->getId(), $e->getMessage());
+			$this->logger->error( $errMess );
+			throw new \Exception( $errMess, 0, $e);
+		}
+	}
+	
+	/* ================================
+	 * Other
+	================================ */
+	
+	public function getOutput() {
+		 return array(
+			'categoryList' => $this->categoryList,
+			'category' => $this->category,
+		 	'albumList' => $this->albumList,
+			'album' => $this->album,
+		 	'imageList' => $this->imageList,
+		 	'image' => $this->image,
+			'imgHostName' => $this->imgHostName,
+			'validationErrors' => $this->validationErrors,
+		 	'albumChoiceList' => $this->albumChoiceList,
+		 	'spaceInfo' => array(
+				'total' => $this->totalSpace,
+				'free' => $this->freeSpace,
+				'occup' => $this->occupSpace
+		 	)
+		);
 	}
 }
 ?>
