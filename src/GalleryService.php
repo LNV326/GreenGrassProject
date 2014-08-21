@@ -88,6 +88,7 @@ class GalleryService {
 	 * @param array $params Параметры выборки
 	 */
 	public function getAlbumsList( ImageCategory $category, $params = array() ) {
+		$params = array_merge( self::$paramsDefault, $params );
 		$repo = $this->em->getRepository('SiteGalleryBundle:ImageAlbum');
 		if ( $params['withCovers'] == true )
 			$this->albumList = $repo->getAlbumsWithCovers( $category );
@@ -101,6 +102,7 @@ class GalleryService {
 	 * @param array $params Параметры выборки
 	 */
 	public function getImagesList( ImageAlbum $album, $params = array() ) {
+		$params = array_merge( self::$paramsDefault, $params );
 		$repo = $this->em->getRepository('SiteGalleryBundle:Image');
 		$this->imageList = $repo->getImageList( $album );
 		return $this->imageList;
@@ -110,7 +112,7 @@ class GalleryService {
 	 * Возвращает категорию
 	 * @param string $cRefId Текстовый идентификатор категории
 	 * @param array $params Параметры выборки
-	 * @throws NoResultException
+	 * @return ImageCategory | NULL
 	 * @throws NonUniqueResultException
 	 */
 	public function getCategory( $cRefId, $params = array() ) {
@@ -122,10 +124,11 @@ class GalleryService {
 			$this->category = $repo->getCategoryWithCover( $id );
 		else $this->category = $repo->getCategory( $id );
 		// Валидация только на существование запрошенного объекта, т.е на категорию
-		if ( is_null($this->category) )
-		 	throw new NoResultException(sprintf('Категория %s не существует', $id));
-		if ( $params['withAlbums'] == true )
-			$this->getAlbumsList( $this->category, $params );
+// 		if ( is_null($this->category) )
+// 		 	throw new NoResultException(sprintf('Категория %s не существует', $id));
+		if ( !is_null($this->category) )
+			if ( $params['withAlbums'] == true )
+				$this->getAlbumsList( $this->category, $params );
 		return $this->category;
 	}
 	
@@ -134,7 +137,7 @@ class GalleryService {
 	 * @param string $cRefId Текстовый идентификатор категории
 	 * @param string $aRefId Текстовый идентификатор альбома (уникален в пределах категории)
 	 * @param array $params Параметры выборки
-	 * @throws NoResultException
+	 * @return ImageAlbum | NULL
 	 * @throws NonUniqueResultException
 	 */
 	public function getAlbum( $cRefId, $aRefId, $params = array() ) {
@@ -146,11 +149,13 @@ class GalleryService {
 			$this->album = $repo->getAlbumWithCover($id, $aRefId);
 		else $this->album = $repo->getAlbum($id, $aRefId);
 		// Валидация только на существование запрошенного объекта, т.е на категорию
-		if ( is_null($this->album) )
-			throw new NoResultException(sprintf('Альбом %s не существует', $aRefId));
-		$this->category = $this->album->getCategory();
-		if ( $params['withImages'] == true )
-			$this->getImagesList( $this->album, $params);
+// 		if ( is_null($this->album) )
+// 			throw new NoResultException(sprintf('Альбом %s не существует', $aRefId));
+		if ( !is_null($this->album) ) {
+			$this->category = $this->album->getCategory();
+			if ( $params['withImages'] == true )
+				$this->getImagesList( $this->album, $params);
+		}
 		return $this->album;
 	}
 	
@@ -158,18 +163,21 @@ class GalleryService {
 	 * Возвращает изображение
 	 * @param integer $iId Идентификатор изображения
 	 * @param array $params Параметры выборки
-	 * @throws NoResultException
+	 * @return Image | NULL
 	 * @throws NonUniqueResultException
 	 */
 	public function getImage($iId, $params = array() ) {
+		$params = array_merge( self::$paramsDefault, $params );
 		$repo = $this->em->getRepository('SiteGalleryBundle:Image');
 		// Can throw NonUniqueResultException
 		$this->image = $repo->getImage( $iId );
 		// Валидация только на существование запрошенного объекта, т.е на категорию
-		if ( is_null($this->image) )
-			throw new NoResultException(sprintf('Изображение %s не существует', $iId));
-		$this->album = $this->image->getAlbum();
-		$this->category = $this->album->getCategory();
+// 		if ( is_null($this->image) )
+// 			throw new NoResultException(sprintf('Изображение %s не существует', $iId));
+		if ( !is_null($this->image) ) {
+			$this->album = $this->image->getAlbum();
+			$this->category = $this->album->getCategory();
+		}
 		return $this->image;
 	}
 	
@@ -180,8 +188,9 @@ class GalleryService {
 	 * @throws \Exception
 	 */
 	public function getUserImageList( UserConfigInfo $user, $params = array()) {
+		$params = array_merge( self::$paramsDefault, $params );
 		$repo = $this->em->getRepository('SiteGalleryBundle:Image');
-		$this->imageList = $repo->getUserImages( $user );
+		$this->imageList = $repo->getUserImages( $user );		
 		return $this->imageList;
 	}
 	
@@ -223,6 +232,11 @@ class GalleryService {
 			$this->em->persist( $album );
 			if ( !$this->debugMode )
 				$this->em->flush();
+			else {
+				if ( rand(0, 1) > 0 ) {
+					throw new \Exception('Test Exception');
+				}
+			}
 		} catch (\Exception $e) {
 			$errMess = sprintf('Ошибка при создании альбома пользователем %s (%d) - %s', $user->getUsername(), $user->getId(), $e->getMessage());
 			$this->logger->error( $errMess );
@@ -241,8 +255,10 @@ class GalleryService {
 	public function canUserAddImage( ImageAlbum $album ) {
 		if ( $album->getAllowAdd() && $this->securityContext->isGranted('ROLE_MEMBER') )
 			return true;
-		if ( $this->securityContext->isGranted('ROLE_MODERATOR') || $this->securityContext->isGranted('ROLE_GAL_IMGS_ADD') )
+		if ( $this->securityContext->isGranted('ROLE_MODERATOR') || $this->securityContext->isGranted('ROLE_GAL_IMGS_ADD') ) {
+			$this->freeSpace = 100;
 			return true;
+		}
 		return false;
 	}
 	
@@ -367,6 +383,28 @@ class GalleryService {
 				'occup' => $this->occupSpace
 		 	)
 		);
+	}
+	
+	public function getAlbumAvalibleActionsList(ImageAlbum $album) {
+		$perms = array(
+			'ADD' => false,
+			'EDIT' => false,
+			'DEL' => false
+		);
+		// Добавление изображений
+		if (( $album->getAllowAdd() && $this->securityContext->isGranted('ROLE_MEMBER') )
+			|| $this->securityContext->isGranted('ROLE_MODERATOR')
+			|| $this->securityContext->isGranted('ROLE_GAL_IMGS_ADD') )
+			$perms['ADD'] = true;		
+		// Редактирование альбома
+		if ( $this->securityContext->isGranted('ROLE_MODERATOR')
+			|| $this->securityContext->isGranted('ROLE_GAL_ALB_EDIT'))
+			$perms['EDIT'] = true;
+		// Удаление альбома
+		if ( $this->securityContext->isGranted('ROLE_ADMIN')
+			|| $this->securityContext->isGranted('ROLE_GAL_ALB_DEL'))
+			$perms['DEL'] = true;
+		return $perms;
 	}
 }
 ?>

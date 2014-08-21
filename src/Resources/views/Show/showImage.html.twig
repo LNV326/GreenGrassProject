@@ -1,36 +1,36 @@
 {% extends "SiteGalleryBundle::gallery.html.twig" %}
 
-{% block title %}Альбом {{ body.album.dictionary.title }} | Категория {{ body.album.category.name }} | Галерея изображений {{ parent(title) }}{% endblock %}
+{% block title %}Альбом {{ album.dictionary.title }} | Категория {{ album.category.name }} | Галерея изображений {{ parent(title) }}{% endblock %}
 
-{% block keywords %}{{ body.album.category.name }}, {{ parent(keywords) }}{% endblock %}
+{% block keywords %}{{ album.category.name }}, {{ parent(keywords) }}{% endblock %}
 
 {% block location %}
 	<div class="module-navigate left">
-		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':body.category.getRefId}) }}'>{{ body.category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':body.category.getRefId, 'aRefId':body.album.dictionary.getRefId}) }}'>{{ body.album.dictionary.title }}</a><a>{{ body.image.getId }}</a>
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.dictionary.title }}</a><a>{{ image.getId }}</a>
 	</div>
 	<div class="fb-dialog right">
 		{% if is_granted('ROLE_MEMBER') %}
-			{% if is_granted('ROLE_GAL_IMGS_EDIT') %}<a href='{{ path('site_gallery_hideImage', {'imageId':body.image.getId}) }}'>Скрыть</a> / <a href='{{ path('site_gallery_showImage', {'imageId':body.image.getId}) }}'>Показать</a>{% endif %}
-			{% if is_granted('ROLE_GAL_IMGS_DEL') or app.user.getId==body.image.memberId %} | <a href='{{ path('site_gallery_removeImage', {'imageId':body.image.getId}) }}'>Удалить</a>{% endif %}
-			{% if is_granted('ROLE_GAL_CATS_EDIT') %} | <a href='{{ path('site_gallery_setCategoryCover', {'cRefId':bodycategory.getRefId, 'iId':body.image.getId}) }}'>Обложка категории</a>{% endif %}
-			{% if is_granted('ROLE_GAL_ALBS_EDIT') %} | <a href='{{ path('site_gallery_setAlbumCover', {'cRefId':body.category.getRefId, 'aRefId':body.album.dictionary.getRefId, 'iId':body.image.getId}) }}'>Обложка альбома</a>{% endif %}
+			{% if is_granted('ROLE_GAL_IMGS_EDIT') %}<a href='{{ path('site_gallery_hideImage', {'imageId':image.getId}) }}'>Скрыть</a> / <a href='{{ path('site_gallery_showImage', {'imageId':image.getId}) }}'>Показать</a>{% endif %}
+			{% if is_granted('ROLE_GAL_IMGS_DEL') or app.user.getId==image.memberId %} | <a href='{{ path('site_gallery_removeImage', {'imageId':image.getId}) }}'>Удалить</a>{% endif %}
+			{% if is_granted('ROLE_GAL_CATS_EDIT') %} | <a href='{{ path('site_gallery_setCategoryCover', {'cRefId':category.getRefId, 'iId':image.getId}) }}'>Обложка категории</a>{% endif %}
+			{% if is_granted('ROLE_GAL_ALBS_EDIT') %} | <a href='{{ path('site_gallery_setAlbumCover', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId, 'iId':image.getId}) }}'>Обложка альбома</a>{% endif %}
 		{% endif %}
 	</div>
 {% endblock %}
 
 {% block content %}
 <div class='gallery-container' id='image'>
-	<img class='gallery-image' src='{{ body.imageHostName ~ body.image.getWebPath }}'/>
+	<img class='gallery-image' src='{{ imgHostName ~ image.getWebPath }}'/>
 	<div class='image-about'>
 		<div class='left'>
-			<div>Описание: {{ body.image.getInfo|default('n/a') }}</div>
-			<div>Автор: <a href='{{ path('site_gallery_userImages', {'uId':body.image.getMemberId}) }}'>{{ body.image.getMemberName | default('n/a') | raw }}</a></div>
-			<div>Добавлено: {{ body.image.getSize|default('n/a') }}</div>
+			<div>Описание: {{ image.getInfo|default('n/a') }}</div>
+			<div>Автор: <a href='{{ path('site_gallery_userImages', {'uId':image.getMemberId}) }}'>{{ image.getMemberName | default('n/a') | raw }}</a></div>
+			<div>Добавлено: {{ image.getSize|default('n/a') }}</div>
 		</div>
 		<div class='right'>
-			<div>Категория: <a href='{{ path('site_gallery_category', {'cRefId':body.category.getRefId}) }}'>{{ body.category.name }}</a></div>
-			<div>Альбом: <a href='{{ path('site_gallery_album', {'cRefId':body.category.getRefId, 'aRefId':body.album.dictionary.getRefId}) }}'>{{ body.album.dictionary.title }}</a></div>
-			<div id='image-size'>Разрешение: {{ body.image.getWidth ~ 'x' ~ body.image.getHeight }} px</div>	
+			<div>Категория: <a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a></div>
+			<div>Альбом: <a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.dictionary.title }}</a></div>
+			<div id='image-size'>Разрешение: {{ image.getWidth ~ 'x' ~ image.getHeight }} px</div>	
 		</div>		
 	</div>
 	<div class='image-links'>
@@ -38,15 +38,15 @@
 		<ul class='content'>
 			<li>
 				<div class='title'>Ссылка: </div>
-				<input type='text' class='content' value='{{ body.imageHostName ~ body.image.getWebPath }}'/>
+				<input type='text' class='content' value='{{ imgHostName ~ image.getWebPath }}'/>
 			</li>
 			<li>
 				<div class='title'>Картинка в тексте: </div>
-				<input type='text' class='content' value='[img]{{ body.imageHostName ~ body.image.getWebPath }}[/img]'/>
+				<input type='text' class='content' value='[img]{{ imgHostName ~ image.getWebPath }}[/img]'/>
 			</li>
 			<li>
 				<div class='title'>Превью - увеличение по клику: </div>
-				<input type='text' class='content' value='[url={{ body.imageHostName ~ body.image.getWebPath }}][img]{{ body.imageHostName ~ body.image.getWebThumbPath }}[/img][/url]'/>
+				<input type='text' class='content' value='[url={{ imgHostName ~ image.getWebPath }}][img]{{ imgHostName ~ image.getWebThumbPath }}[/img][/url]'/>
 			</li>
 		</ul>
 	</div>

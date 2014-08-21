@@ -18,6 +18,15 @@
 
 {% import _self as macros %}
 
+{% block title %}Загрузка изображений | Альбом {{ album.name }} | Категория {{ category.name }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.name }}</a>
+	</div>
+{% endblock %}
+
 {# % block content %}
 <h1>Upload File</h1>
 
@@ -34,37 +43,46 @@
 {% endblock %#}
 
 {% block content %}
-{% if status=='Success' %}
 	{% embed "SiteCoreBundle::fancyBoxInner.html.twig" %}
 		{% block title %}
 			<h1>Добавление изображений</h1>
-			<h3>Название категории: {{ body.album.category.name }}</h3>
-			<h3>Название альбома: {{ body.album.name }}</h3>
+			<h3>Название категории: {{ album.category.name }}</h3>
+			<h3>Название альбома: {{ album.name }}</h3>
 			<h4>Формат изображений: <b>Jpeg</b></h4>
 			<h4>Максимальный размер файла: <b>1 Мб</b></h4>
-			{% if body.album.getAllowAdd == true %}<h4>Вам доступно: <b>{{ macros.bytesToSize(body.space.free) }}</b> / <b>{{ macros.bytesToSize(body.space.total) }}</b></h4>{% endif %}
-			<span>Выберите файлы:</span> <input type='file' multiple id='input-files' destination='{{ path('site_gallery_addImages', {'cRefId': app.request.attributes.get('cRefId'),'aRefId': app.request.attributes.get('aRefId')}) }}'></input>	
-		{% endblock %}
+			{% if album.getAllowAdd == true %}<h4>Вам доступно: <b>{{ macros.bytesToSize(spaceInfo.free) }}</b> / <b>{{ macros.bytesToSize(spaceInfo.total) }}</b></h4>{% endif %}
+			<form action='{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST' id='image' name='image'>
+				<span>Выберите файлы:</span>
+				<input type='file'  multiple id='image' name='image'/>
+				<button type='submit' formtarget='_blank'>Загрузить</button>
+			</form>
+			
+			<form {{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST'>
+  <input type="file" name="pic" accept="image/*">
+  <input type="submit" value='123'>
+</form>
+<form action="{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}" method="post" {{ form_enctype(form) }}>
+
+    {{ form_widget(form) }}
+
+    <input type="submit" value="Upload Document" />
+</form>
+			
+			{% endblock %}
 		{% block content %}
 			<ul class='gallery-container' id='droparea'></ul>
-			<div id='dropbox'>Переместите изображения сюда</div>
+			{#<div id='dropbox'>Переместите изображения сюда</div>
 			<div id='droparea_utils' class='hide'>
-				{#{ image_template | raw }#}
 				<li class='gallery_thumb small'>
 					<a href='' status="show" imgid=""><img/></a>
 				</li>
-			</div>			
+			</div>		
+			#}	
 			<script>
 $(document).ready(function(){ 
-	$('.gallery-container#droparea').nfsko('gallery');
+	//$('.gallery-container#droparea').nfsko('gallery');
 });
 			</script>
 		{% endblock %}
 	{% endembed %}
-{% else %}
-	{{ error[0] }}
-	{% if app.user.isMod %}		
-		{{ error.trace }}
-	{% endif %}
-{% endif %}
 {% endblock %}

@@ -44,7 +44,7 @@ services:
     
     gallery_service:
         class: "%gallery_service.class%"
-        arguments: [@doctrine.orm.entity_manager, %posts_min%, %posts_inc%, %kb_inc%]
+        arguments: [@doctrine.orm.entity_manager, @gallery_add_logger, @security.context, @validator, %img_host%, %posts_min%, %posts_inc%, %kb_inc%]
     redirect_service:
         class: "%redirect_service.class%"
         arguments: [@service_container, @gallery_redirect_logger]

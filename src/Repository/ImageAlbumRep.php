@@ -82,14 +82,13 @@ class ImageAlbumRep extends EntityRepository
 	/**
 	 * Возвращает список всех заложенных в справочнике альбомов
 	 */
-	public function getAlbumsList($cRefId = null) {
+	public function getAlbumChoiceList( ImageCategory $category ) {
 		
 		$list = $this->getEntityManager()
 		->createQuery('SELECT alb.dictId
 				FROM SiteGalleryBundle:ImageAlbum alb
-				LEFT JOIN alb.category c
-				WHERE c.id = :id')
-		->setParameter('id', $cRefId)
+				WHERE alb.categoryId = :id')
+		->setParameter('id', $category->getId())
 		->getResult();
 		return $this->getEntityManager()->getRepository('SiteCoreBundle:DictionaryList')->getDicListWithItems(null,'albums', $list);
 

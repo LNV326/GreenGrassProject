@@ -1,41 +1,57 @@
 {% extends "SiteGalleryBundle::gallery.html.twig" %}
 
-{% block title %}Альбом {{ body.album.dictionary.title }} | Категория {{ body.album.category.name }} | Галерея изображений {{ parent(title) }}
+{% macro pages(url, currentPage, maxPage) %}
+{% spaceless %}
+	{% set pages = [] %}
+    {% for i in 1..maxPage %}
+    	{% if i == currentPage %}
+    		{% set pages = pages|merge(['<a href="' ~ url ~ '?page=' ~ i ~ '" class="current">' ~ i ~ '</a>']) %}
+    	{% else %}
+    		{% set pages = pages|merge(['<a href="' ~ url ~ '?page=' ~ i ~ '">' ~ i ~ '</a>']) %}
+    	{% endif %}
+    {% endfor %}
+    Страница: [{{ pages|join('|')|raw }}]
+{% endspaceless %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{% block title %}Альбом {{ album.dictionary.title }} | Категория {{ album.category.name }} | Галерея изображений {{ parent(title) }}
 {% endblock %}
-{% block keywords %}{{ body.category.name }}, {{ parent(keywords) }}
+{% block keywords %}{{ category.name }}, {{ parent(keywords) }}
 {% endblock %}
 
 {% block location %}
 	<div class="module-navigate left">
-		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':body.category.getRefId}) }}'>{{ body.category.name }}</a><a>{{ body.album.dictionary.title }}</a>
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a>{{ album.dictionary.title }}</a>
 	</div>
 	<div class="fb-dialog right">
-		{% if is_granted('ROLE_MEMBER') and (is_granted('ROLE_GAL_IMGS_ADD') or body.album.getAllowAdd) %}<a href='{{ path('site_gallery_addImages', {'cRefId':body.category.getRefId,'aRefId':body.album.dictionary.refId}) }}'>Добавить</a>{% endif %}
+		{% if is_granted('ROLE_MEMBER') and (is_granted('ROLE_GAL_IMGS_ADD') or album.getAllowAdd) %}<a href='{{ path('site_gallery_addImages', {'cRefId':category.getRefId,'aRefId':album.dictionary.refId}) }}'>Добавить</a>{% endif %}
 	</div>
-	<div class="center">
-		Страница {{ body.page }} из {{ body.pages }}
+	<div class="page-navigator center">
+		{{ macros.pages(path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}), pageInfo.page, pageInfo.pages) }}
 	</div>
 {% endblock %}
 
 {% block content %}
 <ul class='gallery-container' id='album'>
-	{% set imageHostName = body.imageHostName %}
+	{% set imgHostName = imgHostName %}
 	{% set userId = app.user.getId %}
-	{% for item, image in body.imageList if item in body.firstItem..body.lastItem %}
+	{% for item, image in imageList if item in pageInfo.firstItem..pageInfo.lastItem %}
 		{% if is_granted('ROLE_GAL_IMGS_EDIT') or image.visibility==1 or image.memberId==userId %}
 			{% block image_block %}
 			<li class='gallery_thumb small'>
-{# 				<a href='{{ imageHostName ~ image.getWebPath }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">#}
-{# 					<img lazysrc='{{ imageHostName ~ image.getWebThumbPath }}'/>#}
+{# 				<a href='{{ imgHostName ~ image.getWebPath }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">#}
+{# 					<img lazysrc='{{ imgHostName ~ image.getWebThumbPath }}'/>#}
 {# 				</a>#}
 				<a href='{{ path('site_gallery_image', {'iId':image.id}) }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">
-					<img lazysrc='{{ imageHostName ~ image.getWebThumbPath }}'/>
+					<img lazysrc='{{ imgHostName ~ image.getWebThumbPath }}'/>
 				</a>
 			</li>
 			{% endblock %}
 		{% endif %}
 	{% endfor %}
-	<div id='gallery_exception' {% if body.imageList is empty %}class='hide'{% endif %}>В данном альбоме пока нет изображений</div>
+	<div id='gallery_exception' {% if imageList is empty %}class='hide'{% endif %}>В данном альбоме пока нет изображений</div>
 </ul>
 <script>
 $(document).ready(function(){ 

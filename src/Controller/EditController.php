@@ -32,7 +32,7 @@ class EditController extends DefaultController {
 	
 	/**
 	 * Отображает изображение
-	 * @Secure(roles="ROLE_GAL_EDIT_IMG")
+	 * @Secure(roles="ROLE_MODERATOR")
 	 */
 	public function showImageAction($imageId) {
 		$this->action = __FUNCTION__;
@@ -70,58 +70,44 @@ class EditController extends DefaultController {
 	 * @param unknown $cRefId
 	 * @param unknown $aRefId
 	 * 
-	 * @Secure(roles="ROLE_GAL_EDIT_ALB")
+	 * @Secure(roles="ROLE_MODERATOR")
 	 */
 	public function setAlbumCoverAction($cRefId, $aRefId, $iId) {
-		$this->action = __FUNCTION__;
-		$this->initVars();
-		$id = ImageCategory::getIdFromRefId($cRefId); // TODO маппинг refid в objid
-		$em = $this->getDoctrine()->getManager();
-		$logger = $this->get('gallery_edit_logger');
+		$this->gallery = $this->get('gallery_service');
 		try {
-			$logger->warn(sprintf('%s (%d) пытается установить изображение id="%d" как обложку альбома "%s" в категории "%s"', $this->getUser()->getUsername(), $this->getUser()->getId(), $iId, $aRefId, $cRefId) );
-			$image = $this->getImage($iId);
-			$album = $this->getAlbum($cRefId, $aRefId);
-			$album->setCoverImage($image);
-			$em->persist($album);
-			$em->flush();
-			$logger->info(sprintf('Изображение id="%d" успешно установлено обложкой альбома "%s" в категории "%s" пользователем %s (%d)', $image->getId(), $album->getDictionary()->getRefId(), $album->getCategory()->getRefId(), $this->getUser()->getUsername(), $this->getUser()->getId()) );
-		} catch (\Exception $e) {
-			$logger->error( sprintf('Ошибка при установке изображения id="%d" обложкой альбома "%s" в категории "%s" пользователем %s (%d) - %s', $iId, $aRefId, $cRefId, $this->getUser()->getUsername(), $this->getUser()->getId(), $e->getMessage()) );
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
+			$album = $this->gallery->getAlbum( $cRefId, $aRefId );
+			$image = $this->gallery->getImage( $iId );
+		} catch (NoResultException $e) {
+			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__), $e );
 		}
-		return new JsonResponse( $this->createResponse() );
+		try {
+			$this->gallery->setAlbumCover( $album, $image );
+		} catch (\Exception $e) {
+			throw new \Exception( sprintf('Невозможно выполнить операцию %s - ошибка выполнения', __METHOD__), 0, $e);
+		}
+		return $this->gallery->getOutput();
 	}
 	
 	/**
 	 * Устанавливает обложку для категории
 	 * @param unknown $cRefId
 	 * 
-	 * @Secure(roles="ROLE_GAL_EDIT_CAT")
+	 * @Secure(roles="ROLE_MODERATOR")
 	 */
 	public function setCategoryCoverAction($cRefId, $iId) {
-		$this->action = __FUNCTION__;
-		$this->initVars();
-		$id = ImageCategory::getIdFromRefId($cRefId); // TODO маппинг refid в objid
-		$em = $this->getDoctrine()->getManager();
-		$logger = $this->get('gallery_edit_logger');
+		$this->gallery = $this->get('gallery_service');
 		try {
-			$logger->warn(sprintf('%s (%d) пытается установить изображение id="%d" как обложку категории "%s"', $this->getUser()->getUsername(), $this->getUser()->getId(), $iId, $cRefId) );
-			$image = $this->getImage($iId);	
-			$category = $this->getCategory($cRefId);
-			$category->setCoverImage($image);
-			$em->persist($category);
-			$em->flush();
-			$logger->info(sprintf('Изображение id="%d" успешно установлено обложкой категории "%s" пользователем %s (%d)', $image->getId(), $category->getRefId(), $this->getUser()->getUsername(), $this->getUser()->getId()) );
-		} catch (\Exception $e) {
-			$logger->error( sprintf('Ошибка при установке изображения id="%d" обложкой категории "%s" пользователем %s (%d) - %s', $iId, $cRefId, $this->getUser()->getUsername(), $this->getUser()->getId(), $e->getMessage()) );
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
+			$category = $this->gallery->getCategory( $cRefId );
+			$image = $this->gallery->getImage( $iId );
+		} catch (NoResultException $e) {
+			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__), $e );
 		}
-		return new JsonResponse( $this->createResponse() );
+		try {
+			$this->gallery->setCategoryCover( $category, $image );
+		} catch (\Exception $e) {
+			throw new \Exception( sprintf('Невозможно выполнить операцию %s - ошибка выполнения', __METHOD__), 0, $e);
+		}
+		return $this->gallery->getOutput();
 	}
 }
 ?>

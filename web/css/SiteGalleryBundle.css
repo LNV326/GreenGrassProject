@@ -312,9 +312,6 @@
 	padding: 0 5px 0 15px;
 }
 
-/* ==========================
-    Ð¡Ð¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¼Ð¾Ð´ÑƒÐ»Ñ Ð³Ð°Ð»ÐµÑ€ÐµÐ¸ (Ð¾Ð±Ñ‰ÐµÐµ Ð¾Ð¿Ð¸ÑÐ°Ð½Ð¸Ðµ)
-============================= */
 
 /* ÐžÐ±Ð»Ð°ÑÑ‚ÑŒ Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‚Ð° Ðº Ð¿Ñ€ÐµÐ´Ñ‹Ð´ÑƒÑ‰ÐµÐ¼Ñƒ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸ÑŽ (ÐºÐ½Ð¾Ð¿ÐºÐ° "ÐÐ°Ð·Ð°Ð´") */
 #content_backward {
@@ -325,142 +322,6 @@
 	width: 50px;
 	height: 100%;
 	display: none;
-}
-
-/* ÐŸÑ€ÐµÐ²ÑŒÑŽ - ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€ */
-.gallery_thumb {
-	border: 1px solid #424242;
-	overflow: hidden;
-	position: relative;
-	display: inline-block;
-	margin: 0px;
-	text-align: center;
-	margin: 2px;
-	cursor: pointer;
-	border-collapse: collapse;
-	-webkit-box-sizing: border-box;
-	   -moz-box-sizing: border-box;
-		    box-sizing: border-box;	
-	-webkit-transition: 0.25s;
-	   -moz-transition: 0.25s;
-	     -o-transition: 0.25s;
-		    transition: 0.25s;
-}
-.gallery_thumb:hover {
-	border-color: #c7c7c7;
-	-webkit-box-shadow: 0 0 12px 2px black;
-	   -moz-box-shadow: 0 0 12px 2px black;
-			box-shadow: 0 0 12px 2px black;
-	z-index: 2;
-}
-/* ÐŸÑ€ÐµÐ²ÑŒÑŽ - Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ñ†ÐµÐ½Ñ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¸ Ð¾Ð±Ñ€ÐµÐ·ÐºÐ¸ */
-.gallery_thumb > a {
-	display: table-cell;
-	vertical-align: middle;
-	background: none no-repeat scroll center center #242424;
-	background-size: 100%;
-	border: 0px;
-}
-/* ÐŸÑ€ÐµÐ²ÑŒÑŽ - Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ */
-.gallery_thumb > a > img {
-	width: 100%;
-	border: 0px;
-}
-/* ÐŸÑ€ÐµÐ²ÑŒÑŽ - Ð½Ð°Ð·Ð²Ð°Ð½Ð¸Ðµ */
-.gallery_thumb_name, .tp-title {
-	background: url("../../SiteCore/images/fon.gif") repeat;
-	left: 0;
-	right: 0;
-	height: 20px;
-	position: absolute;
-	font-size: 12px;
-	line-height: 20px;
-	color: white;
-	opacity: 0.8;
-	overflow: hidden;
-	font-weight: bold;
-	padding-left: 20px;
-	text-align: left;
-}
-/* Ð¡Ñ‚Ñ€ÐµÐ»ÐºÐ° Ð¿ÐµÑ€ÐµÐ´ Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÐµÐ¼ Ð¿Ñ€ÐµÐ²ÑŒÑŽ */
-.gallery_thumb_name:before {
-	content: '';
-	position: absolute;
-	height: 100%;
-	width: 13px;
-	left: 5px;
-	top: 0;
-	background: url("../../SiteCore/images/lil.gif") no-repeat scroll 0 center transparent;
-}
-
-/* ==========================
-    Ð¡Ð¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¼Ð¾Ð´ÑƒÐ»Ñ Ð³Ð°Ð»ÐµÑ€ÐµÐ¸ (Ð±Ð¾Ð»ÑŒÑˆÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ)
-============================= */
-
-/* Ð‘Ð¾Ð»ÑŒÑˆÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€ */
-.gallery_thumb.big {
-	width: 320px;
-	height: 175px;
-}
-/* Ð‘Ð¾Ð»ÑŒÑˆÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ñ†ÐµÐ½Ñ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¸ Ð¾Ð±Ñ€ÐµÐ·ÐºÐ¸ */
-.gallery_thumb.big > a {
-	width: 320px;
-	height: 250px;
-}
-/* Ð‘Ð¾Ð»ÑŒÑˆÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ */
-.gallery_thumb.big > a > img {
-	margin-top: -70px;
-}
-/* Ð‘Ð¾Ð»ÑŒÑˆÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð½Ð°Ð·Ð²Ð°Ð½Ð¸Ðµ */
-.gallery_thumb.big .gallery_thumb_name, .gallery_thumb.big .tp-title {
-	top: 10px;
-}
-/* ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð² Ð³Ñ€ÑƒÐ¿Ð¿Ðµ */
-.tp-title span:nth-child(2) {
-	padding: 0 5px;
-	right: 0px;
-	height: 100%;
-	top: 0px;
-	position: absolute;
-	display: block;
-}
-
-/* ==========================
-    Ð¡Ð¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¼Ð¾Ð´ÑƒÐ»Ñ Ð³Ð°Ð»ÐµÑ€ÐµÐ¸ (Ð¼Ð°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ)
-============================= */
-
-/* ÐœÐ°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€ */
-.gallery_thumb.small {
-	margin: 1px;
-	width: 120px;
-	height: 120px;
-}
-/* ÐœÐ°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ñ†ÐµÐ½Ñ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¸ Ð¾Ð±Ñ€ÐµÐ·ÐºÐ¸ */
-.gallery_thumb.small > a {
-	width: 180px;
-	height: 120px;
-	margin-left: -30px;
-	display: block;
-}
-/* ÐœÐ°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ */
-.gallery_thumb.small > a > img {
-	height: 120px;
-	width: auto;
-}
-/* ÐœÐ°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð½Ð°Ð·Ð²Ð°Ð½Ð¸Ðµ */
-.gallery_thumb.small .gallery_thumb_name {
-	top: 8px;
-}
-/* ÐœÐ°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ñ†ÐµÐ½Ñ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¸ Ð¾Ð±Ñ€ÐµÐ·ÐºÐ¸ */
-.gallery_thumb.small.book > a {
-	width: 120px;
-	height: 180px;
-	margin-left: 0;
-}
-/* ÐœÐ°Ð»ÐµÐ½ÑŒÐºÐ¾Ðµ Ð¿Ñ€ÐµÐ²ÑŒÑŽ - Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ */
-.gallery_thumb.small.book > a > img {
-	width: 120px;
-	height: auto;
 }
 
 /* ==========================
@@ -688,3 +549,217 @@
 	width: 100%;
 }
 
+/* ==========================
+    Ñîäåðæèìîå ìîäóëÿ ãàëåðåè (îáùåå îïèñàíèå)
+============================= */
+
+/* Ïðåâüþ - êîíòåéíåð */
+.gallery_thumb {
+	border: 1px solid #424242;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+	margin: 0px;
+	text-align: center;
+	margin: 2px;
+	cursor: pointer;
+	border-collapse: collapse;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+		    box-sizing: border-box;	
+	-webkit-transition: 0.25s;
+	   -moz-transition: 0.25s;
+	     -o-transition: 0.25s;
+		    transition: 0.25s;
+}
+.gallery_thumb:hover {
+	border-color: #c7c7c7;
+	-webkit-box-shadow: 0 0 12px 2px black;
+	   -moz-box-shadow: 0 0 12px 2px black;
+			box-shadow: 0 0 12px 2px black;
+	z-index: 2;
+}
+/* Ïðåâüþ - îáëàñòü öåíòðèðîâàíèÿ è îáðåçêè */
+.gallery_thumb > a {
+	display: table-cell;
+	vertical-align: middle;
+	background: none no-repeat scroll center center #242424;
+	background-size: 100%;
+	border: 0px;
+}
+/* Ïðåâüþ - èçîáðàæåíèå */
+.gallery_thumb > a > img {
+	width: 100%;
+	border: 0px;
+}
+/* Ïðåâüþ - íàçâàíèå */
+.gallery_thumb_name, .tp-title {
+	background: url("../../SiteCore/images/fon.gif") repeat;
+	left: 0;
+	right: 0;
+	height: 20px;
+	position: absolute;
+	font-size: 12px;
+	line-height: 20px;
+	color: white;
+	opacity: 0.8;
+	overflow: hidden;
+	font-weight: bold;
+	padding-left: 20px;
+	text-align: left;
+}
+/* Ñòðåëêà ïåðåä íàçâàíèåì ïðåâüþ */
+.gallery_thumb_name:before {
+	content: '';
+	position: absolute;
+	height: 100%;
+	width: 13px;
+	left: 5px;
+	top: 0;
+	background: url("../../SiteCore/images/lil.gif") no-repeat scroll 0 center transparent;
+}
+
+/* ==========================
+    Ñîäåðæèìîå ìîäóëÿ ãàëåðåè (áîëüøîå ïðåâüþ)
+============================= */
+
+/* Áîëüøîå ïðåâüþ - êîíòåéíåð */
+.gallery_thumb.big {
+	width: 320px;
+	height: 175px;
+}
+/* Áîëüøîå ïðåâüþ - îáëàñòü öåíòðèðîâàíèÿ è îáðåçêè */
+.gallery_thumb.big > a {
+	width: 320px;
+	height: 250px;
+}
+/* Áîëüøîå ïðåâüþ - èçîáðàæåíèå */
+.gallery_thumb.big > a > img {
+	margin-top: -70px;
+}
+/* Áîëüøîå ïðåâüþ - íàçâàíèå */
+.gallery_thumb.big .gallery_thumb_name, .gallery_thumb.big .tp-title {
+	top: 10px;
+}
+/* Êîëè÷åñòâî ýëåìåíòîâ â ãðóïïå */
+.tp-title span:nth-child(2) {
+	padding: 0 5px;
+	right: 0px;
+	height: 100%;
+	top: 0px;
+	position: absolute;
+	display: block;
+}
+
+/* ==========================
+    Ñîäåðæèìîå ìîäóëÿ ãàëåðåè (ìàëåíüêîå ïðåâüþ)
+============================= */
+
+/* Ìàëåíüêîå ïðåâüþ - êîíòåéíåð */
+.gallery_thumb.small {
+	margin: 1px;
+	width: 120px;
+	height: 120px;
+}
+/* Ìàëåíüêîå ïðåâüþ - îáëàñòü öåíòðèðîâàíèÿ è îáðåçêè */
+.gallery_thumb.small > a {
+	width: 180px;
+	height: 120px;
+	margin-left: -30px;
+	display: block;
+}
+/* Ìàëåíüêîå ïðåâüþ - èçîáðàæåíèå */
+.gallery_thumb.small > a > img {
+	height: 120px;
+	width: auto;
+}
+/* Ìàëåíüêîå ïðåâüþ - íàçâàíèå */
+.gallery_thumb.small .gallery_thumb_name {
+	top: 8px;
+}
+/* Ìàëåíüêîå ïðåâüþ - îáëàñòü öåíòðèðîâàíèÿ è îáðåçêè */
+.gallery_thumb.small.book > a {
+	width: 120px;
+	height: 180px;
+	margin-left: 0;
+}
+/* Ìàëåíüêîå ïðåâüþ - èçîáðàæåíèå */
+.gallery_thumb.small.book > a > img {
+	width: 120px;
+	height: auto;
+}.notice {
+	border: 1px solid #E4D17D;
+	background: #FDED9B url(http://www.nfsko.ru/style/1/img/info.png) left 3px no-repeat;
+	padding: 5px 30px 6px 30px;
+	margin-bottom: 5px;
+	color: #424242;
+	font-size: 90%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.notice ul {
+	padding: 0px 10px 0px 10px;
+	margin: 0px;
+}
+
+.notice a {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.notice a:link,.notice a:visited,.notice a:active {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.notice a:hover {
+	text-decoration: none;
+	color: #424242
+}
+
+.error {
+	border: 1px solid #E4D17D;
+	background: #FCCFAE url(http://www.nfsko.ru/style/1/img/error.png) left 3px no-repeat;
+	padding: 5px 30px 6px 30px;
+	margin-bottom: 5px;
+	color: #424242;
+	font-size: 90%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.error ul {
+	padding: 0px 10px 0px 10px;
+	margin: 0px;
+}
+
+.error a {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.error a:link,.error a:visited,.error a:active {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.error a:hover {
+	text-decoration: none;
+	color: #424242
+}
+
+.ok {
+	border: 1px solid #E4D17D;
+	background: #CCFFC4 url(http://www.nfsko.ru/style/1/img/ok.png) left 3px
+		no-repeat;
+	padding: 5px 30px 6px 30px;
+	margin-bottom: 5px;
+	color: #424242;
+	font-size: 90%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}

@@ -12,6 +12,9 @@
 					<div class='right'></div>
 					<div class='center'>Скриншоты из Need For Speed, обои, обложки CD/DVD. Самый большой фото архив по игре NFS на www.nfsko.ru</div>
 				</div>
+				<div class='info'>
+					{% block info %}{% endblock %}
+				</div>
 				<div class='content'>
 					<div class='module-row'>
 						{% block location %}{% endblock %}
@@ -41,8 +44,8 @@
 			<div class='menu-block'>
 				<div class='title'>Категории галереи</div>
 				<ul class='content'>
-					{% for cat in body.categoryList %}
-						<li><a href='{{ path('site_gallery_category', {'cRefId': cat.getRefId}) }}'>{{ cat.name }}</a></li>
+					{% for category in categoryList %}
+						<li><a href='{{ path('site_gallery_category', {'cRefId': category.getRefId}) }}'>{{ category.name }}</a></li>
 					{% endfor %}
 				</ul>
 			</div>

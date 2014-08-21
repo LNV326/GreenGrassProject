@@ -1,6 +1,6 @@
 site_gallery_homepage:
-    pattern:  /
-    defaults: { _controller: SiteGalleryBundle:Show:showCatalog }
+    pattern:  /.{_format}
+    defaults: { _controller: SiteGalleryBundle:Show:showCatalog, _format: html }
 site_gallery_validateAll:
     pattern:  /_validateAll
     defaults: { _controller: SiteGalleryBundle:Validate:validateAll }
@@ -32,8 +32,8 @@ site_gallery_setCategoryCover:
     defaults: { _controller: SiteGalleryBundle:Edit:setCategoryCover }
 
 site_gallery_addAlbum:
-    pattern: /{cRefId}/_add
-    defaults: { _controller: SiteGalleryBundle:Add:addAlbum }
+    pattern: /{cRefId}/album/add.{_format}
+    defaults: { _controller: SiteGalleryBundle:Add:addAlbum, _format: html }
 site_gallery_album:
     pattern: /{cRefId}/{aRefId}
     defaults: { _controller: SiteGalleryBundle:Show:showAlbum }    
@@ -42,5 +42,10 @@ site_gallery_setAlbumCover:
     defaults: { _controller: SiteGalleryBundle:Edit:setAlbumCover }    
        
 site_gallery_addImages:
-    pattern: /{cRefId}/{aRefId}/_add
-    defaults: { _controller: SiteGalleryBundle:Add:addImages }
+    pattern: /{cRefId}/{aRefId}/image/add.{_format}
+    defaults: { _controller: SiteGalleryBundle:Add:addImages, _format: html }
+    methods:  [GET]
+site_gallery_doAddImages:
+    pattern: /{cRefId}/{aRefId}/image/add.{_format}
+    defaults: { _controller: SiteGalleryBundle:Add:doAddImages, _format: html }
+    methods:  [POST]

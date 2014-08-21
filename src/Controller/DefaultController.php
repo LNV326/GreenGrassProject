@@ -27,13 +27,13 @@ class DefaultController extends Controller {
 	protected $body = array();
 	protected $error = array();
 	
-	public function initVars() {
-		$this->imageHostName = $this->container->getParameter('img_host');
+// 	public function initVars() {
+// 		$this->imageHostName = $this->container->getParameter('img_host');
 		
-// 		if ( !$this->getRequest()->isXmlHttpRequest() ) {
-// 			$this->getCategoryList(false);
-// 		}
-	}
+// // 		if ( !$this->getRequest()->isXmlHttpRequest() ) {
+// // 			$this->getCategoryList(false);
+// // 		}
+// 	}
 	
 	protected function createResponse() {
 		return array(
@@ -44,27 +44,27 @@ class DefaultController extends Controller {
 		);
 	}
 	
-	/**
-	 * Возвращает доступное пользователю дисковое пространство
-	 * Исключаются из расчёта изображения, загруженные админами в закрытые альбомы
-	 * @return number
-	 */
-	protected function getUserSpace() {
-		$posts = $this->getUser()->getPostsCount() - $this->getUser()->getPostsBadCount();
-		if ( $posts >= self::K_POSTS_MIN ) {
-			$inc = ceil( $posts/self::K_POSTS );
-			$this->totalSpace = $inc * self::K_KB * 1024; // Расчёт максимального доступного пространства к байтах
-			// Расчёт занятого пространства
-			$repo = $this->getDoctrine()->getManager()->getRepository('SiteGalleryBundle:Image');
- 			$images = $repo->getUserImages( $this->getUser()->getId() );
-			foreach ($images as $image) {
-				try {
-					$this->occupSpace += filesize( $image->getAbsolutePath() );
-				} catch (\Exception $e) {}
-			}
-			$this->freeSpace = $this->totalSpace - $this->occupSpace;
-		}
-		return $this->freeSpace;
-	}
+// 	/**
+// 	 * Возвращает доступное пользователю дисковое пространство
+// 	 * Исключаются из расчёта изображения, загруженные админами в закрытые альбомы
+// 	 * @return number
+// 	 */
+// 	protected function getUserSpace() {
+// 		$posts = $this->getUser()->getPostsCount() - $this->getUser()->getPostsBadCount();
+// 		if ( $posts >= self::K_POSTS_MIN ) {
+// 			$inc = ceil( $posts/self::K_POSTS );
+// 			$this->totalSpace = $inc * self::K_KB * 1024; // Расчёт максимального доступного пространства к байтах
+// 			// Расчёт занятого пространства
+// 			$repo = $this->getDoctrine()->getManager()->getRepository('SiteGalleryBundle:Image');
+//  			$images = $repo->getUserImages( $this->getUser()->getId() );
+// 			foreach ($images as $image) {
+// 				try {
+// 					$this->occupSpace += filesize( $image->getAbsolutePath() );
+// 				} catch (\Exception $e) {}
+// 			}
+// 			$this->freeSpace = $this->totalSpace - $this->occupSpace;
+// 		}
+// 		return $this->freeSpace;
+// 	}
 }
 ?>
