@@ -1,29 +1,19 @@
 <?php
 namespace Site\GalleryBundle\Controller;
-use Symfony\Component\BrowserKit\Response;
 
-use Site\GalleryBundle\Controller\DefaultController;
+use Symfony\Component\BrowserKit\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 //use Doctrine\Common\Collections\ArrayCollection;
 
-use Site\GalleryBundle\Entity\ImageCategory;
-use Site\GalleryBundle\Entity\ImageAlbum;
-use Site\GalleryBundle\Entity\Image;
-use Site\CoreBundle\Entity\UserConfigInfo as UserConfigInfo;
-
-class EditController extends DefaultController {
-		
-	// Возможные статусы видимости
-	const VSB_SHOW = 'show';
-	const VSB_HIDE = 'hide';
-	
+class EditController extends Controller {
+			
 	/**
 	 * Скрывает изображение
-	 * @Secure(roles="ROLE_GAL_EDIT_IMG")
+	 * @Secure(roles="ROLE_MODERATOR")
 	 */
 	public function hideImageAction($imageId) {
 		$this->action = __FUNCTION__;
@@ -42,27 +32,17 @@ class EditController extends DefaultController {
 	/**
 	 * Скрывает/отображает изображение
 	 */
-	private function toggleVisibilityImage($imageId, $visibility) {		
-		$em = $this->getDoctrine()->getEntityManager();
-		$logger = $this->get('gallery_edit_logger');
+	private function toggleVisibilityImage($imageId, $visible) {
+		$this->gallery = $this->get('gallery_service');
+		$image = $this->gallery->getImage( $imageId );
+		if ( is_null($image) )
+			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__) );
 		try {
-			$logger->warn(sprintf('%s (%d) пытается изменить видимость изображения id="%d"', $this->getUser()->getUsername(), $this->getUser()->getId(), $imageId) );
-			$image = $this->getImage($imageId);			
-			$image->setVisibility($visibility); // Скрытие TODO Да, тут косяк с инверсией
-			$em->persist($image);
-			$em->flush();
-			$logger->info(sprintf('У изображения id="%d" успешно изменена видимость пользователем %s (%d)', $image->getId(), $this->getUser()->getUsername(), $this->getUser()->getId()) );
-			$this->body = array(
-				'image_id' => $image->getId(),
-				'image_visibility' => $image->getVisibility() ? self::VSB_SHOW : self::VSB_HIDE
-			);
+			$this->gallery->setImageVisibility( $image, $visible );
 		} catch (\Exception $e) {
-			$logger->error( sprintf('Ошибка при изменении видимости изображения id="%d" пользователем %s (%d) - %s', $imageId, $this->getUser()->getUsername(), $this->getUser()->getId(), $e->getMessage()) );
-			$this->error[] = $e->getMessage();
-			if ( $this->getUser()->isMod() )
-				$this->error['trace'] = $e->getTraceAsString();
+			throw new \Exception( sprintf('Невозможно выполнить операцию %s - ошибка выполнения', __METHOD__), 0, $e);
 		}
-		return new JsonResponse( $this->createResponse() );
+		return $this->gallery->getOutput();
 	}
 	
 	/**
@@ -74,12 +54,10 @@ class EditController extends DefaultController {
 	 */
 	public function setAlbumCoverAction($cRefId, $aRefId, $iId) {
 		$this->gallery = $this->get('gallery_service');
-		try {
-			$album = $this->gallery->getAlbum( $cRefId, $aRefId );
-			$image = $this->gallery->getImage( $iId );
-		} catch (NoResultException $e) {
-			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__), $e );
-		}
+		$album = $this->gallery->getAlbum( $cRefId, $aRefId );
+		$image = $this->gallery->getImage( $iId );
+		if ( is_null($album) || is_null($image) )
+			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__) );
 		try {
 			$this->gallery->setAlbumCover( $album, $image );
 		} catch (\Exception $e) {
@@ -96,12 +74,10 @@ class EditController extends DefaultController {
 	 */
 	public function setCategoryCoverAction($cRefId, $iId) {
 		$this->gallery = $this->get('gallery_service');
-		try {
-			$category = $this->gallery->getCategory( $cRefId );
-			$image = $this->gallery->getImage( $iId );
-		} catch (NoResultException $e) {
-			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__), $e );
-		}
+		$category = $this->gallery->getCategory( $cRefId );
+		$image = $this->gallery->getImage( $iId );
+		if ( is_null($category) || is_null($image) )
+			throw $this->createNotFoundException( sprintf('Невозможно выполнить операцию %s - не найдены объекты в системе', __METHOD__) );
 		try {
 			$this->gallery->setCategoryCover( $category, $image );
 		} catch (\Exception $e) {

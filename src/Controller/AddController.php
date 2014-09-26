@@ -1,27 +1,29 @@
 <?php
 
 namespace Site\GalleryBundle\Controller;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\FlattenException;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation\Secure;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use Site\GalleryBundle\Entity\ImageCategory;
 use Site\GalleryBundle\Entity\ImageAlbum;
 use Site\GalleryBundle\Entity\Image;
-use Site\CoreBundle\Entity\UserConfigInfo as UserConfigInfo;
 
 class AddController extends Controller {
 	
 	protected $gallery = null;
 	protected $form = null;
+	
+	/* ================================
+	 * Add Category
+	================================ */
 	
 	/**
 	 * �������� ����� ���������
@@ -62,6 +64,10 @@ class AddController extends Controller {
 		}
 	}
 	
+	/* ================================
+	 * Add Album
+	================================ */
+	
 	/**
 	 * Добавляет в категорию новый альбом
 	 * @param string $cRefId Идентификатор категории
@@ -83,22 +89,23 @@ class AddController extends Controller {
 			InvalidArgumentException
 		 */
 		$this->addAlbum_PreAction($cRefId);
+		$this->gallery->debugMode = true;
 		if ($this->getRequest()->getMethod() === 'POST') {
 			// Получение идентификатора типа альбома и проверка существования его в справочнике
 			$dicItemRefId = $this->getRequest()->get('albums');
 			// Добавление альбома в категорию
-// 			try {
+			try {
 				$this->addAlbum_DoAction($cRefId, $dicItemRefId);
-// 				$this->get('session')->getFlashBag()->add(
-// 					'success',
-// 					$this->gallery->album
-// 				);
-// 			} catch (\Exception $e) {
-// 				$this->get('session')->getFlashBag()->add(
-// 					'failure',
-// 					FlattenException::create($e)
-// 				);
-// 			}
+				$this->get('session')->getFlashBag()->add(
+					'success',
+					$this->gallery->album
+				);
+			} catch (\Exception $e) {
+				$this->get('session')->getFlashBag()->add(
+					'failure',
+					FlattenException::create($e)
+				);
+			}
 			return $this->redirect( $this->generateUrl('site_gallery_category', array('cRefId' => $this->gallery->category->getRefId())) );
 		} else {
 			// Получение choice-list альбомов, исключая те, что уже созданы
@@ -114,7 +121,6 @@ class AddController extends Controller {
 	 */
 	private function addAlbum_PreAction($cRefId) {
 		$this->gallery = $this->get('gallery_service');
-		$this->gallery->debugMode = true;
 		if ( !$this->getRequest()->isXmlHttpRequest() )
 			$this->gallery->getCategoryList( array('withCovers' => false) );
 		// Проверка существования заданной категории
@@ -137,14 +143,16 @@ class AddController extends Controller {
 		}
 		// Проверка существования альбома с указанным типом
 		$album = $this->gallery->getAlbum($cRefId, $aRefId);
-		if ( is_null($album) )
-			// Если не нашли, то создаём
-			$this->gallery->createAlbum( $this->gallery->category, $dicItem );
-		else
-			// Если нашли, то ошибка
+		// Если нашли, то ошибка
+		if ( !is_null($album) )			
 			throw new \Exception(sprintf('Альбом %s уже существует', $aRefId));
+		// Если не нашли, то создаём
+		$this->gallery->createAlbum( $this->gallery->category, $dicItem );
 	}
 	
+	/* ================================
+	 * Add Image
+	================================ */	
 	
 	/**
 	 * Добавляет в альбом новые изображения
@@ -156,29 +164,23 @@ class AddController extends Controller {
 	 * @Secure(roles="ROLE_MEMBER")
 	 */
 	public function addImagesAction($cRefId, $aRefId) {
-		$this->addImagePreAction($cRefId, $aRefId);		
-		return array_merge($this->gallery->getOutput(), array('form' => $this->form->createView()));
-		
-		return $this->gallery->getOutput(); 
+		$this->addImage_PreAction($cRefId, $aRefId);	
+		// Создание формы отправки изображения
+		$image  = new Image();
+		$form = $this->createFormBuilder( $image )
+			->add('file', 'file', array('required' => true))
+			->getForm();
+		// Получение данных, присланных через форму отправки
+		if ( $this->getRequest()->getMethod() === 'POST') {
+			$form->bind( $this->getRequest() );
+			if ( $form->isValid() ) {
+				$this->addImage_DoAction( $this->gallery->album, $image );
+				return $this->redirect( $this->generateUrl('site_gallery_album', array('cRefId' => $cRefId, 'aRefId' => $aRefId)) );
+			}
+			return array_merge($this->gallery->getOutput(), array('form' => $form->createView()));
+		}
+		return array_merge($this->gallery->getOutput(), array('form' => $form->createView()));
 	}
-	
-	/**
-	 * Добавляет в альбом новые изображения
-	 * @param string $cRefId
-	 * @param string $aRefId
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|multitype:\Symfony\Component\Form\FormView |\Symfony\Component\HttpFoundation\Response
-	 *
-	 * @Template()
-	 * @Secure(roles="ROLE_MEMBER")
-	 */
-	public function doAddImagesAction($cRefId, $aRefId) {
-		$this->addImagePreAction($cRefId, $aRefId);
-		var_dump($this->getRequest()->files);
-		var_dump($_FILES);
-		$this->gallery->addImage( $this->gallery->album, $this->form->get('file')->getData() );
-		return array_merge($this->gallery->getOutput(), array('form' => $this->form->createView()));
-		return $this->gallery->getOutput();
-	}	
 		
 	/**
 	 * Производит подготовительные операции при добавлении изображения
@@ -187,9 +189,8 @@ class AddController extends Controller {
 	 * @throws AccessDeniedException
 	 * @throws NotFoundHttpException
 	 */
-	protected function addImagePreAction($cRefId, $aRefId) {
+	private function addImage_PreAction($cRefId, $aRefId) {
 		$this->gallery = $this->get('gallery_service');
-	//	$this->gallery->debugMode = true;
 		if ( !$this->getRequest()->isXmlHttpRequest() )
 			$this->gallery->getCategoryList( array('withCovers' => false) );
 		// Проверка существования заданного альбома
@@ -199,22 +200,27 @@ class AddController extends Controller {
 		// Проверка прав доступа
 		if ( !$this->gallery->canUserAddImage( $album ) )
 			throw new AccessDeniedException( 'Недостаточно прав доступа' );
-		// Получение свободного пространства пользователя
+		// Получение свободного пространства пользователя (только для альбомов, в которых разрешена загрузка)
 		if ( $album->getAllowAdd() )
 			$this->gallery->getUserSpace();
-		// Создание формы отправки изображения		
-		$image  = new Image();
-		$this->form = $this->createFormBuilder( $image )
-			->add('file', 'file', array(
-				'required' => true
-			) )->getForm();
-		// Получение данных, присланных через форму отправки
-		if ( $this->getRequest()->getMethod() === 'POST') {
-			$this->form->bind( $this->getRequest() );
- 			if ( !$this->form->isValid() ) {
- 			
- 			}
+	}
+	
+	/**
+	 * Добавляет в альбом новые изображения
+	 * 
+	 * @param ImageAlbum $album Альбом
+	 * @param Image $image Изображение
+	 * @throws \Exception
+	 */
+	private function addImage_DoAction(ImageAlbum $album, Image $image) {	
+		// Если альбом пользовательский, то проверить дисковое пространство
+		if ( $album->getAllowAdd() ) {
+			if ( $this->gallery->freeSpace < $image->getFile()->getClientSize() )
+				throw new \Exception('Невозможно загрузить изображение. Превышена дисковая квота.');
+		} elseif ( !$this->get('security.context')->isGranted('ROLE_MODERATOR') ) {
+			throw new \Exception('Недостаточно прав для загрузки изображений в указанный альбом.');
 		}
+		$this->gallery->addImage( $album, $image->getFile() );
 	}
 }
 ?>

@@ -232,11 +232,6 @@ class GalleryService {
 			$this->em->persist( $album );
 			if ( !$this->debugMode )
 				$this->em->flush();
-			else {
-				if ( rand(0, 1) > 0 ) {
-					throw new \Exception('Test Exception');
-				}
-			}
 		} catch (\Exception $e) {
 			$errMess = sprintf('Ошибка при создании альбома пользователем %s (%d) - %s', $user->getUsername(), $user->getId(), $e->getMessage());
 			$this->logger->error( $errMess );
@@ -294,9 +289,14 @@ class GalleryService {
 	 */
 	public function addImage(ImageAlbum $album, UploadedFile $file) {
 		$user = $this->securityContext->getToken()->getUser();
-		if ( $this->securityContext->isGranted('ROLE_MODERATOR') )
-			$visibility = 'show';
-		else $visibility = 'hide';
+		// Если альбом пользовательский, то изображение невидимо
+		if ( $album->getAllowAdd() )
+			$visibility = 0;
+		elseif ( $this->securityContext->isGranted('ROLE_MODERATOR') )
+			$visibility = 1;
+		else
+			// Ну, такого быть не должно...
+			throw new \Exception('Unknown error occurred when defining visibility');
 		$this->logger->warn(sprintf('%s (%d) пытается добавить изображение в альбом "%s" в категории "%s"', $user->getUsername(), $user->getId(), $album->getName(), $album->getCategory()->getName()) );
 		$count = 0;
 		$image = new Image($count++);
@@ -305,16 +305,14 @@ class GalleryService {
 			->setAlbum( $album )
 			->setVisibility( $visibility )
 			->setFile( $file );
-		if ( $this->freeSpace < $image->getFile()->getClientSize() )
-			throw new \Exception('Невозможно загрузить изображение. Превышена дисковая квота.');
 		// Добавление в очередь на загрузку в БД
 		$this->validationErrors = $this->validator->validate( $image );
 		try {
 			if ( count( $this->validationErrors ) == 0 ) {
 				$this->em->persist( $image );
-				// Если у альбома нет обложки, сделать текущее изображение обложкой
-				if ( is_null($album->getCoverImage()) )
-					$album->setCoverImage( $image );
+// 				// Если у альбома нет обложки, сделать текущее изображение обложкой
+// 				if ( is_null($album->getCoverImage()) )
+// 					$album->setCoverImage( $image );
 				if ( !$this->debugMode )
 					$this->em->flush();
 				$this->logger->info(sprintf('Новое изображение успешно добавлено в альбом "%s" в категории "%s" пользователем %s (%d)', $this->album->getDictionary()->getRefId(), $this->album->getCategory()->getRefId(), $user->getUsername(), $user->getId()) );
@@ -332,6 +330,12 @@ class GalleryService {
 	 * EditController
 	================================ */
 	
+	/**
+	 * Устанавливает изображение обложкой альбома
+	 * @param ImageAlbum $album Альбом
+	 * @param Image $image Изображение
+	 * @throws \Exception
+	 */
 	public function setAlbumCover(ImageAlbum $album, Image $image) {
 		$user = $this->securityContext->getToken()->getUser();
 		$this->logger->warn(sprintf('%s (%d) пытается установить изображение id="%d" как обложку альбома "%s" в категории "%s"', $user->getUsername(), $user->getId(), $image->getId(), $album->getDictionary()->getRefId(), $album->getCategory()->getRefId()) );			
@@ -347,6 +351,12 @@ class GalleryService {
 		}
 	}
 	
+	/**
+	 * Устанавливает изображение обложкой категории
+	 * @param ImageCategory $category Категория
+	 * @param Image $image Изображение
+	 * @throws \Exception
+	 */
 	public function setCategoryCover(ImageCategory $category, Image $image) {
 		$user = $this->securityContext->getToken()->getUser();
 		$this->logger->warn(sprintf('%s (%d) пытается установить изображение id="%d" как обложку категории "%s"', $user->getUsername(), $user->getId(), $image->getId(), $category->getRefId()) );			
@@ -357,6 +367,46 @@ class GalleryService {
 			$this->logger->info(sprintf('Изображение id="%d" успешно установлено обложкой категории "%s" пользователем %s (%d)', $image->getId(), $category->getRefId(), $user->getUsername(), $user->getId()) );
 		} catch (\Exceprion $e) {
 			$errMess = sprintf('Ошибка при установке изображения id="%d" обложкой категории "%s" пользователем %s (%d) - %s', $image->getId(), $category->getRefId(), $user->getUsername(), $user->getId(), $e->getMessage());
+			$this->logger->error( $errMess );
+			throw new \Exception( $errMess, 0, $e);
+		}
+	}
+	
+	/**
+	 * Устанавливает видимость изображения
+	 * @param Image $image Изображение
+	 * @param unknown $visible Видимость (1 - видим, 0 - невидим)
+	 * @throws \Exception
+	 */
+	public function setImageVisibility(Image $image, $visible) {
+		$user = $this->securityContext->getToken()->getUser();
+		$this->logger->warn(sprintf('%s (%d) пытается изменить видимость изображения id="%d"', $user->getUsername(), $user->getId(), $image->getId()) );
+		$image->setVisibility( $visible );
+		try {
+			if ( !$this->debugMode )
+				$this->em->flush();
+			$this->logger->info(sprintf('У изображения id="%d" успешно изменена видимость пользователем %s (%d)', $image->getId(), $user->getUsername(), $user->getId()) );
+		} catch (\Exceprion $e) {
+			$errMess = sprintf('Ошибка при изменении видимости изображения id="%d" пользователем %s (%d) - %s', $image->getId(), $user->getUsername(), $user->getId(), $e->getMessage() );	
+			$this->logger->error( $errMess );
+			throw new \Exception( $errMess, 0, $e);
+		}
+	}
+	
+	/* ================================
+	 * RemoveController
+	================================ */
+	
+	public function deleteImage(Image $image) {
+		$user = $this->securityContext->getToken()->getUser();
+		$this->logger->warn(sprintf('%s (%d) пытается удалить изображение id="%d" - владелец %s (%d)', $user->getUsername(), $user->getId(), $image->getId(), $image->getMemberName(), $image->getMemberId()) );
+		try {
+			$this->em->remove( $image );
+			if ( !$this->debugMode )
+				$this->em->flush();
+			$this->logger->info(sprintf('Изображение успешно удалено пользователем %s (%d)', $image->getId(), $user->getUsername(), $user->getId()) );
+		} catch (\Exceprion $e) {
+			$errMess = sprintf('Ошибка при удалении изображения id="%d" пользователем %s (%d) - %s', $image->getId(), $user->getUsername(), $user->getId(), $e->getMessage() );
 			$this->logger->error( $errMess );
 			throw new \Exception( $errMess, 0, $e);
 		}

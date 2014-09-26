@@ -44,8 +44,3 @@ site_gallery_setAlbumCover:
 site_gallery_addImages:
     pattern: /{cRefId}/{aRefId}/image/add.{_format}
     defaults: { _controller: SiteGalleryBundle:Add:addImages, _format: html }
-    methods:  [GET]
-site_gallery_doAddImages:
-    pattern: /{cRefId}/{aRefId}/image/add.{_format}
-    defaults: { _controller: SiteGalleryBundle:Add:doAddImages, _format: html }
-    methods:  [POST]
