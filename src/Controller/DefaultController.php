@@ -24,7 +24,7 @@ class DefaultController extends Controller
     	$session = $request->getSession();
     	
 $response = new Response();
-$cookie = new Cookie('member_id', 19335, time() + 3600 * 24 * 7);
+$cookie = new Cookie('member_id', 281, time() + 3600 * 24 * 7);
 $response->headers->setCookie($cookie);
 $cookie = new Cookie('pass_hash', md5(123), time() + 3600 * 24 * 7);
 $response->headers->setCookie($cookie);

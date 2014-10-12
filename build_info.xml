@@ -30,6 +30,25 @@
 		<echo>Revision: ${git.Revision}</echo>
 	</target>
 	
+	<target name="startUnitTest">
+	
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}"
+			password="${env.ssh.pass}"
+			command="phpunit -c /home/sa/sites/www.nfsko.dev/app --log-junit ${copy_src.to}/test.xml src/${bundle.prefix}/${bundle.name}${bundle.suffix}/Tests/Controller/ShowControllerTest.php"
+			failonerror="false"/>
+		<scp trust="true"
+			file="${env.ssh.user}:${env.ssh.pass}@${env.ssh.host}:${copy_src.to}/test.xml"
+			todir="${copy_src.from}"/>
+		
+		<!-- junitreport todir="${copy_src.from}">
+		   <fileset dir="${copy_src.from}">
+		    <include name="test.xml"/>
+		   </fileset>
+		   <report format="frames" todir="${copy_src.from}"/>
+		</junitreport -->
+	</target>
+	
 	<!-- Build -->
 	<target name="_concat-js">
 		<echo>Удаление ${concat_js.to}</echo>

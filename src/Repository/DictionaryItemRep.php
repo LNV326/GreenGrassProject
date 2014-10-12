@@ -2,6 +2,7 @@
 namespace Site\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 
 class DictionaryItemRep extends EntityRepository {
 	/**
@@ -12,7 +13,7 @@ class DictionaryItemRep extends EntityRepository {
 	 */
 	public function getItem($objId=null, $refId=null) {
 		if (is_null($objId) and is_null($refId))
-			return null;
+			throw new NoResultException();
 		if (!is_null($objId)) {
 			return $this->getEntityManager()
 			->createQuery('SELECT di

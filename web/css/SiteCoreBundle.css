@@ -215,6 +215,7 @@ table#body td#module-container {
 	margin: 10px 1%;
 	text-align: left;
 }
+
 /* Название модуля */
 #module > .title {
 	width: 100%;
@@ -233,6 +234,12 @@ table#body td#module-container {
 	background: url("../images/tlr.gif") 100% 0 no-repeat;
 	padding-right: 45px;
 }
+
+/* Информация модуля*/
+#module > .info {
+	margin: 5px 12px;
+}
+
 /* Содержимое модуля */
 #module > .content {
 	margin: 10px 1%;

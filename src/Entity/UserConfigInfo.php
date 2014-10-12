@@ -11,6 +11,24 @@ use Site\CoreBundle\Entity\UserFullInfo;
  */
 class UserConfigInfo implements UserInterface
 {
+	private static $guest_perms = array(
+		'ROLE_GAL_SHOW',
+	);
+	private static $member_perms = array(
+		'ROLE_GAL_USER_SHOW',
+	);
+	private static $moderator_perms = array(
+		//'GAL_CATS_ADD',
+		//'GAL_CATS_EDIT',
+		'ROLE_GAL_CATS_EDIT',
+		'ROLE_GAL_ALBS_ADD',
+		'ROLE_GAL_ALBS_EDIT',
+		'ROLE_GAL_IMGS_ADD',
+		'ROLE_GAL_IMGS_EDIT',
+		'ROLE_GAL_IMGS_DEL',
+	);
+	private static $admin_perms = array();
+	
 	/**
 	 * @ORM\Id
 	 * @ORM\Column(type="integer", length=8)
@@ -117,20 +135,36 @@ class UserConfigInfo implements UserInterface
 		return '';
 	}
 	public function getRoles() {
-		$roles = array('ROLE_GAL_SHOW');
+		
+		$roles = self::$guest_perms;		
 		if ($this->id == 0) {
+			// Если гость
 			$roles[] = 'ROLE_GUEST';
 		} else {
-			$roles[] = 'ROLE_USER';
-			if (in_array($this->groupId, array(4,9,10))) {
-				$roles[] = 'ROLE_GAL_ADD_IMG';
-				$roles[] = 'ROLE_GAL_ADD_ALB';
-				$roles[] = 'ROLE_GAL_EDIT_IMG';
-				$roles[] = 'ROLE_GAL_EDIT_ALB';
-				$roles[] = 'ROLE_GAL_EDIT_CAT';
-				$roles[] = 'ROLE_GAL_DEL_IMG';
-			}
-		}	
+			// Если зарегистрированный пользователь
+			$roles[] = 'ROLE_MEMBER';
+			$roles = array_merge($roles, self::$member_perms);
+		}
+		// Если представитель администрации
+		if (in_array($this->groupId, array(4,9,10))) {
+			$roles[] = 'ROLE_MODERATOR';
+			$roles = array_merge($roles, self::$moderator_perms);
+		}
+		
+//  		$roles = array('ROLE_GAL_SHOW');
+// 		if ($this->id == 0) {
+// 			$roles[] = 'ROLE_GUEST';
+// 		} else {
+// 			$roles[] = 'ROLE_USER';
+// 			if (in_array($this->groupId, array(4,9,10))) {
+// 				$roles[] = 'ROLE_GAL_ADD_IMG';
+// 				$roles[] = 'ROLE_GAL_ADD_ALB';
+// 				$roles[] = 'ROLE_GAL_EDIT_IMG';
+// 				$roles[] = 'ROLE_GAL_EDIT_ALB';
+// 				$roles[] = 'ROLE_GAL_EDIT_CAT';
+// 				$roles[] = 'ROLE_GAL_DEL_IMG';
+// 			}
+// 		}	
 		return $roles;
 	}
 	public function eraseCredentials()

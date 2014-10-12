@@ -22,7 +22,7 @@ class DictionaryListRep extends EntityRepository
 				WHERE dl.objId = :id and di.objId not in (:notInObjId)')
 							->setParameter('id', $objId)
 							->setParameter('notInObjId', $notInObjId)
-							->getSingleResult();
+							->getOneOrNullResult();
 		}
 		if (!is_null($refId)) {
 			return $this->getEntityManager()
@@ -32,7 +32,7 @@ class DictionaryListRep extends EntityRepository
 				WHERE dl.referenceName = :id and di.objId not in (:notInObjId)')
 							->setParameter('id', $refId)
 							->setParameter('notInObjId', $notInObjId)
-							->getSingleResult();
+							->getOneOrNullResult();
 		}
 	}
 }
