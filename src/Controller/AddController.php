@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Site\GalleryBundle\Entity\ImageCategory;
 use Site\GalleryBundle\Entity\ImageAlbum;
 use Site\GalleryBundle\Entity\Image;
+use Site\GalleryBundle\GalleryService;
 
 class AddController extends Controller {
 	
@@ -171,15 +172,23 @@ class AddController extends Controller {
 			->add('file', 'file', array('required' => true))
 			->getForm();
 		// Получение данных, присланных через форму отправки
+		$errors = null;
 		if ( $this->getRequest()->getMethod() === 'POST') {
 			$form->bind( $this->getRequest() );
+			// Валидация данных с формы
 			if ( $form->isValid() ) {
-				$this->addImage_DoAction( $this->gallery->album, $image );
-				return $this->redirect( $this->generateUrl('site_gallery_album', array('cRefId' => $cRefId, 'aRefId' => $aRefId)) );
+				$status = $this->addImage_DoAction( $this->gallery->album, $image );			
+			} else {
+				$status = GalleryService::RES_FAILURE;
+// 				$errors = $form->getErrors();
+				$errors = array();
+// 				$form->all()->getErrors();
+				foreach ( $form->all() as $subform )
+					foreach ( $subform->getErrors() as $error )
+						$errors[] = $error->getMessage();
 			}
-			return array_merge($this->gallery->getOutput(), array('form' => $form->createView()));
 		}
-		return array_merge($this->gallery->getOutput(), array('form' => $form->createView()));
+		return array_merge($this->gallery->getOutput(), array('form' => $form->createView(), 'errors' => $errors, 'e' => $form->getErrors()));
 	}
 		
 	/**
@@ -220,7 +229,11 @@ class AddController extends Controller {
 		} elseif ( !$this->get('security.context')->isGranted('ROLE_MODERATOR') ) {
 			throw new \Exception('Недостаточно прав для загрузки изображений в указанный альбом.');
 		}
-		$this->gallery->addImage( $album, $image->getFile() );
+		$status = $this->gallery->addImage( $album, $image->getFile() );
+		if ( GalleryService::RES_FAILURE === $status ) {
+			// TODO Делаем что-то в случае ошибки
+		}
+		return $status;
 	}
 }
 ?>

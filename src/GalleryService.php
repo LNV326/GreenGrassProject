@@ -17,6 +17,9 @@ use Symfony\Component\Validator\Validator;
 
 class GalleryService {
 	
+	const RES_SUCCESS = 'Success';
+	const RES_FAILURE = 'Failure';
+	
 	protected $em;
 	protected $logger;
 	protected $securityContext;
@@ -307,23 +310,23 @@ class GalleryService {
 			->setFile( $file );
 		// Добавление в очередь на загрузку в БД
 		$this->validationErrors = $this->validator->validate( $image );
+		if ( count( $this->validationErrors ) != 0 )
+			return self::RES_FAILURE;
 		try {
-			if ( count( $this->validationErrors ) == 0 ) {
-				$this->em->persist( $image );
-// 				// Если у альбома нет обложки, сделать текущее изображение обложкой
-// 				if ( is_null($album->getCoverImage()) )
-// 					$album->setCoverImage( $image );
-				if ( !$this->debugMode )
-					$this->em->flush();
-				$this->logger->info(sprintf('Новое изображение успешно добавлено в альбом "%s" в категории "%s" пользователем %s (%d)', $this->album->getDictionary()->getRefId(), $this->album->getCategory()->getRefId(), $user->getUsername(), $user->getId()) );
-			}
+			$this->em->persist( $image );
+// 			// Если у альбома нет обложки, сделать текущее изображение обложкой
+// 			if ( is_null($album->getCoverImage()) )
+// 				$album->setCoverImage( $image );
+			if ( !$this->debugMode )
+				$this->em->flush();			
 		} catch (\Exception $e) {
 			$errMess = sprintf('Ошибка при добавлении изображения пользователем %s (%d) - %s', $user->getUsername(), $user->getId(), $e->getMessage());
 			$this->logger->error( $errMess );
 			throw new \Exception( $errMess, 0, $e);
 		}
+		$this->logger->info(sprintf('Новое изображение успешно добавлено в альбом "%s" в категории "%s" пользователем %s (%d)', $this->album->getDictionary()->getRefId(), $this->album->getCategory()->getRefId(), $user->getUsername(), $user->getId()) );
 		$this->image = $image;	
-		return $this->image;
+		return self::RES_SUCCESS;
 	}
 	
 	/* ================================

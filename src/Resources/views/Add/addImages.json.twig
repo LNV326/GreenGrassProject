@@ -1,0 +1,13 @@
+{#% extends "SiteGalleryBundle::gallery.json.twig" %#}
+
+{% if app.request.getMethod != 'POST' %}
+	{% set error = 'Incorrect request method' %}
+{% else %}
+	{% set error = 'Correct request method =)' %}
+{% endif %}
+
+{{ {
+	'result' : error,
+	'errors' : errors,
+	'e' : e
+}|json_encode|raw }}

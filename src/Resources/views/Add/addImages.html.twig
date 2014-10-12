@@ -51,22 +51,11 @@
 			<h4>Формат изображений: <b>Jpeg</b></h4>
 			<h4>Максимальный размер файла: <b>1 Мб</b></h4>
 			{% if album.getAllowAdd == true %}<h4>Вам доступно: <b>{{ macros.bytesToSize(spaceInfo.free) }}</b> / <b>{{ macros.bytesToSize(spaceInfo.total) }}</b></h4>{% endif %}
-			<form action='{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST' id='image' name='image'>
+			<form action='{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST' {{ form_enctype(form) }} id='image' name='image'>
 				<span>Выберите файлы:</span>
-				<input type='file'  multiple id='image' name='image'/>
+				{{ form_widget(form) }}
 				<button type='submit' formtarget='_blank'>Загрузить</button>
 			</form>
-			
-			<form {{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST'>
-  <input type="file" name="pic" accept="image/*">
-  <input type="submit" value='123'>
-</form>
-<form action="{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}" method="post" {{ form_enctype(form) }}>
-
-    {{ form_widget(form) }}
-
-    <input type="submit" value="Upload Document" />
-</form>
 			
 			{% endblock %}
 		{% block content %}
@@ -81,6 +70,24 @@
 			<script>
 $(document).ready(function(){ 
 	//$('.gallery-container#droparea').nfsko('gallery');
+	
+	$('#droparea').fileupload({
+			url: $('#image').attr('action')+'.json',
+			fileInput: $('#form_file'),
+			form : $('#image'),
+			autoUpload: true,
+// 			sequentialUploads: true,
+			dataType: 'json',
+// 	        add: function (e, data) {
+// // 		        alert('Add');
+// // 	            data.context = $('<p/>').text('Uploading...').appendTo(document.body);
+// 	            data.submit();
+// 	        }
+// 	        done: function (e, data) {
+// 	        	alert('Done');
+// // 	            data.context.text('Upload finished.');
+// 	        }
+	});
 });
 			</script>
 		{% endblock %}
