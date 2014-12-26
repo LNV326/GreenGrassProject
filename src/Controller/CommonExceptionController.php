@@ -55,13 +55,14 @@ class CommonExceptionController extends ExceptionController
         $code = $exception->getStatusCode();
 
         return new Response($this->twig->render(
-            $this->findTemplate($request, $format, $code, $this->debug, $exception),
+            $this->findTemplate($request, $format, $code, $this->debug),
             array(
                 'status_code'    => $code,
                 'status_text'    => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
                 'exception'      => $exception,
                 'logger'         => $logger,
                 'currentContent' => $currentContent,
+           		'e' => $exception
             )
         ));
     }
@@ -94,7 +95,7 @@ class CommonExceptionController extends ExceptionController
      *
      * @return TemplateReference
      */
-    protected function findTemplate(Request $request, $format, $code, $debug, FlattenException $exception)
+    protected function findTemplate(Request $request, $format, $code, $debug)
     {
     	if ('json' == $format) {
     		// try to find a template for the given format
@@ -103,7 +104,7 @@ class CommonExceptionController extends ExceptionController
     			return $template;
     		}
     	}  	
-    	return parent::findTemplate($request, $format, $code, $debug);
+    	//return parent::findTemplate($request, $format, $code, $debug);
     }
 
     // to be removed when the minimum required version of Twig is >= 2.0

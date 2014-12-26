@@ -1,8 +1,8 @@
 {{ {
 	'Exception' : {
-		'class' : e.getClass,
+		'short_class' : e.getClass|split('\\')|last,
 		'code'	: e.getCode,
 		'message' : e.getMessage,
-		'trace' : 'null'
+		'trace' : e.getTrace
 	}
 }|json_encode|raw }}
