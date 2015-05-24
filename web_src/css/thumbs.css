@@ -137,3 +137,21 @@
 	width: 120px;
 	height: auto;
 }
+/* Маленькое превью - ошибка загрузки*/
+.gallery_thumb_desc {
+	position: absolute;
+	font-size: 12px;
+	line-height: 20px;
+	color: white;
+	opacity: 0.8;
+	overflow: hidden;
+	font-weight: bold;
+	padding-left: 20px;
+	text-align: left;
+}
+.gallery_thumb > .gallery_thumb_desc {
+	display: none;
+}
+.gallery_thumb:hover > .gallery_thumb_desc {
+	display: block;
+}

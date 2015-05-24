@@ -5,6 +5,7 @@ namespace Site\GalleryBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\FlattenException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation\Secure;
@@ -90,7 +91,6 @@ class AddController extends Controller {
 			InvalidArgumentException
 		 */
 		$this->addAlbum_PreAction($cRefId);
-		$this->gallery->debugMode = true;
 		if ($this->getRequest()->getMethod() === 'POST') {
 			// Получение идентификатора типа альбома и проверка существования его в справочнике
 			$dicItemRefId = $this->getRequest()->get('albums');
@@ -170,25 +170,25 @@ class AddController extends Controller {
 		$image  = new Image();
 		$form = $this->createFormBuilder( $image )
 			->add('file', 'file', array('required' => true))
-			->getForm();
-		// Получение данных, присланных через форму отправки
-		$errors = null;
+			->getForm();		
+		$status = null;
 		if ( $this->getRequest()->getMethod() === 'POST') {
+			// Получение данных, присланных через форму отправки
 			$form->bind( $this->getRequest() );
 			// Валидация данных с формы
 			if ( $form->isValid() ) {
-				$status = $this->addImage_DoAction( $this->gallery->album, $image );			
+				$status = $this->addImage_DoAction( $this->gallery->album, $image );				
 			} else {
 				$status = GalleryService::RES_FAILURE;
-// 				$errors = $form->getErrors();
-				$errors = array();
-// 				$form->all()->getErrors();
-				foreach ( $form->all() as $subform )
-					foreach ( $subform->getErrors() as $error )
-						$errors[] = $error->getMessage();
+				throw new HttpException(200, $form->getErrorsAsString(), null, array(), 1000);
 			}
 		}
-		return array_merge($this->gallery->getOutput(), array('form' => $form->createView(), 'errors' => $errors, 'e' => $form->getErrors()));
+		return array(
+				'category' => $this->gallery->category,
+				'album' => $this->gallery->album,
+				'image' => $this->gallery->image,
+				'form' => $form->createView(),
+				'maxFileSize' => UploadedFile::getMaxFilesize() );
 	}
 		
 	/**
@@ -208,7 +208,7 @@ class AddController extends Controller {
 			throw $this->createNotFoundException( sprintf('Альбома %s в категории %s не существует', $aRefId, $cRefId) );
 		// Проверка прав доступа
 		if ( !$this->gallery->canUserAddImage( $album ) )
-			throw new AccessDeniedException( 'Недостаточно прав доступа' );
+			throw new AccessDeniedException( 'Недостаточно прав доступа для загрузки изображения в альбом' );
 		// Получение свободного пространства пользователя (только для альбомов, в которых разрешена загрузка)
 		if ( $album->getAllowAdd() )
 			$this->gallery->getUserSpace();

@@ -12,16 +12,19 @@
 					<div class='right'></div>
 					<div class='center'>Скриншоты из Need For Speed, обои, обложки CD/DVD. Самый большой фото архив по игре NFS на www.nfsko.ru</div>
 				</div>
-				<div class='info'>
+				<div class='description'>
 					{% block info %}
 						{% for error in app.session.flashbag.get('failure') %}
-							<div class='validationMess, error'>
+							<div class='validationMess error'>
             					<p>{{ error.message|nl2br|format_file_from_text }}</p>
             					<p><strong>{{ error.getStatusCode }}</strong></p>
 							</div>
 						{% endfor %}
 						{% for album in app.session.flashbag.get('success') %}
-							<div class='validationMess, ok'>Альбом "{{ album.name }}" успешно создан в категории "{{ album.category.name }}" (id = {{ album.id }})</div>
+							<div class='validationMess ok'>Альбом "{{ album.name }}" успешно создан в категории "{{ album.category.name }}" (id = {{ album.id }})</div>
+						{% endfor %}
+						{% for info in app.session.flashbag.get('info') %}
+							<div class='validationMess notice'>{{ info|raw }}</div>
 						{% endfor %}
 					{% endblock %}
 				</div>

@@ -408,6 +408,7 @@ class GalleryService {
 			if ( !$this->debugMode )
 				$this->em->flush();
 			$this->logger->info(sprintf('Изображение успешно удалено пользователем %s (%d)', $image->getId(), $user->getUsername(), $user->getId()) );
+			$this->image = null;
 		} catch (\Exceprion $e) {
 			$errMess = sprintf('Ошибка при удалении изображения id="%d" пользователем %s (%d) - %s', $image->getId(), $user->getUsername(), $user->getId(), $e->getMessage() );
 			$this->logger->error( $errMess );

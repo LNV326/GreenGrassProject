@@ -6,7 +6,7 @@
 
 {% block location %}
 	<div class="module-navigate left">
-		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.dictionary.title }}</a><a>{{ image.getId }}</a>
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.dictionary.title }}</a><a>Изображение {{ image.getId }}</a>
 	</div>
 	<div class="fb-dialog right">
 		{% if is_granted('ROLE_MEMBER') %}

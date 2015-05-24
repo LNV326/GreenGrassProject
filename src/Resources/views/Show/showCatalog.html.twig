@@ -13,6 +13,7 @@
 {% block content %}
 	{% block content_backward %}<div id='content_backward'></div>{% endblock %}
  	<ul class='gallery-container' id='catalog'>
+ 	{% set line = '' %}
  	{% for cat in categoryList %}
  		{# Определение категории для сортировки #}
  		{% if cat.position in (0..6) %}
@@ -23,6 +24,12 @@
  			{% set class='1st Generation' %}
  		{% elseif cat.position in (20..21) %}
  			{% set class='Other' %}
+ 		{% endif %}
+ 		{# Линия групы/эры #}
+ 		{% if line != class %}
+ 			<hr/>
+ 			<div class='gallery-hline'>{{ class }}</div>
+ 			{% set line = class %}
  		{% endif %}
  		{# Вывод списка альбомов #}
 		<li class='gallery_thumb big' data-pile='{{ class }}'>

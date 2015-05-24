@@ -41,7 +41,11 @@ class ShowController extends Controller {
 			return $this->redirect( $this->generateUrl( $r['route'], $r['arg'] ), $r['redirect_code'] );
 		// === Редирект (конец) ===
 		$this->gallery = $this->get('gallery_service');						
-		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => true) );				
+		$this->body['categoryList'] = $this->gallery->getCategoryList( array('withCovers' => true) );	
+		$this->get('session')->getFlashBag()->add(
+				'info',
+				'Здравствуйте! Галерея изображений NFSKO находится на этапе разработки. Если вы нашли ошибку, у вас замечания или предложения, просьба писать их в <a href="http://www.nfsko.ru/forum/index.php?showtopic=8246">этой теме</a> на нашем форуме.'
+		);
 		return $this->gallery->getOutput();
 	}
 

@@ -56,6 +56,7 @@
 
 .fancybox-inner {
 	overflow: hidden;
+	font-family: Verdana;
 }
 
 .fancybox-type-iframe .fancybox-inner {

@@ -268,6 +268,14 @@ class Image {
 		if ( file_exists( $file = $this->getAbsoluteThumbPath_old() ) )
 			unlink($file);
 	}
+	
+	public function toArray() {
+		$result = get_object_vars($this);
+		$result['webPath'] = self::HOST_ADDRESS.$this->getWebPath();
+		$result['webThumbPath'] = self::HOST_ADDRESS.$this->getWebThumbPath();
+		return $result;
+	}
+	
 	// ===== Автозаполнение =====
 
 

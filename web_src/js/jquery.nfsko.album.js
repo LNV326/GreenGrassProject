@@ -113,7 +113,8 @@ $(function() {
 				    	links.find('input').bind('click', function() {
 				    		this.select();
 				    	});
-				    	about.find('.left').append(controls).find('div')[0].remove();
+				    	var r = about.find('.left').append(controls);
+//				    	r.find('div')[0].remove();
 				    },
 					beforeLoad : function() {
 						var imageId = $(this.element).attr('imgid'),

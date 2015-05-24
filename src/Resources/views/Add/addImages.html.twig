@@ -23,7 +23,7 @@
 
 {% block location %}
 	<div class="module-navigate left">
-		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.name }}</a>
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.name }}</a><a>Загрузка изображений</a>
 	</div>
 {% endblock %}
 
@@ -43,53 +43,32 @@
 {% endblock %#}
 
 {% block content %}
+	{% set module_id = 'site_gallery_addImages' %}
 	{% embed "SiteCoreBundle::fancyBoxInner.html.twig" %}
-		{% block title %}
+		{% block title %}			
 			<h1>Добавление изображений</h1>
-			<h3>Название категории: {{ album.category.name }}</h3>
-			<h3>Название альбома: {{ album.name }}</h3>
-			<h4>Формат изображений: <b>Jpeg</b></h4>
-			<h4>Максимальный размер файла: <b>1 Мб</b></h4>
-			{% if album.getAllowAdd == true %}<h4>Вам доступно: <b>{{ macros.bytesToSize(spaceInfo.free) }}</b> / <b>{{ macros.bytesToSize(spaceInfo.total) }}</b></h4>{% endif %}
-			<form action='{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST' {{ form_enctype(form) }} id='image' name='image'>
-				<span>Выберите файлы:</span>
-				{{ form_widget(form) }}
-				<button type='submit' formtarget='_blank'>Загрузить</button>
-			</form>
-			
-			{% endblock %}
+			<div class='left'>
+				Название категории: {{ album.category.name }}<br/>
+				Название альбома: {{ album.name }}<br/>
+				{% if album.getAllowAdd == false %}Альбом является закрытым, добавленные в него изображения не учитываться при расчёте доступного вам дискового пространства.{% endif %}						
+			</div>
+			<div class='right'>
+				Формат изображений: <b>Jpeg</b><br/>	
+				Максимальный размер файла: <b>{{ macros.bytesToSize(maxFileSize) }}</b><br/>
+				{% if album.getAllowAdd == true %}Вам доступно: <b>{{ macros.bytesToSize(spaceInfo.free) }}</b> / <b>{{ macros.bytesToSize(spaceInfo.total) }}</b>{% endif %}
+				<form action='{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST' {{ form_enctype(form) }} id='image' name='image'>
+					<span>Выберите изображения для загрузки на вашем компьютере или переместите их на форму:</span>
+					{{ form_widget(form) }}<button type='submit' formtarget='_blank'>Загрузить</button>
+				</form>
+			</div>
+		{% endblock %}
 		{% block content %}
-			<ul class='gallery-container' id='droparea'></ul>
-			{#<div id='dropbox'>Переместите изображения сюда</div>
-			<div id='droparea_utils' class='hide'>
-				<li class='gallery_thumb small'>
+			<ul class='gallery-container' id='droparea'>
+				<li class='gallery_thumb small' id='thumb-template'>
 					<a href='' status="show" imgid=""><img/></a>
 				</li>
-			</div>		
-			#}	
-			<script>
-$(document).ready(function(){ 
-	//$('.gallery-container#droparea').nfsko('gallery');
-	
-	$('#droparea').fileupload({
-			url: $('#image').attr('action')+'.json',
-			fileInput: $('#form_file'),
-			form : $('#image'),
-			autoUpload: true,
-// 			sequentialUploads: true,
-			dataType: 'json',
-// 	        add: function (e, data) {
-// // 		        alert('Add');
-// // 	            data.context = $('<p/>').text('Uploading...').appendTo(document.body);
-// 	            data.submit();
-// 	        }
-// 	        done: function (e, data) {
-// 	        	alert('Done');
-// // 	            data.context.text('Upload finished.');
-// 	        }
-	});
-});
-			</script>
+			</ul>
+			<script>$(document).ready(function() { $('.gallery-container#droparea').nfsko('gallery'); });</script>
 		{% endblock %}
 	{% endembed %}
 {% endblock %}

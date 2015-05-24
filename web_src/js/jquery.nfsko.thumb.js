@@ -9,6 +9,7 @@
 $(function() {	
     $.widget( "nfsko.thumbnail", {
     	options : {
+    		cssFullName : 'li.gallery_thumb.small',
     		thumbnailsPath : 'thumbs/'
     	},
 		imageDOM : null,
@@ -16,8 +17,8 @@ $(function() {
 		progressDOM : null,
     	// Конструктор
     	_create : function() {
-			if ( !this.element.is('li.gallery_thumb.small') )
-				throw new Error("Error in nfsko.thumb: входной объект не соответствует шаблону");
+			if ( !this.element.is(this.options.cssFullName) )
+				throw new Error("Error in nfsko.thumb: input object must be an instance of "+this.options.cssFullName);
 			this.element.addClass('ui-thumb');
 			this.imageDOM = this.element.children('a');
 			/*this.thumbDOM = $('<img>').appendTo( this.imageDOM );
@@ -63,6 +64,12 @@ $(function() {
     			return this.imageDOM.attr('status');
     		this.imageDOM.attr('status', newStatus);
     	},
+    	// Устанавливает/удаляет ID DOM-узла
+    	id : function( newId ) {
+    		if (undefined === newId)
+    			return this.element.attr('id');
+    		this.element.attr('id', newId);
+    	},
 		// Устанавливает формат миниатюры (книжный/альбомный)
 		_format : function() {
 			if (this.thumbDOM.width() / this.thumbDOM.height() < 1)
@@ -86,6 +93,7 @@ $(function() {
 				complete : function( event, ui ) {
 					setTimeout(function() {
 						t.progressDOM.progressbar("destroy");
+						t.progressDOM.remove();
 						// Перемещение миниатюры
 						//$.album.album( 'addThumb', t.element.remove() ); // TODO 
 						//$.album.album( 'initGroup' ); 
@@ -96,7 +104,7 @@ $(function() {
 		// Обновление прогресса загрузки
 		updateProgressBar : function( percent ) {						
 			this.progressDOM.progressbar("option", "value", percent);
-		},
+		},		
 		// Создание из файла
 		createFromFile : function( file ) {
 			var reader = new FileReader(),
@@ -105,23 +113,26 @@ $(function() {
 				// e.target.result содержит путь к изображению
 				t.thumb( e.target.result );	
 			};
-			reader.readAsDataURL( file );
-			// Создаём полосу загрузки
-			this.createProgressBar();				
+			reader.readAsDataURL( file );			
 		},
 		// Завершение процасса загрузки
 		uploadDone : function( isError, error ) {
+			error = error || '';
+			this.updateProgressBar(101);
 			if ( false == isError ) {
 				this.element.addClass('new');
-				this.updateProgressBar(101);
 			} else {
 				this.element.addClass('error');
-				this.uploadError( error[0] );
+				this.uploadError( error );
 			}
 		},
 		// Ошибка загрузки изображения
-		uploadError : function( errCode ) {	
-			this.progressDOM.progressbar("option", "value", 'auto').text(errCode);
+		uploadError : function( error ) {	
+			this.descDOM = $('<div>').addClass('gallery_thumb_desc').text( error ).hide().appendTo( this.element );
+			var t = this;
+			this.element.mouseover( function() {
+				t.descDOM.show();
+			} );
 		},
 //		// Переключение видимости изображения
 //		_toggleVisibility : function( button ) {
