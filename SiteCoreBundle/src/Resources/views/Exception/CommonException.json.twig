@@ -1,0 +1,8 @@
+{{ {
+	'Exception' : {
+		'short_class' : e.getClass|split('\\')|last,
+		'code'	: e.getCode,
+		'message' : e.getMessage,
+		'trace' : e.getTrace
+	}
+}|json_encode|raw }}

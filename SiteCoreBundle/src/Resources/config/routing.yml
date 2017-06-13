@@ -1,0 +1,17 @@
+site_common_login:
+    pattern:  /login
+    defaults: { _controller: SiteCoreBundle:Default:login }
+site_common_login_check:
+    pattern:  /login_check
+    defaults: { _controller: SiteCoreBundle:Default:login_check }
+site_common_logout:
+    pattern:  /logout
+site_common_homepage:
+    pattern:  /
+    defaults: { _controller: SiteCoreBundle:Default:index }
+site_common_header:
+    pattern:  /header
+    defaults: { _controller: SiteCoreBundle:Default:header }
+site_common_menu:
+    pattern:  /menu
+    defaults: { _controller: SiteCoreBundle:Default:menu }

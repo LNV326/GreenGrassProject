@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset={{ _charset }}"/>
+        <meta name="robots" content="noindex, nofollow" />
+        <title>{% block title %}Need For Speed World Site | Nfsko.ru{% endblock %}</title>
+        <meta name="description" content="{% block description %}Самые последние новости из мира Need For Speed{% endblock %}"/>
+        <meta name="keywords" content="{% block keywords %}need for speed, nd4spd, nfs, nfsko{% endblock %}"/>        
+        <meta name="resourse-type" content="document"/>       
+		<meta name="document-state" content="dynamic"/>
+		<meta name="revisit-after" content="10 days"/> 
+		{#<meta name="robots" content="all">#}
+		<meta http-equiv="Content-Language" content="en,ru"/>
+		<meta name="copyright" content="Need For Speed World Site © 2003 - {{"now"|date('Y','MSK')}} support by Лёлик"/>  
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/jquery-1.9.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/jquery-ui.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/jquery.fancybox.js') }}"></script>
+        
+        <script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/modernizr.custom.63321.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/SiteCore/js/nfsko.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/jquery.stapel.js') }}"></script>
+		<script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/jquery.filedrop.js') }}"></script>
+		
+		<script type="text/javascript" src="{{ asset('bundles/SiteGallery/js/SiteGalleryBundle.js') }}"></script>
+		
+		<!-- 
+		<link rel="stylesheet" href="{{ asset('bundles/sitecore/css/modern_main.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/modern_gallery.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/sitecore/css/jquery.fancybox.css') }}" type="text/css" media="all" />
+        -->
+        <link rel="stylesheet" href="{{ asset('bundles/SiteCore/css/SiteCoreBundle.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/SiteGallery/css/SiteGalleryBundle.css') }}" type="text/css" media="all" />
+	</head>
+<body>
+<table id='body'>
+	<tr class='body_row' id='body_top' >
+		<td class='body_col' colspan='2'>			
+			{% include 'SiteCoreBundle::header2007.html.twig' %}
+		</td>
+	</tr>
+	<tr class='body_row' id='body_cent'>
+		<td id='module-container'>
+			<div id='module'>
+				<div class='title'>
+					<div class='left'></div>
+					<div class='right'></div>
+					<div class='center'>Скриншоты из Need For Speed, обои, обложки CD/DVD. Самый большой фото архив по игре NFS на www.nfsko.ru</div>
+				</div>
+				<div class='content'>
+					<div class='module-row'>{% block location %}{% endblock %}</div>
+					<div class='module-row'><table class='module-table'>
+						<tr><td>{% block content_left %}{% endblock %}</td>
+						<td>{% block content %}{% endblock %}</td>
+						<td>{% block content_right %}{% endblock %}</td></tr>
+					</table></div>
+					<div class='module-row'>
+						{% block content_bottom %}<div class='left'>Need For Speed World Site</div>{% endblock %}
+					</div>
+				</div>
+			</div>
+		</td>
+		<td id='menu-container'>
+			<div class='menu-block'>
+				<div class='title'>Меню</div>
+				<ul class='content'>
+					<li><a href='{{ path('site_gallery_homepage') }}'>{% trans %}Главная галереи{% endtrans %}</a></li>
+					<li><a href='http://www.nfsko.ru'>Перейти на сайт NFSko</a></li>
+				</ul>
+			</div>
+			<div class='menu-block'>
+				<div class='title'>Категории галереи</div>
+				<ul class='content'>
+					{% for cat in body.categoryList %}
+						<li><a href='{{ path('site_gallery_category', {'cRefId': cat.getRefId}) }}'>{{ cat.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</td> 
+	</tr>
+	<tr class='body_row' id='body_foot'>
+		<td class='body_col' colspan='2'>
+			<footer>
+				<div id='counters' class='right'>
+					{% include 'SiteCoreBundle::counters.html.twig' %}
+				</div>
+				<ul id='foot-links'>
+					<li>
+						<div class='links'>
+							<div class='title'>www.NFSko.ru</div>
+							<ul class='content'>
+								<li><a href="http://www.nfsko.ru/index.php?page=adver">Реклама на сайте</a></li>
+								<li><a href="http://www.nfsko.ru/index.php?page=stat">Статистика сайта</a></li>
+								<li><a href="http://www.nfsko.ru/index.php?page=userbars">Наши Userbar's</a></li>
+								<li><a href="http://www.nfsko.ru/index.php?page=info">Наши кнопки</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div class='links'>
+							<div class='title'>Сервисы</div>
+							<ul class='content'>
+								<li><a href="http://www.nfsko.ru/forum/">Форум сайта</a></li>
+								<li><a href="http://files.nfsko.ru">Файловый архив</a></li>
+								<li><a href="http://images.nfsko.ru">Галерея сайта</a></li>
+								<li><a href="http://www.nfsko.ru/index.php?page=faq">Вопросы и ответы</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div class='links'>
+							<div class='title'>Вы можете</div>
+							<ul class='content'>
+								<li><a href="http://files.nfsko.ru/index.php?page=upload">Добавить файлы</a></li>
+								<li><a href="http://www.nfsko.ru/index.php?page=add_news">Добавить новость</a></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<div class='links'>
+							<div class='title'>Мы в соцсетях</div>
+							<div class='content'><noindex>
+	<a target="_blank" title="Группа ВКонтакте" rel="nofollow" href="http://vkontakte.ru/club456662"><img border="0" alt="" src="http://www.nfsko.ru/style/1/img/vk.png"></a>
+	<a target="_blank" title="Канал на YouTube" rel="nofollow" href="http://www.youtube.com/user/NFSKOru"><img border="0" alt="" src="http://www.nfsko.ru/style/1/img/yt.png"></a>
+	<a target="_blank" title="Twitter" rel="nofollow" href="http://twitter.com/NFSKOru"><img border="0" alt="" src="http://www.nfsko.ru/style/1/img/tw.png"></a>
+	<a target="_blank" title="Группа в Steam" rel="nofollow" href="http://steamcommunity.com/groups/nd4psd"><img border="0" alt="" src="http://www.nfsko.ru/style/1/img/st.png"></a>
+	<a target="_blank" title="Группа Facebook" rel="nofollow" href="http://www.facebook.com/pages/Need-for-Speed-World-Site/216582131720891"><img border="0" alt="" src="http://www.nfsko.ru/style/1/img/fb.png"></a>
+							</noindex></div>
+						</div>
+					</li>
+				</ul>
+				<div id='foot-info'>
+					<div class='left'><b>Копирование любой информации с сайта без согласия</b> <a href="http://www.nfsko.ru/forum/index.php?act=Stats&amp;CODE=leaders" target="_blank"><b>администрации</b></a> <b>запрещено.</b></div>
+					<div class='right'><a href="http://www.nfsko.ru/index.php?page=info" title="О сайте">Need For Speed World Site</a> © 2003 - {{"now"|date('Y','MSK')}}. Разработка и поддержка <a href="http://www.nfsko.ru/index.php?page=about" title="О авторе">www.allex.me</a></div>
+				</div>
+			</footer>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

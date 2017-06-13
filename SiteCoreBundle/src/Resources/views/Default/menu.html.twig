@@ -1,0 +1,36 @@
+<ul id="menu_main">
+	<li><a href='{{ path('site_common_homepage') }}'>{% trans %}Главная{% endtrans %}</a></li>
+	<li>{% trans %}<a>Форум{% endtrans %}</a></li>
+	<li>{% trans %}<a>Чат{% endtrans %}</a></li>
+	<li><a href='{{ path('site_gallery_homepage') }}' title='Описание ссылки' id="link_gallery" class='ajaxy'>{% trans %}Галерея{% endtrans %}</a></li>
+	<li>{% trans %}<a>Файловый архив{% endtrans %}</a></li>
+	{% for gen in 1..3 %}
+		{% if gen==1 %}
+			{% set class='1st Generation' %}
+			{% set start_pos=100 %}
+			{% set end_pos=13 %}
+		{% elseif gen==2 %}
+			{% set class='2nd Generation' %}
+			{% set start_pos=12 %}
+			{% set end_pos=7 %}
+		{% elseif gen==3 %}
+			{% set class='3rd Generation' %}
+			{% set start_pos=6 %}
+			{% set end_pos=0 %}
+		{% endif %}
+		<li class='can_select'><a>{{ class }}</a>
+			<ul class="menu_submenu">
+			{% for category in navigate if (category.position>=end_pos and category.position<=start_pos) %}
+				<li><a>{{ category.name }}</a>
+					<ul class="s_popupmenu">
+					{% for item in category.menuItems %}
+						<li><a>{{ item.name }}</a></li>
+					{% endfor %}
+					</ul>
+				</li>
+			{% endfor %}
+			</ul>
+		</li>
+	{% endfor %}	
+</ul>
+<div id="menu_navigate"></div>
