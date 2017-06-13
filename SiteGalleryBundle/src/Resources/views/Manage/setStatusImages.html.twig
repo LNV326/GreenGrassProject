@@ -1,0 +1,49 @@
+{% block confirm %}
+<div id='gallery_manage'>
+	<div class='confirm'>Вы хотите установить следующие статусы для изображений. Окда?</div>
+	<div class='resolve_buttons'>
+		<button info='ok' onclick='$.albumManage.confirm()'>OK</button>
+		<button info='cancel' onclick='$.fancybox.close()'>Cancel</button>
+	</div>
+</div>
+<ul id='gallery_container'>
+		{% for image in images %}			
+			{% if image.id in statuses.show %}
+				{% set status='show' %}
+			{% elseif image.id in statuses.hide %}
+				{% set status='hide' %}
+			{% elseif image.id in statuses.trash %}
+				{% set status='trash' %}
+			{% endif %}
+			<li class='gallery_thumb small'>
+				<a href='{{ imgHostName ~ image.getImgUrl }}' new_status="{{ status }}" uid="{{ image.id }}"></a>
+			</li>
+		{% endfor %}
+</ul>
+{% endblock %}
+
+{% block result %}
+<div id='gallery_manage'>
+	<div class='resolve_buttons'>
+		<button info='ok' onclick='$.fancybox.close()'>OK</button>
+	</div>
+	<div class='confirm'>
+		<b>Отчёт:</b><br/>
+		{% for status, array in statuses if (array | length) > 0 %}
+			{% if status=='show' %}
+				{% set text='Отображено' %}
+			{% elseif status=='hide' %}
+				{% set text='Скрыто' %}
+			{% elseif status=='trash' %}
+				{% set text='Отправлено в корзину' %}
+			{% endif %}
+			{% if (array | length) != result %}
+				
+			{% else %}
+
+			{% endif %}
+			{{ text }}: {{ result[status] }} из {{ array | length }}<br/>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

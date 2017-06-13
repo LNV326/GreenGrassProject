@@ -1,0 +1,74 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% macro bytesToSize(bytes) %}
+{% spaceless %}
+    {% set kilobyte = 1024 %}
+    {% set megabyte = kilobyte * 1024 %}
+    {% set gigabyte = megabyte * 1024 %}
+
+    {% if bytes|abs < kilobyte %}
+        {{ bytes ~ ' байт' }}
+    {% elseif bytes|abs < megabyte %}
+        {{ (bytes / kilobyte)|number_format(2, '.') ~ ' Кб' }}
+    {% elseif bytes|abs < gigabyte %}
+        {{ (bytes / megabyte)|number_format(2, '.') ~ ' Мб' }}
+    {% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{% block title %}Загрузка изображений | Альбом {{ album.name }} | Категория {{ category.name }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.name }}</a><a>Загрузка изображений</a>
+	</div>
+{% endblock %}
+
+{# % block content %}
+<h1>Upload File</h1>
+
+<form action="{{ path('site_gallery_addImages', {'cRefId': app.request.attributes.get('cRefId'),'aRefId': app.request.attributes.get('aRefId')}) }}" method="post" {{ form_enctype(form) }}>
+
+    {{ form_label(form.files) }}
+    {{ form_errors(form.files) }}
+    {#{ form_widget(form.file, { 'attr': {'name': 'files[]'} }) }}
+    {{ form_widget(form.files, { 'full_name': form.files.get('full_name') ~ '[]' }) }}
+
+    {{ form_rest(form) }}
+    <input type="submit" />
+</form>
+{% endblock %#}
+
+{% block content %}
+	{% set module_id = 'site_gallery_addImages' %}
+	{% embed "SiteCoreBundle::fancyBoxInner.html.twig" %}
+		{% block title %}			
+			<h1>Добавление изображений</h1>
+			<div class='left'>
+				Название категории: {{ album.category.name }}<br/>
+				Название альбома: {{ album.name }}<br/>
+				{% if album.getAllowAdd == false %}Альбом является закрытым, добавленные в него изображения не учитываться при расчёте доступного вам дискового пространства.{% endif %}						
+			</div>
+			<div class='right'>
+				Формат изображений: <b>Jpeg</b><br/>	
+				Максимальный размер файла: <b>{{ macros.bytesToSize(maxFileSize) }}</b><br/>
+				{% if album.getAllowAdd == true %}Вам доступно: <b>{{ macros.bytesToSize(spaceInfo.free) }}</b> / <b>{{ macros.bytesToSize(spaceInfo.total) }}</b>{% endif %}
+				<form action='{{ path('site_gallery_addImages', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}' method='POST' {{ form_enctype(form) }} id='image' name='image'>
+					<span>Выберите изображения для загрузки на вашем компьютере или переместите их на форму:</span>
+					{{ form_widget(form) }}<button type='submit' formtarget='_blank'>Загрузить</button>
+				</form>
+			</div>
+		{% endblock %}
+		{% block content %}
+			<ul class='gallery-container' id='droparea'>
+				<li class='gallery_thumb small' id='thumb-template'>
+					<a href='' status="show" imgid=""><img/></a>
+				</li>
+			</ul>
+			<script>$(document).ready(function() { $('.gallery-container#droparea').nfsko('gallery'); });</script>
+		{% endblock %}
+	{% endembed %}
+{% endblock %}

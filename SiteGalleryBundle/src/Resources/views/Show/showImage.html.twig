@@ -1,0 +1,59 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Альбом {{ album.dictionary.title }} | Категория {{ album.category.name }} | Галерея изображений {{ parent(title) }}{% endblock %}
+
+{% block keywords %}{{ album.category.name }}, {{ parent(keywords) }}{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a><a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.dictionary.title }}</a><a>Изображение {{ image.getId }}</a>
+	</div>
+	<div class="fb-dialog right">
+		{% if is_granted('ROLE_MEMBER') %}
+			{% if is_granted('ROLE_GAL_IMGS_EDIT') %}<a href='{{ path('site_gallery_hideImage', {'imageId':image.getId}) }}'>Скрыть</a> / <a href='{{ path('site_gallery_showImage', {'imageId':image.getId}) }}'>Показать</a>{% endif %}
+			{% if is_granted('ROLE_GAL_IMGS_DEL') or app.user.getId==image.memberId %} | <a href='{{ path('site_gallery_removeImage', {'imageId':image.getId}) }}'>Удалить</a>{% endif %}
+			{% if is_granted('ROLE_GAL_CATS_EDIT') %} | <a href='{{ path('site_gallery_setCategoryCover', {'cRefId':category.getRefId, 'iId':image.getId}) }}'>Обложка категории</a>{% endif %}
+			{% if is_granted('ROLE_GAL_ALBS_EDIT') %} | <a href='{{ path('site_gallery_setAlbumCover', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId, 'iId':image.getId}) }}'>Обложка альбома</a>{% endif %}
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block content %}
+<div class='gallery-container' id='image'>
+	<img class='gallery-image' src='{{ imgHostName ~ image.getWebPath }}'/>
+	<div class='image-about'>
+		<div class='left'>
+			<div>Описание: {{ image.getInfo|default('n/a') }}</div>
+			<div>Автор: <a href='{{ path('site_gallery_userImages', {'uId':image.getMemberId}) }}'>{{ image.getMemberName | default('n/a') | raw }}</a></div>
+			<div>Добавлено: {{ image.getSize|default('n/a') }}</div>
+		</div>
+		<div class='right'>
+			<div>Категория: <a href='{{ path('site_gallery_category', {'cRefId':category.getRefId}) }}'>{{ category.name }}</a></div>
+			<div>Альбом: <a href='{{ path('site_gallery_album', {'cRefId':category.getRefId, 'aRefId':album.dictionary.getRefId}) }}'>{{ album.dictionary.title }}</a></div>
+			<div id='image-size'>Разрешение: {{ image.getWidth ~ 'x' ~ image.getHeight }} px</div>	
+		</div>		
+	</div>
+	<div class='image-links'>
+		<div class='title'>Коды:</div>
+		<ul class='content'>
+			<li>
+				<div class='title'>Ссылка: </div>
+				<input type='text' class='content' value='{{ imgHostName ~ image.getWebPath }}'/>
+			</li>
+			<li>
+				<div class='title'>Картинка в тексте: </div>
+				<input type='text' class='content' value='[img]{{ imgHostName ~ image.getWebPath }}[/img]'/>
+			</li>
+			<li>
+				<div class='title'>Превью - увеличение по клику: </div>
+				<input type='text' class='content' value='[url={{ imgHostName ~ image.getWebPath }}][img]{{ imgHostName ~ image.getWebThumbPath }}[/img][/url]'/>
+			</li>
+		</ul>
+	</div>
+</div>
+<script>
+$(document).ready(function(){ 
+	$('.gallery-container#image').nfsko('gallery');
+});
+</script>
+{% endblock %}

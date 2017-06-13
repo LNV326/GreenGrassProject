@@ -1,0 +1,38 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Файлы пользователя {{ userInfo.getUsername }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+{% block keywords %}{{ parent(keywords) }}
+{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a>Файлы пользователя {{ userInfo.getUsername }}</a>
+	</div>
+	<div class="fb-dialog right">
+	</div>
+{% endblock %}
+
+{% block content %}
+<ul class='gallery-container' id='album'>
+	{% set imgHostName = imgHostName %}
+	{% for image in imageList %}
+		{% if is_granted('ROLE_GAL_IMGS_EDIT') or image.visibility==1 or image.memberId==app.user.getId %}
+			{% block image_block %}
+			<li class='gallery_thumb small'>
+				{#<a href='{{ imgHostName ~ image.getWebPath }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}"></a>#}
+				<a href='{{ path('site_gallery_image', {'iId':image.id}) }}' status="{% if image.visibility==1 %}show{% else %}hide{% endif %}" imgid="{{ image.id }}">
+					<img lazysrc='{{ imgHostName ~ image.getWebThumbPath }}'/>
+				</a>
+			</li>
+			{% endblock %}
+		{% endif %}
+	{% endfor %}
+	<div id='gallery_exception' {% if imageList is empty %}class='hide'{% endif %}>У этого пользователя нет загруженных изображений</div>
+</ul>
+<script>
+$(document).ready(function(){ 
+	$('.gallery-container#album').nfsko('gallery');
+});
+</script>
+{% endblock %} 

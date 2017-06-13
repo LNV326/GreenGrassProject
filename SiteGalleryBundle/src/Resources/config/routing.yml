@@ -1,0 +1,46 @@
+site_gallery_homepage:
+    pattern:  /.{_format}
+    defaults: { _controller: SiteGalleryBundle:Show:showCatalog, _format: html }
+site_gallery_validateAll:
+    pattern:  /_validateAll
+    defaults: { _controller: SiteGalleryBundle:Validate:validateAll }
+site_gallery_userImages:
+    pattern:  /_user/{uId}
+    defaults: { _controller: SiteGalleryBundle:Show:showUserImages }     
+
+site_gallery_image:
+    pattern: /_image/{iId}
+    defaults: { _controller: SiteGalleryBundle:Show:showImage }      
+site_gallery_showImage:
+    pattern: /_image/{imageId}/_show.{_format}
+    defaults: { _controller: SiteGalleryBundle:Edit:showImage, _format: html }
+site_gallery_hideImage:
+    pattern: /_image/{imageId}/_hide.{_format}
+    defaults: { _controller: SiteGalleryBundle:Edit:hideImage, _format: html }
+site_gallery_removeImage:
+    pattern: /_image/{imageId}/_remove.{_format}
+    defaults: { _controller: SiteGalleryBundle:Remove:removeImage, _format: html }
+
+site_gallery_addCategory:
+    pattern: /_add
+    defaults: { _controller: SiteGalleryBundle:Add:addCategory }
+site_gallery_category:
+    pattern: /{cRefId}
+    defaults: { _controller: SiteGalleryBundle:Show:showCategory }   
+site_gallery_setCategoryCover:
+    pattern: /{cRefId}/_cover/{iId}
+    defaults: { _controller: SiteGalleryBundle:Edit:setCategoryCover }
+
+site_gallery_addAlbum:
+    pattern: /{cRefId}/album/add.{_format}
+    defaults: { _controller: SiteGalleryBundle:Add:addAlbum, _format: html }
+site_gallery_album:
+    pattern: /{cRefId}/{aRefId}.{_format}
+    defaults: { _controller: SiteGalleryBundle:Show:showAlbum, _format: html }    
+site_gallery_setAlbumCover:
+    pattern: /{cRefId}/{aRefId}/_cover/{iId}
+    defaults: { _controller: SiteGalleryBundle:Edit:setAlbumCover }    
+       
+site_gallery_addImages:
+    pattern: /{cRefId}/{aRefId}/image/add.{_format}
+    defaults: { _controller: SiteGalleryBundle:Add:addImages, _format: html }

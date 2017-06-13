@@ -1,0 +1,76 @@
+.description .notice {
+	border: 1px solid #E4D17D;
+	background: #FDED9B url(http://www.nfsko.ru/style/1/img/info.png) left 3px no-repeat;
+	padding: 5px 30px 6px 30px;
+	margin-bottom: 5px;
+	color: #424242;
+	font-size: 90%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.description .notice ul {
+	padding: 0px 10px 0px 10px;
+	margin: 0px;
+}
+
+.description .notice a {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.description .notice a:link,.notice a:visited,.notice a:active {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.description .notice a:hover {
+	text-decoration: none;
+	color: #424242
+}
+
+.description .error {
+	border: 1px solid #E4D17D;
+	background: #FCCFAE url(http://www.nfsko.ru/style/1/img/error.png) left 3px no-repeat;
+	padding: 5px 30px 6px 30px;
+	margin-bottom: 5px;
+	color: #424242;
+	font-size: 90%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.description .error ul {
+	padding: 0px 10px 0px 10px;
+	margin: 0px;
+}
+
+.description .error a {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.description .error a:link,.error a:visited,.error a:active {
+	color: #323232;
+	text-decoration: underline;
+}
+
+.description .error a:hover {
+	text-decoration: none;
+	color: #424242
+}
+
+.description .ok {
+	border: 1px solid #E4D17D;
+	background: #CCFFC4 url(http://www.nfsko.ru/style/1/img/ok.png) left 3px
+		no-repeat;
+	padding: 5px 30px 6px 30px;
+	margin-bottom: 5px;
+	color: #424242;
+	font-size: 90%;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}

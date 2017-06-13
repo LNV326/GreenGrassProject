@@ -1,0 +1,5 @@
+{#% extends "SiteGalleryBundle::gallery.json.twig" %#}
+
+{{ {
+	'image' : image.toArray
+}|json_encode|raw }}

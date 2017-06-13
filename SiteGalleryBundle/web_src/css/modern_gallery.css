@@ -1,0 +1,199 @@
+@CHARSET "UTF-8";
+/* ==========================
+    Общее оформление модуля галереи
+============================= */
+
+/* Контейнер с превью изображений */
+.gallery-container {
+	position: relative;
+	width: auto;
+	margin: 8px auto;
+	list-style-type: none;
+	padding: 0;
+	text-align: center;
+	font-size: 0; /* Убирает ненужные отступы между элементами списка */
+}
+/* Контейнер для сообщения исключительной ситуации */
+#gallery_exception {
+	width: 100%;
+	height: 122px;
+	margin: auto;
+	text-align: center;
+	line-height: 122px;
+	font-size: 14px;
+}
+/* Строка навигации */
+.module-navigate {
+}
+.module-navigate a {
+	background: url(../../SiteCore/images/lil.gif) no-repeat 0 center;
+	padding: 0 5px 0 15px;
+}
+
+
+/* Область возврата к предыдущему состоянию (кнопка "Назад") */
+#content_backward {
+	position: fixed;
+	background: rgba(100,100,100,0.5);
+	top: 0;
+	left: 0;
+	width: 50px;
+	height: 100%;
+	display: none;
+}
+
+
+/* Горизонтальная линия разделения эры/поколения на главной странице */
+.gallery-container hr {
+	margin: 16px 0;
+}
+.gallery-hline {
+	background-color: #242424;
+    border: 1px solid white;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    left: 16px;
+    position: relative;
+    top: -28px;
+    width: 200px;
+    margin-bottom: -16px;
+}
+
+/* ==========================
+    Статусы миниатюр и остальные иконки
+============================= */
+
+/* Информационные иконки статуса изображения в галерее (скрыто/в корзине) */
+.gallery_thumb > a[new_status]:before, .gallery_thumb > a:not([status='show']):before {
+	content: '';
+	position: absolute;
+	top: 25%;
+	right: 25%;
+	background: no-repeat center center rgba(0,0,0,0.5);
+	width: 50%;
+	height: 50%;
+	border-radius: 8px;
+}
+.gallery_thumb > a[status='show']:before {
+	background-image: url(../images/modern/cc/white/png/eye_icon&48.png) !important;
+}
+.gallery_thumb > a[status='hide']:before {
+	background-image: url(../images/modern/cc/white/png/invisible_light_icon&48.png) !important;
+}
+.gallery_thumb > a[status='trash']:before {
+	background-image: url(../images/modern/cc/white/png/trash_icon&48.png) !important;
+}
+.gallery_thumb > a[status='changing']:before {
+	background-image: url(../images/modern/loading.gif) !important;
+}
+.gallery_thumb > a[new_status='show']:before {
+	background-image: url(../images/modern/cc/white/png/eye_icon&48.png) !important;
+}
+.gallery_thumb > a[new_status='hide']:before {
+	background-image: url(../images/modern/cc/white/png/invisible_light_icon&48.png) !important;
+}
+.gallery_thumb > a[new_status='trash']:before {
+	background-image: url(../images/modern/cc/white/png/trash_icon&48.png) !important;
+}
+/* Информационные иконки статуса изображения в галерее (скрыто/в корзине) */
+.gallery_thumb[allow-add] .gallery_thumb_name:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 3px;
+	background: no-repeat center center transparent;
+	width: 20px;
+	height: 20px;
+}
+.gallery_thumb[allow-add='false'] .gallery_thumb_name:after {
+	background-image: url(../images/modern/cc/white/png/padlock_closed_icon&16.png) !important;
+}
+
+.gallery_thumb > a.ui-loading {
+	background: url(../images/modern/loading.gif) no-repeat scroll center center #242424 !important;
+}
+
+/* ==========================
+    Загрузка изображений
+============================= */
+
+.gallery-container > .content {
+	position: relative;
+	margin-top: 10px;
+}
+
+/* ==========================
+   Показ изображения
+============================= */
+
+.gallery-container#image {
+	background: #242424;
+}
+
+.fancybox-title {
+	text-align: center;
+}
+
+#module .gallery-image {
+	max-width: 1054px;
+}
+
+.image-about,
+.image-links {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.35);
+	left: 0;
+    right: 0;
+    padding: 5px 10px;
+    position: absolute;
+    z-index: 8050;
+    color: #eeeeee;
+	font-family: Verdana;
+	font-size: 11px;
+	text-align: left;
+}
+
+.image-about {
+    top: 0;
+}
+
+.image-links {
+    bottom: 0;
+    height: 18px;
+    overflow: hidden;
+    -webkit-transition: 0.25s;
+       -moz-transition: 0.25s;
+         -o-transition: 0.25s;
+    	    transition: 0.25s;
+}
+
+.image-links:hover {
+	height: 150px;
+}
+
+.image-links > .title {
+	padding-bottom: 5px;
+	font-size: 12px;
+	text-align: left;
+}
+
+.image-links > ul.content {
+	list-style: none outside none;
+	margin: 0;
+	padding: 0;
+}
+
+.image-links > ul.content .title {
+	float: left;
+	padding-right: 5px;
+	line-height: 18px;
+}
+
+.image-links > ul.content li {
+	margin: 2px;
+}
+
+.image-links > ul.content .content {
+	width: 100%;
+}
+

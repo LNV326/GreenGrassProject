@@ -1,0 +1,157 @@
+/* ==========================
+    Содержимое модуля галереи (общее описание)
+============================= */
+
+/* Превью - контейнер */
+.gallery_thumb {
+	border: 1px solid #424242;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
+	margin: 0px;
+	text-align: center;
+	margin: 2px;
+	cursor: pointer;
+	border-collapse: collapse;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+		    box-sizing: border-box;	
+	-webkit-transition: 0.25s;
+	   -moz-transition: 0.25s;
+	     -o-transition: 0.25s;
+		    transition: 0.25s;
+}
+.gallery_thumb:hover {
+	border-color: #c7c7c7;
+	-webkit-box-shadow: 0 0 12px 2px black;
+	   -moz-box-shadow: 0 0 12px 2px black;
+			box-shadow: 0 0 12px 2px black;
+	z-index: 2;
+}
+/* Превью - область центрирования и обрезки */
+.gallery_thumb > a {
+	display: table-cell;
+	vertical-align: middle;
+	background: none no-repeat scroll center center #242424;
+	background-size: 100%;
+	border: 0px;
+}
+/* Превью - изображение */
+.gallery_thumb > a > img {
+	width: 100%;
+	border: 0px;
+}
+/* Превью - название */
+.gallery_thumb_name, .tp-title {
+	background: url("../../SiteCore/images/fon.gif") repeat;
+	left: 0;
+	right: 0;
+	height: 20px;
+	position: absolute;
+	font-size: 12px;
+	line-height: 20px;
+	color: white;
+	opacity: 0.8;
+	overflow: hidden;
+	font-weight: bold;
+	padding-left: 20px;
+	text-align: left;
+}
+/* Стрелка перед названием превью */
+.gallery_thumb_name:before {
+	content: '';
+	position: absolute;
+	height: 100%;
+	width: 13px;
+	left: 5px;
+	top: 0;
+	background: url("../../SiteCore/images/lil.gif") no-repeat scroll 0 center transparent;
+}
+
+/* ==========================
+    Содержимое модуля галереи (большое превью)
+============================= */
+
+/* Большое превью - контейнер */
+.gallery_thumb.big {
+	width: 320px;
+	height: 175px;
+}
+/* Большое превью - область центрирования и обрезки */
+.gallery_thumb.big > a {
+	width: 320px;
+	height: 250px;
+}
+/* Большое превью - изображение */
+.gallery_thumb.big > a > img {
+	margin-top: -70px;
+}
+/* Большое превью - название */
+.gallery_thumb.big .gallery_thumb_name, .gallery_thumb.big .tp-title {
+	top: 10px;
+}
+/* Количество элементов в группе */
+.tp-title span:nth-child(2) {
+	padding: 0 5px;
+	right: 0px;
+	height: 100%;
+	top: 0px;
+	position: absolute;
+	display: block;
+}
+
+/* ==========================
+    Содержимое модуля галереи (маленькое превью)
+============================= */
+
+/* Маленькое превью - контейнер */
+.gallery_thumb.small {
+	margin: 1px;
+	width: 120px;
+	height: 120px;
+}
+/* Маленькое превью - область центрирования и обрезки */
+.gallery_thumb.small > a {
+	width: 180px;
+	height: 120px;
+	margin-left: -30px;
+	display: block;
+}
+/* Маленькое превью - изображение */
+.gallery_thumb.small > a > img {
+	height: 120px;
+	width: auto;
+}
+/* Маленькое превью - название */
+.gallery_thumb.small .gallery_thumb_name {
+	top: 8px;
+}
+/* Маленькое превью - область центрирования и обрезки */
+.gallery_thumb.small.book > a {
+	width: 120px;
+	height: 180px;
+	margin-left: 0;
+}
+/* Маленькое превью - изображение */
+.gallery_thumb.small.book > a > img {
+	width: 120px;
+	height: auto;
+}
+/* Маленькое превью - ошибка загрузки*/
+.gallery_thumb_desc {
+	position: absolute;
+	font-size: 12px;
+	line-height: 20px;
+	color: white;
+	opacity: 0.8;
+	overflow: hidden;
+	font-weight: bold;
+	padding-left: 20px;
+	text-align: left;
+}
+.gallery_thumb > .gallery_thumb_desc {
+	display: none;
+}
+.gallery_thumb:hover > .gallery_thumb_desc {
+	display: block;
+}

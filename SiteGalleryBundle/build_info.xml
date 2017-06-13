@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<project name="SiteGalleryBundle" default="build">
+	<!-- 		
+	<target name="src-copy" description="Копирование исходников">
+		<echo>Очистка папки ${copy_src.to}</echo>
+		<delete dir="${copy_src.to}"></delete>
+		<mkdir dir="${copy_src.to}"/>
+		<echo>Копирование ${copy_src.from} в ${copy_src.to}</echo>
+		<copy todir="${copy_src.to}">
+		    <fileset dir="${copy_src.from}"/>
+		</copy>
+	</target>
+	
+	<target name="web-copy" description="Копирование JS, CSS и изображений">
+		<echo>Очистка папки ${copy_web.to}</echo>
+		<delete dir="${copy_web.to}"></delete>
+		<mkdir dir="${copy_web.to}"/>
+		<echo>Копирование ${copy_web.from} в ${copy_web.to}</echo>
+		<copy todir="${copy_web.to}">
+			<fileset dir="${copy_web.from}"/>
+		</copy>
+	</target>	
+	-->	
+	
+	
+	
+	<!-- Получение версии репозитория GIT -->	
+	<target name="_getGitRevision">
+		<exec executable="git" outputproperty="git.Revision" failonerror="false">
+			<arg line="describe --always --dirty=+ --abbrev=5"/>
+		</exec>
+		<echo>Revision: ${git.Revision}</echo>
+	</target>
+	
+	<target name="startUnitTest">	
+		<sshexec trust="true" host="${env.ssh.host}" port="${env.ssh.port}"
+			username="${env.ssh.user}" password="${env.ssh.pass}"
+			command="phpunit -c /home/sa/sites/www.nfsko.dev/app --log-junit ${copy_src.to}/test.xml src/${bundle.prefix}/${bundle.name}${bundle.suffix}/Tests/Controller/ShowControllerTest.php"
+			failonerror="false"/>
+		<scp trust="true" port="${env.ssh.port}"
+			file="${env.ssh.user}:${env.ssh.pass}@${env.ssh.host}:${copy_src.to}/test.xml"
+			todir="${copy_src.from}"/>
+		
+		<!-- junitreport todir="${copy_src.from}">
+		   <fileset dir="${copy_src.from}">
+		    <include name="test.xml"/>
+		   </fileset>
+		   <report format="frames" todir="${copy_src.from}"/>
+		</junitreport -->
+	</target>
+	
+	<!-- Объединение JS-файлов в одну библиотеку -->
+	<target name="_concat-js">
+		<echo>Удаление ${concat_js.to}</echo>
+		<delete file="${concat_js.to}" />
+		<echo>Объединение JS-файлов в библиотеку ${concat_js.to}</echo>
+		<concat destfile="${concat_js.to}" >
+			<fileset dir="${concat_js.from}" includes="*.js" />
+		</concat>
+	</target>
+	
+	<!-- Объединение CSS-файлов в одну библиотеку -->
+	<target name="_concat-css">
+		<echo>Удаление ${concat_css.to}</echo>
+		<delete file="${concat_css.to}" />
+		<echo>Объединение CSS-файлов в библиотеку ${concat_css.to}</echo>
+		<concat destfile="${concat_css.to}" >
+			<fileset dir="${concat_css.from}" includes="*.css" />
+		</concat>
+	</target>
+	
+	<target name="_minify-js"></target>
+	<target name="_minify-css"></target>
+	
+	<!-- ======= Функции удалённой среды ======= -->
+
+	<!-- Deploy -->		
+	<target name="_clearEnv-src">
+		<sshexec trust="true" host="${env.ssh.host}" port="${env.ssh.port}"
+			username="${env.ssh.user}" password="${env.ssh.pass}"
+			command="rm -r ${copy_src.to}"
+			failonerror="false"/>
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}" password="${env.ssh.pass}"
+			command="mkdir -p ${copy_src.to}"/>
+	</target>
+	
+	<target name="_clearEnv-web">
+		<sshexec trust="true" host="${env.ssh.host}" port="${env.ssh.port}"
+			username="${env.ssh.user}" password="${env.ssh.pass}"
+			command="rm -r ${copy_web.to}"
+			failonerror="false"/>
+		<sshexec trust="true" host="${env.ssh.host}"
+			username="${env.ssh.user}" password="${env.ssh.pass}"
+			command="mkdir -p ${copy_web.to}"/>
+	</target>
+	
+	<target name="_copyToEnv-src">
+		<scp trust="true" todir="${env.ssh.user}:${env.ssh.pass}@${env.ssh.host}:${copy_src.to}" port="${env.ssh.port}">
+			<fileset dir="${copy_src.from}"/>
+		</scp>
+	</target>
+	
+	<target name="_copyToEnv-web">
+		<scp trust="true" todir="${env.ssh.user}:${env.ssh.pass}@${env.ssh.host}:${copy_web.to}" port="${env.ssh.port}">
+			<fileset dir="${copy_web.from}"/>
+		</scp>
+	</target>
+	
+	<!-- ======= Комбинированные методы ======= -->
+	
+	<!-- Очистка папок на удалённой среде -->
+	<target name="_clearEnv" description="Cleaning project in env">
+		<echo>Cleaning ${bundle.fullname} in ${env.name} env...</echo>
+		<antcall target="_clearEnv-src"/>
+		<antcall target="_clearEnv-web"/>
+	</target>
+	
+	<!-- Копирование папок на удалённую среду -->
+	<target name="_copyToEnv" description="Copying project to env">
+		<echo>Copying ${bundle.fullname} to ${env.name} env...</echo>
+		<antcall target="_copyToEnv-src"/>
+		<antcall target="_copyToEnv-web"/>
+	</target>
+	
+	<!-- Деплой разработки на удалённую среду -->
+	<target name="deploy">
+		<echo>Deploying ${bundle.fullname} to ${env.name} env...</echo>
+		<antcall target="_clearEnv"/>
+		<antcall target="_copyToEnv"/>
+	</target>
+	
+	<target name="_concat-web" description="Объединение JS и CSS в библиотеки">
+		<antcall target="_concat-js"/>
+		<antcall target="_concat-css"/>
+	</target>
+	
+	<target name="_minify-web" description="Сжатие JS и CSS">
+		<antcall target="_minify-js"/>
+		<antcall target="_minify-css"/>
+	</target>
+	
+	<target name="build">
+		<antcall target="_getGitRevision"/>
+		<antcall target="_concat-web"/>
+		<antcall target="_minify-web" />
+	</target>
+	
+	<target name="buildWithoutMinify">
+		<antcall target="_getGitRevision"/>
+		<antcall target="_concat-web"/>
+	</target>
+	
+	<!-- Build & Deploy -->
+	<target name="buildNdeploy">
+		<antcall target="build"/>
+		<antcall target="deploy"/>
+	</target>
+</project>

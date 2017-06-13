@@ -1,0 +1,68 @@
+{% extends app.request.xmlHttpRequest 
+         ? "SiteCoreBundle::ajaxlayout.html.twig"
+         : "::layout.html.twig" %}
+         
+{% block keywords %}{{ parent(keywords) }}, hd, скриншоты, обои, автомобили, девушки, обложки, карты, wallpapers, walls, screens, screenshots, cars, girls, covers{% endblock %}
+
+{% block body %}
+		<td id='module-container'>
+			<div id='module'>
+				<div class='title'>
+					<div class='left'></div>
+					<div class='right'></div>
+					<div class='center'>Скриншоты из Need For Speed, обои, обложки CD/DVD. Самый большой фото архив по игре NFS на www.nfsko.ru</div>
+				</div>
+				<div class='description'>
+					{% block info %}
+						{% for error in app.session.flashbag.get('failure') %}
+							<div class='validationMess error'>
+            					<p>{{ error.message|nl2br|format_file_from_text }}</p>
+            					<p><strong>{{ error.getStatusCode }}</strong></p>
+							</div>
+						{% endfor %}
+						{% for album in app.session.flashbag.get('success') %}
+							<div class='validationMess ok'>Альбом "{{ album.name }}" успешно создан в категории "{{ album.category.name }}" (id = {{ album.id }})</div>
+						{% endfor %}
+						{% for info in app.session.flashbag.get('info') %}
+							<div class='validationMess notice'>{{ info|raw }}</div>
+						{% endfor %}
+					{% endblock %}
+				</div>
+				<div class='content'>
+					<div class='module-row'>
+						{% block location %}{% endblock %}
+					</div>
+					<div class='module-row'>
+						<table class='module-table'><tr>
+							<td>{% block content_left %}{% endblock %}</td>
+							<td>{% block content %}{% endblock %}</td>
+							<td>{% block content_right %}{% endblock %}</td>
+						</tr></table>
+					</div>
+					<div class='module-row'>
+						<div class='left'>Need For Speed World Site</div>
+						<div class='right'>{% if is_granted('ROLE_GAL_USER_SHOW') %}<a href='{{ path('site_gallery_userImages', {'uId':app.user.getId}) }}'>[ Мои файлы ]</a>{% endif %}</div>
+					</div>
+				</div>
+			</div>
+		</td>
+		<td id='menu-container'>
+			<div class='menu-block'>
+				<div class='title'>Меню</div>
+				<ul class='content'>
+					<li><a href='{{ path('site_gallery_homepage') }}'>{% trans %}Главная галереи{% endtrans %}</a></li>
+					<li><a href='http://www.nfsko.ru'>Перейти на сайт NFSko</a></li>
+				</ul>
+			</div>
+			<div class='menu-block'>
+				<div class='title'>Категории галереи</div>
+				<ul class='content'>
+					{% for category in categoryList %}
+						<li><a href='{{ path('site_gallery_category', {'cRefId': category.getRefId}) }}'>{{ category.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</td>
+{% endblock %}
+
+

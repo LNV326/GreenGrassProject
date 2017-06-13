@@ -1,0 +1,10 @@
+{% if context is not defined %}
+	{% set context = null %}
+{% endif %}
+{% if output is not defined %}
+	{% set output = null %}
+{% endif %}
+{{ {
+	'context' : context,
+	'output' : output
+}|json_encode|raw }}

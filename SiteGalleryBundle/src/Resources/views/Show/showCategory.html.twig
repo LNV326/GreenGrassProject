@@ -1,0 +1,49 @@
+{% extends "SiteGalleryBundle::gallery.html.twig" %}
+
+{% block title %}Категория {{ category.name }} | Галерея изображений {{ parent(title) }}
+{% endblock %}
+{% block keywords %}{{ category.name }}, {{ parent(keywords) }}
+{% endblock %}
+
+{% block location %}
+	<div class="module-navigate left">
+		<a href='{{ path('site_gallery_homepage') }}'>{% trans %}Галерея{% endtrans %}</a><a>{{ category.name }}</a>
+	</div>
+	<div class="fb-dialog right">
+		{% if is_granted('ROLE_GAL_ALBS_ADD') %}<a href='{{ path('site_gallery_addAlbum', {'cRefId':category.getRefId}) }}'>Добавить</a>{% endif %}
+	</div>
+{% endblock %}
+
+{% block info %}
+	{% for error in app.session.flashbag.get('failure') %}
+		<div class='validationMess, error'>
+            <p>{{ error.message|nl2br|format_file_from_text }}</p>
+            <p><strong>{{ error.getStatusCode }}</strong></p>
+		</div>
+	{% endfor %}
+	{% for album in app.session.flashbag.get('success') %}
+		<div class='validationMess, ok'>Альбом "{{ album.name }}" успешно создан в категории "{{ album.category.name }}" (id = {{ album.id }})</div>
+	{% endfor %}
+{% endblock %}
+
+{% block content %}
+{% if albumList is not empty %}
+<ul class='gallery-container' id='category'>
+	{% for album in albumList %}
+		<li class='gallery_thumb big' allow-add='{% if album.allowAdd %}true{% else %}false{% endif %}'>
+			<a href='{{ path('site_gallery_album', {'cRefId': category.getRefId,'aRefId': album.dictionary.getRefId}) }}' status='show'>
+				{% if album.coverImage %}
+					<img src='{{ imgHostName ~ album.coverImage.getWebThumbPath }}'>
+				{% endif %}
+				<div class='gallery_thumb_name'>{{ album.dictionary.title }}</div>
+			</a>
+		</li>
+	{% endfor %}
+</ul>
+<script>
+	$('.gallery-container#category').nfsko('gallery');
+</script>
+{% else %}
+	В данной категории пока нет альбомов
+{% endif %}
+{% endblock %}
